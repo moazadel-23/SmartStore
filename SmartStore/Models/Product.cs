@@ -8,6 +8,7 @@
         public string MainImg { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public decimal Rate { get; set; }
+        public decimal Quantity { get; set; }
         public decimal Discount { get; set; }
         public bool Status { get; set; }
         public Brand? Brand { get; set; }
