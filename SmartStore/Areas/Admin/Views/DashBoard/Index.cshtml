@@ -1,0 +1,451 @@
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Dashboard";
+    ViewData["PageTitle"] = "Dashboard Overview";
+}
+
+<div class="home-content">
+
+    <!-- ── Breadcrumb ─────────────────────────── -->
+    <div class="breadcrumb-bar">
+        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> Home</span>
+        <i class='bx bx-chevron-right bc-sep'></i>
+        <span class="bc-current">Dashboard</span>
+        <span class="bc-date"><i class='bx bx-calendar'></i> @DateTime.Now.ToString("dddd, MMMM dd yyyy")</span>
+    </div>
+
+    <!-- ── KPI Cards ──────────────────────────── -->
+    <div class="overview-boxes">
+
+        <div class="box kpi-card" id="kpi-revenue">
+            <div class="kpi-left">
+                <p class="box-topic">Total Revenue</p>
+                <span class="number">$34,500</span>
+                <div class="indicator">
+                    <i class='bx bx-up-arrow-alt'></i>
+                    <span>+12.5% vs last month</span>
+                </div>
+            </div>
+            <div class="cart one">
+                <i class='bx bx-dollar-circle'></i>
+            </div>
+        </div>
+
+        <div class="box kpi-card" id="kpi-orders">
+            <div class="kpi-left">
+                <p class="box-topic">Total Orders</p>
+                <span class="number">1,245</span>
+                <div class="indicator">
+                    <i class='bx bx-up-arrow-alt'></i>
+                    <span>+5.2% vs last month</span>
+                </div>
+            </div>
+            <div class="cart two">
+                <i class='bx bx-shopping-bag'></i>
+            </div>
+        </div>
+
+        <div class="box kpi-card" id="kpi-users">
+            <div class="kpi-left">
+                <p class="box-topic">Active Users</p>
+                <span class="number">8,105</span>
+                <div class="indicator down">
+                    <i class='bx bx-down-arrow-alt'></i>
+                    <span>-1.2% vs last month</span>
+                </div>
+            </div>
+            <div class="cart three">
+                <i class='bx bx-group'></i>
+            </div>
+        </div>
+
+        <div class="box kpi-card" id="kpi-conversion">
+            <div class="kpi-left">
+                <p class="box-topic">Conversion Rate</p>
+                <span class="number">4.6%</span>
+                <div class="indicator">
+                    <i class='bx bx-up-arrow-alt'></i>
+                    <span>+0.8% vs last month</span>
+                </div>
+            </div>
+            <div class="cart four">
+                <i class='bx bx-trending-up'></i>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ── Charts Row ─────────────────────────── -->
+    <div class="charts-row">
+
+        <!-- Revenue Line Chart -->
+        <div class="chart-box chart-main">
+            <div class="box-header">
+                <div>
+                    <h3>Revenue Overview</h3>
+                    <p class="chart-sub">Monthly performance for 2026</p>
+                </div>
+                <div class="chart-tabs">
+                    <button class="chart-tab active" data-period="monthly">Monthly</button>
+                    <button class="chart-tab" data-period="weekly">Weekly</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="chart-box chart-side">
+            <div class="box-header">
+                <h3>Traffic Sources</h3>
+                <i class='bx bx-dots-horizontal-rounded'></i>
+            </div>
+            <div class="donut-wrap">
+                <canvas id="trafficChart"></canvas>
+            </div>
+            <div class="donut-legend">
+                <div class="legend-item"><span class="dot dot-primary"></span> Direct <strong>35%</strong></div>
+                <div class="legend-item"><span class="dot dot-success"></span> Organic <strong>25%</strong></div>
+                <div class="legend-item"><span class="dot dot-warning"></span> Social <strong>25%</strong></div>
+                <div class="legend-item"><span class="dot dot-danger"></span> Referral <strong>15%</strong></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ── Bottom Row ─────────────────────────── -->
+    <div class="bottom-row">
+
+        <!-- Recent Orders Table -->
+        <div class="chart-box recent-orders-box">
+            <div class="box-header">
+                <h3>Recent Orders</h3>
+                <a href="#" class="view-all">View All <i class='bx bx-arrow-back bx-rotate-180'></i></a>
+            </div>
+            <div class="sales-details">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="order-id">#ORD-101</span></td>
+                            <td>
+                                <div class="customer-info">
+                                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=4F46E5&color=fff&bold=true&size=32" alt="John Doe">
+                                    <div>
+                                        <div class="cust-name">John Doe</div>
+                                        <div class="cust-email">john@example.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="order-date">Apr 17, 2026</td>
+                            <td class="order-amount">$320.00</td>
+                            <td><span class="status delivered">Completed</span></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="act-btn view-btn" title="View"><i class='bx bx-show'></i></button>
+                                    <button class="act-btn edit-btn" title="Edit"><i class='bx bx-edit'></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="order-id">#ORD-102</span></td>
+                            <td>
+                                <div class="customer-info">
+                                    <img src="https://ui-avatars.com/api/?name=Jane+Smith&background=10B981&color=fff&bold=true&size=32" alt="Jane Smith">
+                                    <div>
+                                        <div class="cust-name">Jane Smith</div>
+                                        <div class="cust-email">jane@example.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="order-date">Apr 16, 2026</td>
+                            <td class="order-amount">$150.00</td>
+                            <td><span class="status pending">Pending</span></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="act-btn view-btn" title="View"><i class='bx bx-show'></i></button>
+                                    <button class="act-btn edit-btn" title="Edit"><i class='bx bx-edit'></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="order-id">#ORD-103</span></td>
+                            <td>
+                                <div class="customer-info">
+                                    <img src="https://ui-avatars.com/api/?name=Michael+Johnson&background=F59E0B&color=fff&bold=true&size=32" alt="Michael Johnson">
+                                    <div>
+                                        <div class="cust-name">Michael Johnson</div>
+                                        <div class="cust-email">michael.j@example.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="order-date">Apr 16, 2026</td>
+                            <td class="order-amount">$980.00</td>
+                            <td><span class="status returned">Cancelled</span></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="act-btn view-btn" title="View"><i class='bx bx-show'></i></button>
+                                    <button class="act-btn edit-btn" title="Edit"><i class='bx bx-edit'></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="order-id">#ORD-104</span></td>
+                            <td>
+                                <div class="customer-info">
+                                    <img src="https://ui-avatars.com/api/?name=Alice+Cooper&background=EF4444&color=fff&bold=true&size=32" alt="Alice Cooper">
+                                    <div>
+                                        <div class="cust-name">Alice Cooper</div>
+                                        <div class="cust-email">alice@example.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="order-date">Apr 15, 2026</td>
+                            <td class="order-amount">$2,400.00</td>
+                            <td><span class="status delivered">Completed</span></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="act-btn view-btn" title="View"><i class='bx bx-show'></i></button>
+                                    <button class="act-btn edit-btn" title="Edit"><i class='bx bx-edit'></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="order-id">#ORD-105</span></td>
+                            <td>
+                                <div class="customer-info">
+                                    <img src="https://ui-avatars.com/api/?name=Robert+Lee&background=8B5CF6&color=fff&bold=true&size=32" alt="Robert Lee">
+                                    <div>
+                                        <div class="cust-name">Robert Lee</div>
+                                        <div class="cust-email">robert@example.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="order-date">Apr 15, 2026</td>
+                            <td class="order-amount">$560.00</td>
+                            <td><span class="status pending">Pending</span></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="act-btn view-btn" title="View"><i class='bx bx-show'></i></button>
+                                    <button class="act-btn edit-btn" title="Edit"><i class='bx bx-edit'></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="chart-box activity-box">
+            <div class="box-header">
+                <h3>Recent Activity</h3>
+                <i class='bx bx-refresh act-refresh' title="Refresh" style="cursor:pointer;"></i>
+            </div>
+
+            <div class="activity-feed">
+                <div class="activity-item">
+                    <div class="activity-icon ai-blue"><i class='bx bx-cart-add'></i></div>
+                    <div class="activity-body">
+                        <p class="act-title">New Order <strong>#ORD-106</strong></p>
+                        <p class="act-desc">Alice placed a new order for Mac Laptop Pro.</p>
+                        <span class="act-time"><i class='bx bx-time-five'></i> 2 mins ago</span>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon ai-green"><i class='bx bx-package'></i></div>
+                    <div class="activity-body">
+                        <p class="act-title">Product Restocked</p>
+                        <p class="act-desc">50 units added to Sony WH-1000XM5 Headphones.</p>
+                        <span class="act-time"><i class='bx bx-time-five'></i> 1 hour ago</span>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon ai-yellow"><i class='bx bx-user-check'></i></div>
+                    <div class="activity-body">
+                        <p class="act-title">New User Verified</p>
+                        <p class="act-desc">Customer account <strong>'JaneS'</strong> was approved.</p>
+                        <span class="act-time"><i class='bx bx-time-five'></i> 3 hours ago</span>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon ai-red"><i class='bx bx-credit-card'></i></div>
+                    <div class="activity-body">
+                        <p class="act-title">Payment Failed</p>
+                        <p class="act-desc">Transaction <strong>#TR9485</strong> was declined by the bank.</p>
+                        <span class="act-time"><i class='bx bx-time-five'></i> 5 hours ago</span>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon ai-blue"><i class='bx bx-tag'></i></div>
+                    <div class="activity-body">
+                        <p class="act-title">New Category Added</p>
+                        <p class="act-desc">Category <strong>'Smart Home'</strong> was published.</p>
+                        <span class="act-time"><i class='bx bx-time-five'></i> 8 hours ago</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats Mini -->
+            <div class="mini-stats">
+                <div class="mini-stat">
+                    <span class="ms-label">Today's Sales</span>
+                    <span class="ms-value">$4,230</span>
+                </div>
+                <div class="mini-stat">
+                    <span class="ms-label">New Customers</span>
+                    <span class="ms-value">+18</span>
+                </div>
+                <div class="mini-stat">
+                    <span class="ms-label">Pending Orders</span>
+                    <span class="ms-value warned">12</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+<script>
+(function () {
+    // ── Revenue Chart ──────────────────────────────────────
+    const ctx1 = document.getElementById('revenueChart').getContext('2d');
+    const isDark = document.body.classList.contains('dark-mode');
+
+    const grad = ctx1.createLinearGradient(0, 0, 0, 320);
+    grad.addColorStop(0, 'rgba(79,70,229,0.28)');
+    grad.addColorStop(1, 'rgba(79,70,229,0.0)');
+
+    const monthlyData = {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        data:   [12000, 19000, 15000, 22000, 18000, 28000, 24000, 31000, 29000, 35000, 32000, 40000]
+    };
+    const weeklyData = {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        data:   [3200, 4100, 3800, 5200, 4700, 6100, 5400]
+    };
+
+    const revenueChart = new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: monthlyData.labels,
+            datasets: [{
+                label: 'Revenue ($)',
+                data: monthlyData.data,
+                backgroundColor: grad,
+                borderColor: '#4F46E5',
+                borderWidth: 2.5,
+                pointBackgroundColor: '#fff',
+                pointBorderColor: '#4F46E5',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 7,
+                fill: true,
+                tension: 0.42
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: isDark ? '#1e293b' : '#111827',
+                    titleColor: '#f9fafb',
+                    bodyColor: '#d1d5db',
+                    padding: 12,
+                    displayColors: false,
+                    callbacks: {
+                        label: ctx => '$' + ctx.parsed.y.toLocaleString()
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    grid: { color: isDark ? '#334155' : '#F1F5F9', borderDash: [4,4], drawBorder: false },
+                    ticks: { color: isDark ? '#94a3b8' : '#6B7280', callback: v => '$' + (v/1000) + 'k' }
+                },
+                x: {
+                    grid: { display: false, drawBorder: false },
+                    ticks: { color: isDark ? '#94a3b8' : '#6B7280' }
+                }
+            },
+            interaction: { intersect: false, mode: 'index' }
+        }
+    });
+
+    // Tab switching
+    document.querySelectorAll('.chart-tab').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const d = this.dataset.period === 'weekly' ? weeklyData : monthlyData;
+            revenueChart.data.labels = d.labels;
+            revenueChart.data.datasets[0].data = d.data;
+            revenueChart.update();
+        });
+    });
+
+    // ── Traffic Donut Chart ────────────────────────────────
+    const ctx2 = document.getElementById('trafficChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: ['Direct', 'Organic', 'Social', 'Referral'],
+            datasets: [{
+                data: [35, 25, 25, 15],
+                backgroundColor: ['#4F46E5', '#10B981', '#F59E0B', '#EF4444'],
+                borderWidth: 3,
+                borderColor: isDark ? '#1e293b' : '#ffffff',
+                hoverOffset: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '72%',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: isDark ? '#1e293b' : '#111827',
+                    titleColor: '#f9fafb',
+                    bodyColor: '#d1d5db',
+                    padding: 10,
+                    callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.parsed + '%' }
+                }
+            }
+        }
+    });
+
+    // ── KPI card counter animation ─────────────────────────
+    function animateCount(el, target, prefix, suffix) {
+        let start = 0;
+        const duration = 1200;
+        const step = target / (duration / 16);
+        const timer = setInterval(() => {
+            start = Math.min(start + step, target);
+            el.textContent = prefix + Math.round(start).toLocaleString() + suffix;
+            if (start >= target) clearInterval(timer);
+        }, 16);
+    }
+
+    // run on load
+    animateCount(document.querySelector('#kpi-revenue .number'),  34500, '$', '');
+    animateCount(document.querySelector('#kpi-orders .number'),   1245,  '',  '');
+    animateCount(document.querySelector('#kpi-users .number'),    8105,  '',  '');
+})();
+</script>
+}

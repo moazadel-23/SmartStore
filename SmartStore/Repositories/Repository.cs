@@ -5,29 +5,52 @@ namespace SmartStore.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
+        ILogger<Repository<T>> _logger;
         private readonly ApplicationDbContext _context;
         private readonly DbSet<T> _db;
 
-        public Repository(ApplicationDbContext context)
+        public Repository(ILogger<Repository<T>> logger, ApplicationDbContext context)
         {
+            _logger = logger; 
             _context = context;
             _db = context.Set<T>();
         }
         public async Task AddAsync(T entity, CancellationToken cancellationToken = default)
         {
-            await _db.AddAsync(entity, cancellationToken);
+            try
+            {
+                await _db.AddAsync(entity, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error adding entity of type {typeof(T).Name}");
+            }
         }
         public void Update(T entity, CancellationToken cancellationToken = default)
         {
-             _db.Update(entity);
+            try
+            {
+                _db.Update(entity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error adding entity of type {typeof(T).Name}");
+            }
         }
         public void Delete(T entity, CancellationToken cancellationToken = default)
         {
-            _db.Remove(entity);
+            try
+            {
+                _db.Remove(entity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error adding entity of type {typeof(T).Name}");
+            }
         }
         public async Task<IEnumerable<T>> GetAsync(
-            Expression<Func<T, bool>> expression,
-            Expression<Func<T, object>> []include,
+            Expression<Func<T, bool>>? expression = null,
+            Expression<Func<T, object>> []?include = null,
             bool tracked = true,CancellationToken cancellationToken = default)
         {
             var entities = _db.AsQueryable();
@@ -47,9 +70,9 @@ namespace SmartStore.Repositories
             return await entities.ToListAsync(cancellationToken);
         }
 
-        public async Task<T?> GetOne(
-            Expression<Func<T, bool>> expression,
-            Expression<Func<T, object>>[] include,
+        public async Task<T?> GetOneAsync(
+            Expression<Func<T, bool>>? expression = null,
+            Expression<Func<T, object>>[]? include = null,
             bool tracked = true, CancellationToken cancellationToken = default)
         {
             return (await GetAsync(expression, include, tracked, cancellationToken)).FirstOrDefault();

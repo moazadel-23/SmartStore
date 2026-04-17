@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@(ViewData["Title"] != null ? ViewData["Title"] + " — SmartStore Admin" : "SmartStore Admin")</title>
+    <meta name="description" content="SmartStore Admin Dashboard — Manage your store efficiently">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Admin CSS -->
+    <link rel="stylesheet" href="~/css/style.css">
+</head>
+<body>
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar">
+        <!-- Logo -->
+        <div class="logo-details">
+            <i class='bx bxs-store icon'></i>
+            <div class="logo_name">SmartStore</div>
+            <i class='bx bx-menu' id="btn"></i>
+        </div>
+
+        <ul class="nav-list">
+            <!-- Search -->
+            <li>
+                <i class='bx bx-search'></i>
+                <input type="text" placeholder="Search...">
+                <span class="tooltip">Search</span>
+            </li>
+
+            <!-- Dashboard -->
+            <li>
+                <a href="@Url.Action("Index", "DashBoard", new { area = "Admin" })"
+                   class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "DashBoard" ? "active" : "")">
+                    <i class='bx bxs-dashboard'></i>
+                    <span class="links_name">Dashboard</span>
+                </a>
+                <span class="tooltip">Dashboard</span>
+            </li>
+
+            <!-- Categories -->
+            <li>
+                <a href="@Url.Action("Index", "Category", new { area = "Admin" })"
+                   class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Category" ? "active" : "")">
+                    <i class='bx bx-category'></i>
+                    <span class="links_name">Categories</span>
+                </a>
+                <span class="tooltip">Categories</span>
+            </li>
+
+            <!-- Products -->
+            <li>
+                <a href="#">
+                    <i class='bx bx-package'></i>
+                    <span class="links_name">Products</span>
+                </a>
+                <span class="tooltip">Products</span>
+            </li>
+
+            <!-- Orders -->
+            <li>
+                <a href="#">
+                    <i class='bx bx-cart-alt'></i>
+                    <span class="links_name">Orders</span>
+                </a>
+                <span class="tooltip">Orders</span>
+            </li>
+
+            <!-- Customers -->
+            <li>
+                <a href="#">
+                    <i class='bx bx-group'></i>
+                    <span class="links_name">Customers</span>
+                </a>
+                <span class="tooltip">Customers</span>
+            </li>
+
+            <!-- Analytics -->
+            <li>
+                <a href="#">
+                    <i class='bx bx-bar-chart-alt-2'></i>
+                    <span class="links_name">Analytics</span>
+                </a>
+                <span class="tooltip">Analytics</span>
+            </li>
+
+            <!-- Messages -->
+            <li>
+                <a href="#">
+                    <i class='bx bx-message-square-dots'></i>
+                    <span class="links_name">Messages</span>
+                </a>
+                <span class="tooltip">Messages</span>
+            </li>
+
+            <!-- Settings -->
+            <li>
+                <a href="#">
+                    <i class='bx bx-cog'></i>
+                    <span class="links_name">Settings</span>
+                </a>
+                <span class="tooltip">Settings</span>
+            </li>
+
+            <!-- Profile (pinned bottom) -->
+            <li class="profile">
+                <div class="profile-details">
+                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=4F46E5&color=fff&bold=true" alt="Admin">
+                    <div class="name_job">
+                        <div class="name">Admin User</div>
+                        <div class="job">Super Admin</div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- ==================== MAIN SECTION ==================== -->
+    <section class="home-section">
+
+        <!-- Top Navbar -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <h2>@(ViewData["PageTitle"] ?? ViewData["Title"] ?? "Dashboard")</h2>
+            </div>
+            <div class="nav-right">
+                <!-- Theme Mode Picker -->
+                <div class="theme-picker" id="themePicker">
+                    <button class="theme-picker-btn" id="themePickerBtn" title="Change theme" aria-haspopup="true" aria-expanded="false">
+                        <i class='bx bx-moon' id="themePickerIcon"></i>
+                    </button>
+                    <div class="theme-dropdown" id="themeDropdown" role="menu">
+                        <div class="theme-dropdown-header">Appearance</div>
+                        <button class="theme-option" data-theme="light" role="menuitem">
+                            <span class="theme-option-icon"><i class='bx bx-sun'></i></span>
+                            <span class="theme-option-text">
+                                <span class="to-title">Light</span>
+                                <span class="to-desc">Always light mode</span>
+                            </span>
+                            <i class='bx bx-check theme-option-check'></i>
+                        </button>
+                        <button class="theme-option" data-theme="dark" role="menuitem">
+                            <span class="theme-option-icon"><i class='bx bx-moon'></i></span>
+                            <span class="theme-option-text">
+                                <span class="to-title">Dark</span>
+                                <span class="to-desc">Always dark mode</span>
+                            </span>
+                            <i class='bx bx-check theme-option-check'></i>
+                        </button>
+                        <button class="theme-option" data-theme="auto" role="menuitem">
+                            <span class="theme-option-icon"><i class='bx bx-laptop'></i></span>
+                            <span class="theme-option-text">
+                                <span class="to-title">Auto</span>
+                                <span class="to-desc">Follows system setting</span>
+                            </span>
+                            <i class='bx bx-check theme-option-check'></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="notification" title="Notifications">
+                    <i class='bx bx-bell'></i>
+                    <span class="badge">3</span>
+                </div>
+                <!-- Profile Menu -->
+                <div class="profile-menu-wrap" id="profileMenuWrap">
+                    <button class="profile-avatar-btn" id="profileAvatarBtn" title="Account menu">
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=4F46E5&color=fff&bold=true&size=40" alt="Admin">
+                    </button>
+                    <div class="profile-menu" id="profileMenu">
+                        <div class="pm-header">
+                            <img src="https://ui-avatars.com/api/?name=Admin+User&background=4F46E5&color=fff&bold=true&size=60" alt="Admin">
+                            <div class="pm-info">
+                                <span class="pm-name">Admin User</span>
+                                <span class="pm-role">@@adminuser</span>
+                            </div>
+                        </div>
+                        <div class="pm-divider"></div>
+                        <a href="@Url.Action("Index", "DashBoard", new { area = "Admin" })" class="pm-item">
+                            <i class='bx bx-home-alt'></i> Home
+                        </a>
+                        <a href="#" class="pm-item">
+                            <i class='bx bx-envelope'></i> Inbox
+                        </a>
+                        <a href="#" class="pm-item">
+                            <i class='bx bx-chat'></i> Chat
+                        </a>
+                        <a href="#" class="pm-item">
+                            <i class='bx bx-line-chart'></i> Activity
+                        </a>
+                        <a href="#" class="pm-item">
+                            <i class='bx bx-cog'></i> Account Settings
+                        </a>
+                        <div class="pm-divider"></div>
+                        <a href="/" class="pm-item pm-logout" id="pmLogout">
+                            <i class='bx bx-log-out'></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Page Content -->
+        @RenderBody()
+
+    </section>
+
+    <!-- Scripts -->
+    <script src="~/js/main.js"></script>
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

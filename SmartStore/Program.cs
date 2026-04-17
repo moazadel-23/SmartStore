@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SmartStore.DI_Serice;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,7 +7,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddScopedServices();
 var app = builder.Build();
 
 
@@ -19,16 +20,21 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
 app.UseRouting();
 
 app.UseAuthorization();
-
 app.MapStaticAssets();
 
 app.MapControllerRoute(
+        name: "areas",
+        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{area=Admin}/{controller=DashBoard}/{action=Index}/{id?}");
+
 
 
 app.Run();

@@ -11,14 +11,14 @@ namespace SmartStore.Repositories
 
 
         Task<IEnumerable<T>> GetAsync(
-            Expression<Func<T, bool>> expression,
-            Expression<Func<T, object>>[] include,
+            Expression<Func<T, bool>>? expression = null,
+            Expression<Func<T, object>>[]? include = null,
             bool tracked = true,
             CancellationToken cancellationToken = default);
 
-       Task<T?> GetOne(
-            Expression<Func<T, bool>> expression,
-            Expression<Func<T, object>>[] include,
+       Task<T?> GetOneAsync(
+            Expression<Func<T, bool>>? expression = null,
+            Expression<Func<T, object>>[]? include = null,
             bool tracked = true,
             CancellationToken cancellationToken = default);
       
