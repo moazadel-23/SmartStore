@@ -1,0 +1,96 @@
+@model SmartStore.Models.Order
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Order Details";
+    ViewData["PageTitle"] = "Order #" + Model.Id;
+}
+
+<link rel="stylesheet" href="~/css/order-admin.css">
+
+<div class="home-content">
+    <div class="breadcrumb-bar">
+        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> Home</span>
+        <i class='bx bx-chevron-right bc-sep'></i>
+        <a href="@Url.Action("Index", "Order")" style="text-decoration:none; color:var(--text-muted)">Orders</a>
+        <i class='bx bx-chevron-right bc-sep'></i>
+        <span class="bc-current">Details #@Model.Id</span>
+    </div>
+
+    <div class="ord-details">
+        <!-- Main details (Customer & Order Items) -->
+        <div class="ord-info-block">
+            <h4 class="ord-info-header">Order Items</h4>
+            @if(Model.OrderItems != null && Model.OrderItems.Any())
+            {
+                <table class="ord-items-table">
+                    <thead>
+                        <tr>
+                            <th>Product ID</th>
+                            <th>Unit Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var item in Model.OrderItems)
+                        {
+                            <tr>
+                                <td>#@item.ProductId</td>
+                                <td>$@item.UnitPrice.ToString("0.00")</td>
+                                <td>@item.Quantity</td>
+                                <td>$((item.UnitPrice * item.Quantity).ToString("0.00"))</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p style="color:var(--text-muted); font-size:14px; margin-top:10px;">No items in this order.</p>
+            }
+
+            <div style="margin-top:20px; text-align:right;">
+                <strong style="font-size:18px; color:var(--text-dark)">Grand Total: $@Model.TotalAmount.ToString("0.00")</strong>
+            </div>
+
+            <h4 class="ord-info-header" style="margin-top:24px;">Update Status</h4>
+            <div class="ord-status-update">
+                <form method="post" asp-area="Admin" asp-controller="Order" asp-action="UpdateStatus" style="display:flex; gap:12px;">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <select name="orderStatus" asp-for="OrderStatus" asp-items="Html.GetEnumSelectList<SmartStore.Models.OrderStatus>()" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px; font-family: 'Inter', sans-serif; background: var(--bg-color); color: var(--text-dark);">
+                    </select>
+                    <button type="submit">Update Status</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Sidebar Details -->
+        <div class="ord-info-block" style="border-left: 1px solid var(--border-color); padding-left: 24px;">
+            <h4 class="ord-info-header">Order Info</h4>
+            <div class="ord-info-row">
+                <strong>Status:</strong>
+                <span class="ord-badge badge-@(Model.OrderStatus.ToString().ToLower())">@Model.OrderStatus.ToString()</span>
+            </div>
+            <div class="ord-info-row">
+                <strong>Order Date:</strong> @Model.OrderDate.ToString("MMM dd, yyyy HH:mm")
+            </div>
+            <div class="ord-info-row">
+                <strong>Payment:</strong> Credit Card
+            </div>
+
+            <h4 class="ord-info-header" style="margin-top:24px;">Customer Info</h4>
+            <div class="ord-info-row">
+                <strong>Name:</strong> @Model.CustomerName
+            </div>
+            <div class="ord-info-row">
+                <strong>Email:</strong> @Model.CustomerEmail
+            </div>
+            <div class="ord-info-row">
+                <strong>Phone:</strong> @Model.CustomerPhone
+            </div>
+            <div class="ord-info-row">
+                <strong>Address:</strong> @Model.ShippingAddress
+            </div>
+        </div>
+    </div>
+</div>

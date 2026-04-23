@@ -28,6 +28,29 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // ── Mobile Sidebar Toggle ──────────────────────────────────
+    const mobileToggle = document.getElementById("mobile-toggle");
+    
+    if (mobileToggle && sidebar) {
+        mobileToggle.addEventListener("click", () => {
+            sidebar.classList.toggle("mobile-open");
+            document.body.classList.toggle("mobile-sidebar-open");
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener("click", (e) => {
+            if (window.innerWidth <= 768) {
+                if (sidebar.classList.contains("mobile-open") && 
+                    !sidebar.contains(e.target) && 
+                    !mobileToggle.contains(e.target)) {
+                    
+                    sidebar.classList.remove("mobile-open");
+                    document.body.classList.remove("mobile-sidebar-open");
+                }
+            }
+        });
+    }
+
     // ── Active nav link highlight ──────────────────────────────
     const currentPath = window.location.pathname.toLowerCase();
     document.querySelectorAll(".sidebar li a").forEach(link => {

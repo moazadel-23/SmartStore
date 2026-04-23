@@ -52,10 +52,19 @@
                 </a>
                 <span class="tooltip">Categories</span>
             </li>
+            <li>
+                <a href="@Url.Action("Index", "Brand", new { area = "Admin" })"
+                   class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Brand" ? "active" : "")">
+                    <i class='bx bx-purchase-tag'></i>
+                    <span class="links_name">Brands</span>
+                </a>
+                <span class="tooltip">Brands</span>
+            </li>
 
             <!-- Products -->
             <li>
-                <a href="#">
+                <a href="@Url.Action("Index", "Product", new { area = "Admin" })"
+                   class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "active" : "")">
                     <i class='bx bx-package'></i>
                     <span class="links_name">Products</span>
                 </a>
@@ -64,7 +73,8 @@
 
             <!-- Orders -->
             <li>
-                <a href="#">
+                <a href="@Url.Action("Index", "Order", new { area = "Admin" })"
+                   class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Order" ? "active" : "")">
                     <i class='bx bx-cart-alt'></i>
                     <span class="links_name">Orders</span>
                 </a>
@@ -80,14 +90,7 @@
                 <span class="tooltip">Customers</span>
             </li>
 
-            <!-- Analytics -->
-            <li>
-                <a href="#">
-                    <i class='bx bx-bar-chart-alt-2'></i>
-                    <span class="links_name">Analytics</span>
-                </a>
-                <span class="tooltip">Analytics</span>
-            </li>
+           
 
             <!-- Messages -->
             <li>
@@ -125,7 +128,8 @@
 
         <!-- Top Navbar -->
         <nav class="top-nav">
-            <div class="nav-left">
+            <div class="nav-left" style="display: flex; align-items: center;">
+                <i class='bx bx-menu' id="mobile-toggle" style="font-size: 28px; cursor: pointer; margin-right: 15px; color: var(--text-dark); display: none;"></i>
                 <h2>@(ViewData["PageTitle"] ?? ViewData["Title"] ?? "Dashboard")</h2>
             </div>
             <div class="nav-right">

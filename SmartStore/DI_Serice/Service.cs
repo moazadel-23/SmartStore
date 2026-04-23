@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SmartStore.Repositories;
 
@@ -11,7 +11,9 @@ namespace SmartStore.DI_Serice
             services.AddScoped<IRepository<Product>, Repository<Product>>();
             services.AddScoped<IRepository<Brand>, Repository<Brand>>();
             services.AddScoped<IRepository<Category>, Repository<Category>>();
-            services.AddScoped<IRepository<ProductImg>, Repository<ProductImg>>();
+            services.AddScoped<IRepository<ProductImges>, Repository<ProductImges>>();
+            services.AddScoped<IRepository<Order>, Repository<Order>>();
+            services.AddScoped<IRepository<OrderItem>, Repository<OrderItem>>();
         }
     }
 }

@@ -1,12 +1,12 @@
-@model IEnumerable<SmartStore.Models.Category>
+@model IEnumerable<SmartStore.Models.Brand>
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Categories";
-    ViewData["PageTitle"] = "Category Management";
+    ViewData["Title"] = "Brands";
+    ViewData["PageTitle"] = "Brand Management";
 
-    var totalCats    = Model?.Count() ?? 0;
-    var activeCats   = Model?.Count(c => c.Status) ?? 0;
-    var inactiveCats = totalCats - activeCats;
+    var totalBrands    = Model?.Count() ?? 0;
+    var activeBrands   = Model?.Count(c => c.Status) ?? 0;
+    var inactiveBrands = totalBrands - activeBrands;
 }
 
 <link rel="stylesheet" href="~/css/category-admin.css">
@@ -17,24 +17,24 @@
     <div class="breadcrumb-bar">
         <span class="bc-home"><i class='bx bxs-home-alt-2'></i> Home</span>
         <i class='bx bx-chevron-right bc-sep'></i>
-        <span class="bc-current">Categories</span>
+        <span class="bc-current">Brands</span>
         <span class="bc-date"><i class='bx bx-calendar'></i> @DateTime.Now.ToString("dddd, MMMM dd yyyy")</span>
     </div>
 
     <!-- ── KPI Strip ──────────────────────────── -->
     <div class="cat-kpi-strip">
         <div class="cat-kpi-item">
-            <div class="cat-kpi-icon ck-blue"><i class='bx bx-category'></i></div>
+            <div class="cat-kpi-icon ck-blue"><i class='bx bx-purchase-tag'></i></div>
             <div>
-                <div class="cat-kpi-val">@totalCats</div>
-                <div class="cat-kpi-label">Total Categories</div>
+                <div class="cat-kpi-val">@totalBrands</div>
+                <div class="cat-kpi-label">Total Brands</div>
             </div>
         </div>
         <div class="cat-kpi-divider"></div>
         <div class="cat-kpi-item">
             <div class="cat-kpi-icon ck-green"><i class='bx bx-check-circle'></i></div>
             <div>
-                <div class="cat-kpi-val">@activeCats</div>
+                <div class="cat-kpi-val">@activeBrands</div>
                 <div class="cat-kpi-label">Active</div>
             </div>
         </div>
@@ -42,7 +42,7 @@
         <div class="cat-kpi-item">
             <div class="cat-kpi-icon ck-red"><i class='bx bx-x-circle'></i></div>
             <div>
-                <div class="cat-kpi-val">@inactiveCats</div>
+                <div class="cat-kpi-val">@inactiveBrands</div>
                 <div class="cat-kpi-label">Inactive</div>
             </div>
         </div>
@@ -50,7 +50,7 @@
         <div class="cat-kpi-item">
             <div class="cat-kpi-icon ck-purple"><i class='bx bx-trending-up'></i></div>
             <div>
-                <div class="cat-kpi-val">@(totalCats > 0 ? Math.Round((double)activeCats / totalCats * 100, 0) : 0)%</div>
+                <div class="cat-kpi-val">@(totalBrands > 0 ? Math.Round((double)activeBrands / totalBrands * 100, 0) : 0)%</div>
                 <div class="cat-kpi-label">Active Rate</div>
             </div>
         </div>
@@ -64,15 +64,15 @@
             <div class="cat-card-title">
                 <i class='bx bx-list-ul'></i>
                 <div>
-                    <h3>All Categories</h3>
-                    <p>Manage and organise your store categories</p>
+                    <h3>All Brands</h3>
+                    <p>Manage and organise your store brands</p>
                 </div>
             </div>
             <div class="cat-card-actions">
                 <!-- Search -->
                 <div class="cat-search-wrap">
                     <i class='bx bx-search'></i>
-                    <input type="text" id="categorySearch" placeholder="Search by name or description…">
+                    <input type="text" id="brandSearch" placeholder="Search by name or description…">
                     <span class="cat-search-clear" id="clearSearch" title="Clear"><i class='bx bx-x'></i></span>
                 </div>
                 <!-- Filter -->
@@ -85,9 +85,9 @@
                     <i class='bx bx-chevron-down cat-filter-arrow'></i>
                 </div>
                 <!-- Add Button -->
-                <a asp-area="Admin" asp-controller="Category" asp-action="Create" class="cat-add-btn" id="addCategoryBtn">
+                <a asp-area="Admin" asp-controller="Brand" asp-action="Create" class="cat-add-btn" id="addBrandBtn">
                     <i class='bx bx-plus'></i>
-                    <span>Add Category</span>
+                    <span>Add Brand</span>
                 </a>
             </div>
         </div>
@@ -97,18 +97,18 @@
         {
             <!-- Result Counter -->
             <div class="cat-result-bar">
-                <span id="resultCount">Showing <strong>@totalCats</strong> categories</span>
+                <span id="resultCount">Showing <strong>@totalBrands</strong> brands</span>
             </div>
 
             <div class="cat-table-wrap">
-                <table class="cat-table" id="categoryTable">
+                <table class="cat-table" id="brandTable">
                     <thead>
                         <tr>
                             <th class="th-check">
                                 <input type="checkbox" id="selectAll" class="cat-checkbox">
                             </th>
                             <th class="sortable" data-col="1">
-                                Category <i class='bx bx-sort'></i>
+                                Brand <i class='bx bx-sort'></i>
                             </th>
                             <th>Description</th>
                             <th class="sortable" data-col="3">
@@ -120,17 +120,17 @@
                             <th class="th-actions">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="categoryTableBody">
+                    <tbody id="brandTableBody">
                         @{
                             var colors = new[] { "#4F46E5","#10B981","#F59E0B","#EF4444","#8B5CF6","#06B6D4","#EC4899","#14B8A6" };
                             int idx = 0;
                         }
-                        @foreach (var category in Model)
+                        @foreach (var brand in Model)
                         {
                             var color = colors[idx % colors.Length];
-                            var initial = string.IsNullOrEmpty(category.Name) ? "?" : category.Name.Substring(0, 1).ToUpper();
+                            var initial = string.IsNullOrEmpty(brand.Name) ? "?" : brand.Name.Substring(0, 1).ToUpper();
                             idx++;
-                            <tr data-status="@(category.Status ? "active" : "inactive")" class="cat-row">
+                            <tr data-status="@(brand.Status ? "active" : "inactive")" class="cat-row">
                                 <td class="td-check">
                                     <input type="checkbox" class="cat-checkbox row-check">
                                 </td>
@@ -140,17 +140,17 @@
                                             @initial
                                         </div>
                                         <div class="cat-meta">
-                                            <span class="cat-name">@category.Name</span>
+                                            <span class="cat-name">@brand.Name</span>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
                                     <span class="cat-desc">
-                                        @(string.IsNullOrWhiteSpace(category.Description) ? "—" : category.Description)
+                                        @(string.IsNullOrWhiteSpace(brand.Description) ? "—" : brand.Description)
                                     </span>
                                 </td>
                                 <td>
-                                    @if (category.Status)
+                                    @if (brand.Status)
                                     {
                                         <span class="cat-badge badge-active">
                                             <i class='bx bxs-circle'></i> Active
@@ -164,19 +164,19 @@
                                     }
                                 </td>
                                 <td>
-                                    <span class="cat-id">#@category.Id</span>
+                                    <span class="cat-id">#@brand.Id</span>
                                 </td>
                                 <td>
                                     <div class="cat-action-group">
-                                        <a asp-area="Admin" asp-controller="Category" asp-action="Update" asp-route-id="@category.Id"
-                                           class="cat-btn cat-btn-edit" title="Edit category">
+                                        <a asp-area="Admin" asp-controller="Brand" asp-action="Update" asp-route-id="@brand.Id"
+                                           class="cat-btn cat-btn-edit" title="Edit brand">
                                             <i class='bx bx-edit-alt'></i>
                                         </a>
                                         <button type="button"
                                                 class="cat-btn cat-btn-delete"
-                                                title="Delete category"
-                                                data-id="@category.Id"
-                                                data-name="@category.Name"
+                                                title="Delete brand"
+                                                data-id="@brand.Id"
+                                                data-name="@brand.Name"
                                                 onclick="openDeleteModal(this)">
                                             <i class='bx bx-trash'></i>
                                         </button>
@@ -202,12 +202,12 @@
         {
             <div class="cat-empty">
                 <div class="cat-empty-icon">
-                    <i class='bx bx-category'></i>
+                    <i class='bx bx-purchase-tag'></i>
                 </div>
-                <h3>No Categories Yet</h3>
-                <p>Get started by adding your first product category.</p>
+                <h3>No Brands Yet</h3>
+                <p>Get started by adding your first product brand.</p>
                 <a asp-action="Create" class="cat-add-btn">
-                    <i class='bx bx-plus'></i> Create First Category
+                    <i class='bx bx-plus'></i> Create First Brand
                 </a>
             </div>
         }
@@ -220,15 +220,15 @@
         <div class="cat-modal-icon">
             <i class='bx bx-trash'></i>
         </div>
-        <h3 class="cat-modal-title">Delete Category?</h3>
+        <h3 class="cat-modal-title">Delete Brand?</h3>
         <p class="cat-modal-desc">
-            You are about to delete <strong id="deleteCatName">this category</strong>.
+            You are about to delete <strong id="deleteBrandName">this brand</strong>.
             This action cannot be undone.
         </p>
         <div class="cat-modal-actions">
             <button class="cat-modal-cancel" onclick="closeDeleteModal()">Cancel</button>
-            <form id="deleteForm" method="post" asp-area="Admin" asp-controller="Category" asp-action="Delete">
-                 <input type="hidden" name="id" id="deleteCatId" value="" />
+            <form id="deleteForm" method="post" asp-area="Admin" asp-controller="Brand" asp-action="Delete">
+                 <input type="hidden" name="id" id="deleteBrandId" value="" />
                  <button type="submit" class="cat-modal-confirm" style="border:none; cursor:pointer; font-family: inherit; font-size: 1rem;">
                      <i class='bx bx-trash'></i> Delete
                  </button>
@@ -246,8 +246,8 @@
 function openDeleteModal(btn) {
     const id   = btn.dataset.id;
     const name = btn.dataset.name;
-    document.getElementById('deleteCatName').textContent = name;
-    document.getElementById('deleteCatId').value = id;
+    document.getElementById('deleteBrandName').textContent = name;
+    document.getElementById('deleteBrandId').value = id;
     document.getElementById('deleteModal').classList.add('show');
 }
 function closeDeleteModal() {
@@ -258,10 +258,10 @@ document.getElementById('deleteModal')?.addEventListener('click', function(e) {
 });
 
 /* ── Search + Filter ───────────────────────── */
-const searchInput  = document.getElementById('categorySearch');
+const searchInput  = document.getElementById('brandSearch');
 const clearBtn     = document.getElementById('clearSearch');
 const statusFilter = document.getElementById('statusFilter');
-const tableBody    = document.getElementById('categoryTableBody');
+const tableBody    = document.getElementById('brandTableBody');
 const resultCount  = document.getElementById('resultCount');
 
 function filterTable() {
@@ -285,7 +285,7 @@ function filterTable() {
     });
 
     if (resultCount) {
-        resultCount.innerHTML = `Showing <strong>${visible}</strong> categories`;
+        resultCount.innerHTML = `Showing <strong>${visible}</strong> brands`;
     }
 }
 

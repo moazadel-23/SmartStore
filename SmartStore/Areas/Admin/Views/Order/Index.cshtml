@@ -1,0 +1,185 @@
+@model IEnumerable<SmartStore.Models.Order>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Orders";
+    ViewData["PageTitle"] = "Order Management";
+
+    var totalOrders = Model?.Count() ?? 0;
+    var pendingOrders = Model?.Count(o => o.OrderStatus == OrderStatus.Pending) ?? 0;
+    var completedOrders = Model?.Count(o => o.OrderStatus == OrderStatus.Delivered) ?? 0;
+    var totalRevenue = Model?.Where(o => o.OrderStatus == OrderStatus.Delivered).Sum(o => o.TotalAmount) ?? 0;
+}
+
+<link rel="stylesheet" href="~/css/order-admin.css">
+
+<div class="home-content">
+    <div class="breadcrumb-bar">
+        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> Home</span>
+        <i class='bx bx-chevron-right bc-sep'></i>
+        <span class="bc-current">Orders</span>
+        <span class="bc-date"><i class='bx bx-calendar'></i> @DateTime.Now.ToString("dddd, MMMM dd yyyy")</span>
+    </div>
+
+    <!-- KPI Strip -->
+    <div class="ord-kpi-strip">
+        <div class="ord-kpi-item">
+            <div class="ord-kpi-icon ok-blue"><i class='bx bx-shopping-bag'></i></div>
+            <div>
+                <div class="ord-kpi-val">@totalOrders</div>
+                <div class="ord-kpi-label">Total Orders</div>
+            </div>
+        </div>
+        <div class="ord-kpi-divider"></div>
+        <div class="ord-kpi-item">
+            <div class="ord-kpi-icon ok-purple"><i class='bx bx-time'></i></div>
+            <div>
+                <div class="ord-kpi-val">@pendingOrders</div>
+                <div class="ord-kpi-label">Pending</div>
+            </div>
+        </div>
+        <div class="ord-kpi-divider"></div>
+        <div class="ord-kpi-item">
+            <div class="ord-kpi-icon ok-green"><i class='bx bx-check-circle'></i></div>
+            <div>
+                <div class="ord-kpi-val">@completedOrders</div>
+                <div class="ord-kpi-label">Delivered</div>
+            </div>
+        </div>
+        <div class="ord-kpi-divider"></div>
+        <div class="ord-kpi-item">
+            <div class="ord-kpi-icon ok-gold"><i class='bx bx-dollar-circle'></i></div>
+            <div>
+                <div class="ord-kpi-val">$@totalRevenue.ToString("0.00")</div>
+                <div class="ord-kpi-label">Revenue</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="ord-card">
+        <div class="ord-card-header">
+            <div class="ord-card-title">
+                <i class='bx bx-list-ul'></i>
+                <div>
+                    <h3>All Orders</h3>
+                    <p>Manage and track customer orders</p>
+                </div>
+            </div>
+            <div class="ord-card-actions">
+                <div class="ord-search-wrap">
+                    <i class='bx bx-search'></i>
+                    <input type="text" id="orderSearch" placeholder="Search by customer...">
+                    <span class="ord-search-clear" id="clearSearch"><i class='bx bx-x'></i></span>
+                </div>
+            </div>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="ord-table-wrap">
+                <table class="ord-table" id="orderTable">
+                    <thead>
+                        <tr>
+                            <th class="th-id">Order ID</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                            <th class="th-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderTableBody">
+                        @foreach (var order in Model)
+                        {
+                            <tr class="ord-row">
+                                <td>
+                                    <span class="ord-id">#@order.Id</span>
+                                </td>
+                                <td>
+                                    <div class="ord-customer">
+                                        <div class="ord-customer-name">@order.CustomerName</div>
+                                        <div class="ord-customer-email">@order.CustomerEmail</div>
+                                    </div>
+                                </td>
+                                <td>@order.OrderDate.ToString("MMM dd, yyyy")</td>
+                                <td>
+                                    @if(order.OrderStatus == OrderStatus.Delivered){
+                                        <span class="ord-badge badge-delivered"><i class='bx bxs-circle'></i> Delivered</span>
+                                    } else if (order.OrderStatus == OrderStatus.Pending) {
+                                        <span class="ord-badge badge-pending"><i class='bx bxs-circle'></i> Pending</span>
+                                    } else if (order.OrderStatus == OrderStatus.Processing) {
+                                        <span class="ord-badge badge-processing"><i class='bx bxs-circle'></i> Processing</span>
+                                    } else if (order.OrderStatus == OrderStatus.Shipped) {
+                                        <span class="ord-badge badge-shipped"><i class='bx bxs-circle'></i> Shipped</span>
+                                    } else {
+                                        <span class="ord-badge badge-cancelled"><i class='bx bxs-circle'></i> @order.OrderStatus.ToString()</span>
+                                    }
+                                </td>
+                                <td><strong style="color:var(--text-dark)">$@order.TotalAmount.ToString("0.00")</strong></td>
+                                <td>
+                                    <div class="ord-action-group">
+                                        <a asp-area="Admin" asp-controller="Order" asp-action="Details" asp-route-id="@order.Id" class="ord-btn ord-btn-view" title="View Details">
+                                            <i class='bx bx-show'></i>
+                                        </a>
+                                        <button type="button" class="ord-btn ord-btn-delete" title="Delete Order" data-id="@order.Id" onclick="openDeleteModal(this)">
+                                            <i class='bx bx-trash'></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="ord-empty">
+                <div class="ord-empty-icon"><i class='bx bx-shopping-bag'></i></div>
+                <h3>No Orders Found</h3>
+                <p>There are no orders placed yet.</p>
+                <a href="@Url.Action("SeedOrders", "Order", new { area = "Admin" })" class="ord-btn" style="width: auto; padding: 10px 20px; background: var(--primary-color); color: #fff; border-radius: 8px; margin-top: 15px; font-weight: 600;">
+                    <i class='bx bx-plus-circle' style="margin-right: 8px;"></i> Generate Test Orders
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="ord-modal-overlay" id="deleteModal">
+    <div class="ord-modal">
+        <div class="ord-modal-icon"><i class='bx bx-trash'></i></div>
+        <h3 class="ord-modal-title">Delete Order?</h3>
+        <p class="ord-modal-desc">
+            You are about to delete <strong id="deleteOrderName">this order</strong>.
+            This action cannot be undone.
+        </p>
+        <div class="ord-modal-actions">
+            <button class="ord-modal-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <form id="deleteForm" method="post" asp-area="Admin" asp-controller="Order" asp-action="Delete">
+                 <input type="hidden" name="id" id="deleteOrderId" value="" />
+                 <button type="submit" class="ord-modal-confirm" style="border:none; cursor:pointer; font-family: inherit; font-size: 1rem;">
+                     <i class='bx bx-trash'></i> Delete
+                 </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+function openDeleteModal(btn) {
+    const id = btn.dataset.id;
+    document.getElementById('deleteOrderName').textContent = "Order #" + id;
+    document.getElementById('deleteOrderId').value = id;
+    document.getElementById('deleteModal').classList.add('show');
+}
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('show');
+}
+document.getElementById('deleteModal')?.addEventListener('click', function(e) {
+    if (e.target === this) closeDeleteModal();
+});
+</script>
+}

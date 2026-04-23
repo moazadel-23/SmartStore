@@ -1,15 +1,34 @@
-@model IEnumerable<SmartStore.Models.Category>
+@model IEnumerable<SmartStore.Models.Product>
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Categories";
-    ViewData["PageTitle"] = "Category Management";
+    ViewData["Title"] = "Products";
+    ViewData["PageTitle"] = "Product Management";
 
-    var totalCats    = Model?.Count() ?? 0;
-    var activeCats   = Model?.Count(c => c.Status) ?? 0;
-    var inactiveCats = totalCats - activeCats;
+    var totalProducts    = Model?.Count() ?? 0;
+    var activeProducts   = Model?.Count(p => p.Status) ?? 0;
+    var inactiveProducts = totalProducts - activeProducts;
 }
 
 <link rel="stylesheet" href="~/css/category-admin.css">
+
+<style>
+    /* Add any small specific adjustments for product images */
+    .prod-img-wrap {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f3f4f6;
+    }
+    .prod-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
 
 <div class="home-content">
 
@@ -17,24 +36,24 @@
     <div class="breadcrumb-bar">
         <span class="bc-home"><i class='bx bxs-home-alt-2'></i> Home</span>
         <i class='bx bx-chevron-right bc-sep'></i>
-        <span class="bc-current">Categories</span>
+        <span class="bc-current">Products</span>
         <span class="bc-date"><i class='bx bx-calendar'></i> @DateTime.Now.ToString("dddd, MMMM dd yyyy")</span>
     </div>
 
     <!-- ── KPI Strip ──────────────────────────── -->
     <div class="cat-kpi-strip">
         <div class="cat-kpi-item">
-            <div class="cat-kpi-icon ck-blue"><i class='bx bx-category'></i></div>
+            <div class="cat-kpi-icon ck-blue"><i class='bx bx-box'></i></div>
             <div>
-                <div class="cat-kpi-val">@totalCats</div>
-                <div class="cat-kpi-label">Total Categories</div>
+                <div class="cat-kpi-val">@totalProducts</div>
+                <div class="cat-kpi-label">Total Products</div>
             </div>
         </div>
         <div class="cat-kpi-divider"></div>
         <div class="cat-kpi-item">
             <div class="cat-kpi-icon ck-green"><i class='bx bx-check-circle'></i></div>
             <div>
-                <div class="cat-kpi-val">@activeCats</div>
+                <div class="cat-kpi-val">@activeProducts</div>
                 <div class="cat-kpi-label">Active</div>
             </div>
         </div>
@@ -42,7 +61,7 @@
         <div class="cat-kpi-item">
             <div class="cat-kpi-icon ck-red"><i class='bx bx-x-circle'></i></div>
             <div>
-                <div class="cat-kpi-val">@inactiveCats</div>
+                <div class="cat-kpi-val">@inactiveProducts</div>
                 <div class="cat-kpi-label">Inactive</div>
             </div>
         </div>
@@ -50,7 +69,7 @@
         <div class="cat-kpi-item">
             <div class="cat-kpi-icon ck-purple"><i class='bx bx-trending-up'></i></div>
             <div>
-                <div class="cat-kpi-val">@(totalCats > 0 ? Math.Round((double)activeCats / totalCats * 100, 0) : 0)%</div>
+                <div class="cat-kpi-val">@(totalProducts > 0 ? Math.Round((double)activeProducts / totalProducts * 100, 0) : 0)%</div>
                 <div class="cat-kpi-label">Active Rate</div>
             </div>
         </div>
@@ -64,15 +83,15 @@
             <div class="cat-card-title">
                 <i class='bx bx-list-ul'></i>
                 <div>
-                    <h3>All Categories</h3>
-                    <p>Manage and organise your store categories</p>
+                    <h3>All Products</h3>
+                    <p>Manage and organise your store products</p>
                 </div>
             </div>
             <div class="cat-card-actions">
                 <!-- Search -->
                 <div class="cat-search-wrap">
                     <i class='bx bx-search'></i>
-                    <input type="text" id="categorySearch" placeholder="Search by name or description…">
+                    <input type="text" id="productSearch" placeholder="Search products…">
                     <span class="cat-search-clear" id="clearSearch" title="Clear"><i class='bx bx-x'></i></span>
                 </div>
                 <!-- Filter -->
@@ -85,9 +104,9 @@
                     <i class='bx bx-chevron-down cat-filter-arrow'></i>
                 </div>
                 <!-- Add Button -->
-                <a asp-area="Admin" asp-controller="Category" asp-action="Create" class="cat-add-btn" id="addCategoryBtn">
+                <a asp-area="Admin" asp-controller="Product" asp-action="Create" class="cat-add-btn" id="addProductBtn">
                     <i class='bx bx-plus'></i>
-                    <span>Add Category</span>
+                    <span>Add Product</span>
                 </a>
             </div>
         </div>
@@ -97,60 +116,83 @@
         {
             <!-- Result Counter -->
             <div class="cat-result-bar">
-                <span id="resultCount">Showing <strong>@totalCats</strong> categories</span>
+                <span id="resultCount">Showing <strong>@totalProducts</strong> products</span>
             </div>
 
             <div class="cat-table-wrap">
-                <table class="cat-table" id="categoryTable">
+                <table class="cat-table" id="productTable">
                     <thead>
                         <tr>
                             <th class="th-check">
                                 <input type="checkbox" id="selectAll" class="cat-checkbox">
                             </th>
                             <th class="sortable" data-col="1">
-                                Category <i class='bx bx-sort'></i>
+                                Product <i class='bx bx-sort'></i>
                             </th>
-                            <th>Description</th>
+                            <th>Category & Brand</th>
                             <th class="sortable" data-col="3">
-                                Status <i class='bx bx-sort'></i>
+                                Price <i class='bx bx-sort'></i>
                             </th>
-                            <th class="th-id sortable" data-col="0">
-                                ID <i class='bx bx-sort'></i>
+                            <th class="sortable" data-col="4">
+                                Qty <i class='bx bx-sort'></i>
+                            </th>
+                            <th class="sortable" data-col="5">
+                                Status <i class='bx bx-sort'></i>
                             </th>
                             <th class="th-actions">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="categoryTableBody">
+                    <tbody id="productTableBody">
                         @{
                             var colors = new[] { "#4F46E5","#10B981","#F59E0B","#EF4444","#8B5CF6","#06B6D4","#EC4899","#14B8A6" };
                             int idx = 0;
                         }
-                        @foreach (var category in Model)
+                        @foreach (var product in Model)
                         {
                             var color = colors[idx % colors.Length];
-                            var initial = string.IsNullOrEmpty(category.Name) ? "?" : category.Name.Substring(0, 1).ToUpper();
+                            var initial = string.IsNullOrEmpty(product.Name) ? "?" : product.Name.Substring(0, 1).ToUpper();
                             idx++;
-                            <tr data-status="@(category.Status ? "active" : "inactive")" class="cat-row">
+                            <tr data-status="@(product.Status ? "active" : "inactive")" class="cat-row">
                                 <td class="td-check">
                                     <input type="checkbox" class="cat-checkbox row-check">
                                 </td>
                                 <td>
                                     <div class="cat-name-cell">
-                                        <div class="cat-avatar" style="background: @(color)20; color: @color;">
-                                            @initial
-                                        </div>
+                                        @if (!string.IsNullOrEmpty(product.MainImg))
+                                        {
+                                            <div class="prod-img-wrap">
+                                                <img src="~/ProductImg/@product.MainImg" alt="@product.Name" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="display:block;">
+                                                <div class="cat-avatar" style="background: @(color)20; color: @color; display:none;">
+                                                    @initial
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="cat-avatar" style="background: @(color)20; color: @color;">
+                                                @initial
+                                            </div>
+                                        }
                                         <div class="cat-meta">
-                                            <span class="cat-name">@category.Name</span>
+                                            <span class="cat-name">@product.Name</span>
+                                            <small style="color: #6b7280; font-size: 0.8rem;">#@product.Id</small>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="cat-desc">
-                                        @(string.IsNullOrWhiteSpace(category.Description) ? "—" : category.Description)
-                                    </span>
+                                    <div style="display: flex; flex-direction: column;">
+                                        <strong style="color: #374151; font-size: 0.875rem;">@(product.Category?.Name ?? "—")</strong>
+                                        <span style="color: #6b7280; font-size: 0.75rem;">@(product.Brand?.Name ?? "—")</span>
+                                    </div>
                                 </td>
                                 <td>
-                                    @if (category.Status)
+                                    <span class="cat-desc">$@product.Price.ToString("0.00")</span>
+                                </td>
+                                <td>
+                                    <span class="cat-desc">@product.Quantity</span>
+                                </td>
+                                <td>
+                                    @if (product.Status)
                                     {
                                         <span class="cat-badge badge-active">
                                             <i class='bx bxs-circle'></i> Active
@@ -164,19 +206,16 @@
                                     }
                                 </td>
                                 <td>
-                                    <span class="cat-id">#@category.Id</span>
-                                </td>
-                                <td>
                                     <div class="cat-action-group">
-                                        <a asp-area="Admin" asp-controller="Category" asp-action="Update" asp-route-id="@category.Id"
-                                           class="cat-btn cat-btn-edit" title="Edit category">
+                                        <a asp-area="Admin" asp-controller="Product" asp-action="Update" asp-route-id="@product.Id"
+                                           class="cat-btn cat-btn-edit" title="Edit product">
                                             <i class='bx bx-edit-alt'></i>
                                         </a>
                                         <button type="button"
                                                 class="cat-btn cat-btn-delete"
-                                                title="Delete category"
-                                                data-id="@category.Id"
-                                                data-name="@category.Name"
+                                                title="Delete product"
+                                                data-id="@product.Id"
+                                                data-name="@product.Name"
                                                 onclick="openDeleteModal(this)">
                                             <i class='bx bx-trash'></i>
                                         </button>
@@ -202,12 +241,12 @@
         {
             <div class="cat-empty">
                 <div class="cat-empty-icon">
-                    <i class='bx bx-category'></i>
+                    <i class='bx bx-box'></i>
                 </div>
-                <h3>No Categories Yet</h3>
-                <p>Get started by adding your first product category.</p>
+                <h3>No Products Yet</h3>
+                <p>Get started by adding your first product to the store.</p>
                 <a asp-action="Create" class="cat-add-btn">
-                    <i class='bx bx-plus'></i> Create First Category
+                    <i class='bx bx-plus'></i> Create First Product
                 </a>
             </div>
         }
@@ -220,15 +259,15 @@
         <div class="cat-modal-icon">
             <i class='bx bx-trash'></i>
         </div>
-        <h3 class="cat-modal-title">Delete Category?</h3>
+        <h3 class="cat-modal-title">Delete Product?</h3>
         <p class="cat-modal-desc">
-            You are about to delete <strong id="deleteCatName">this category</strong>.
+            You are about to delete <strong id="deleteProductName">this product</strong>.
             This action cannot be undone.
         </p>
         <div class="cat-modal-actions">
             <button class="cat-modal-cancel" onclick="closeDeleteModal()">Cancel</button>
-            <form id="deleteForm" method="post" asp-area="Admin" asp-controller="Category" asp-action="Delete">
-                 <input type="hidden" name="id" id="deleteCatId" value="" />
+            <form id="deleteForm" method="post" asp-area="Admin" asp-controller="Product" asp-action="Delete">
+                 <input type="hidden" name="id" id="deleteProductId" value="" />
                  <button type="submit" class="cat-modal-confirm" style="border:none; cursor:pointer; font-family: inherit; font-size: 1rem;">
                      <i class='bx bx-trash'></i> Delete
                  </button>
@@ -246,8 +285,8 @@
 function openDeleteModal(btn) {
     const id   = btn.dataset.id;
     const name = btn.dataset.name;
-    document.getElementById('deleteCatName').textContent = name;
-    document.getElementById('deleteCatId').value = id;
+    document.getElementById('deleteProductName').textContent = name;
+    document.getElementById('deleteProductId').value = id;
     document.getElementById('deleteModal').classList.add('show');
 }
 function closeDeleteModal() {
@@ -258,10 +297,10 @@ document.getElementById('deleteModal')?.addEventListener('click', function(e) {
 });
 
 /* ── Search + Filter ───────────────────────── */
-const searchInput  = document.getElementById('categorySearch');
+const searchInput  = document.getElementById('productSearch');
 const clearBtn     = document.getElementById('clearSearch');
 const statusFilter = document.getElementById('statusFilter');
-const tableBody    = document.getElementById('categoryTableBody');
+const tableBody    = document.getElementById('productTableBody');
 const resultCount  = document.getElementById('resultCount');
 
 function filterTable() {
@@ -271,9 +310,9 @@ function filterTable() {
 
     tableBody?.querySelectorAll('tr.cat-row').forEach(row => {
         const name     = row.cells[1]?.textContent.toLowerCase() || '';
-        const desc     = row.cells[2]?.textContent.toLowerCase() || '';
+        const catBrand = row.cells[2]?.textContent.toLowerCase() || '';
         const rowStat  = row.dataset.status || '';
-        const matchSearch = name.includes(term) || desc.includes(term);
+        const matchSearch = name.includes(term) || catBrand.includes(term);
         const matchStatus = status === 'all' || rowStat === status;
 
         if (matchSearch && matchStatus) {
@@ -285,7 +324,7 @@ function filterTable() {
     });
 
     if (resultCount) {
-        resultCount.innerHTML = `Showing <strong>${visible}</strong> categories`;
+        resultCount.innerHTML = `Showing <strong>${visible}</strong> products`;
     }
 }
 
@@ -336,8 +375,8 @@ document.querySelectorAll('th.sortable').forEach(th => {
         }
 
         rows.sort((a, b) => {
-            const at = a.cells[col]?.textContent.trim().replace('#','') || '';
-            const bt = b.cells[col]?.textContent.trim().replace('#','') || '';
+            let at = a.cells[col]?.textContent.trim().replace('$', '') || '';
+            let bt = b.cells[col]?.textContent.trim().replace('$', '') || '';
             const an = parseFloat(at); const bn = parseFloat(bt);
             if (!isNaN(an) && !isNaN(bn)) return asc ? an - bn : bn - an;
             return asc ? at.localeCompare(bt) : bt.localeCompare(at);

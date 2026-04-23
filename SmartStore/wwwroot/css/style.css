@@ -612,38 +612,65 @@ table tr:hover {
     grid-template-columns: 1fr;
   }
 }
+
 @media (max-width: 768px) {
   .sidebar {
-    width: 78px;
+    left: -260px; /* Hide completely off-screen by default */
+    width: 260px;
+    z-index: 1000;
+  }
+  .sidebar.mobile-open {
+    left: 0;
   }
   .sidebar.close {
-    width: 0;
-    padding: 0;
+    left: -260px; 
+    width: 260px;
   }
   .home-section {
-    left: 78px;
-    width: calc(100% - 78px);
+    left: 0;
+    width: 100%;
   }
   .sidebar.close ~ .home-section {
     left: 0;
     width: 100%;
   }
+  #mobile-toggle {
+    display: block !important;
+  }
+  /* Show overlay when sidebar is open on mobile */
+  body.mobile-sidebar-open {
+    overflow: hidden;
+  }
+  body.mobile-sidebar-open::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+  }
+  .charts-row, .bottom-row {
+    grid-template-columns: 1fr;
+  }
 }
+
 @media (max-width: 600px) {
   .overview-boxes .box {
     width: 100%;
     margin-bottom: 15px;
   }
   .top-nav {
-    padding: 15px 20px;
+    padding: 15px 15px;
   }
   .home-content {
-    padding: 20px;
+    padding: 15px;
   }
   .top-nav .nav-left h2 {
-    font-size: 18px;
+    font-size: 16px;
   }
   .profile-text {
+    display: none;
+  }
+  .theme-option-text {
     display: none;
   }
 }
