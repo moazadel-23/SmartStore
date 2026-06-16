@@ -8,6 +8,8 @@ namespace SmartStore.DI_Serice
     {
         public static void AddScopedServices(this IServiceCollection services)
         {
+
+
             services.AddScoped<IRepository<Product>, Repository<Product>>();
             services.AddScoped<IRepository<Brand>, Repository<Brand>>();
             services.AddScoped<IRepository<Category>, Repository<Category>>();

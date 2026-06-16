@@ -1,0 +1,526 @@
+@model IEnumerable<SmartStore.Models.Product>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+	<title>Electro - HTML Ecommerce Template</title>
+
+	<!-- Google font -->
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+	<!-- Bootstrap -->
+	<link type="text/css" rel="stylesheet" href="~/css/user-css/bootstrap.min.css" />
+
+	<!-- Slick -->
+	<link type="text/css" rel="stylesheet" href="~/css/user-css/slick.css" />
+	<link type="text/css" rel="stylesheet" href="~/css/user-css/slick-theme.css" />
+
+	<!-- nouislider -->
+	<link type="text/css" rel="stylesheet" href="~/css/user-css/nouislider.min.css" />
+
+	<!-- Font Awesome Icon -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<!-- Custom stlylesheet -->
+	<link type="text/css" rel="stylesheet" href="~/css/user-css/style.css" asp-append-version="true" />
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+</head>
+<body>
+	<!-- HEADER -->
+	<header>
+		<!-- MAIN HEADER -->
+		<div id="header" style="background-color: #FFFFFF; border-bottom: 1px solid #E4E7ED; padding: 20px 0;">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+					
+					<!-- MOBILE MENU TOGGLE & LOGO CONTAINER -->
+					<div class="col-xs-6 col-sm-6 col-md-3" style="display: flex; align-items: center; gap: 15px;">
+						<!-- MENU TOGGLE (Mobile only) -->
+						<div class="menu-toggle visible-xs visible-sm" style="display: inline-block; margin-right: 10px;">
+							<a href="#" style="font-size: 24px; color: #1e1f29; line-height: 1;">
+								<i class="fa fa-bars"></i>
+							</a>
+						</div>
+						
+						<!-- LOGO -->
+						<div class="header-logo">
+							<a href="#" class="logo">
+								<img src="~/img/logo.png" alt="Logo" style="max-height: 35px; filter: brightness(0);">
+							</a>
+						</div>
+					</div>
+
+					<!-- SEARCH BAR (Desktop only) -->
+					<div class="col-md-6 hidden-xs hidden-sm">
+						<div class="header-search">
+							<form style="display: flex; position: relative;">
+								<input class="input" placeholder="Search products..." style="width: 100%; height: 40px; padding: 0 15px 0 20px; border: 1px solid #E4E7ED; border-radius: 40px 0 0 40px; outline: none; border-right: none; font-size: 14px;">
+								<button class="search-btn" style="height: 40px; width: 100px; background: #2563EB; color: #FFF; font-weight: 700; border: none; border-radius: 0 40px 40px 0; transition: 0.2s; font-size: 13px;">Search</button>
+							</form>
+						</div>
+					</div>
+
+					<!-- ACCOUNT & CART -->
+					<div class="col-xs-6 col-sm-6 col-md-3 text-right">
+						<div class="header-ctn" style="display: flex; justify-content: flex-end; align-items: center; gap: 20px;">
+							<!-- Search Icon (Mobile only) -->
+							<div class="visible-xs visible-sm">
+								<a href="#" style="color: #333; font-size: 20px;">
+									<i class="fa fa-search"></i>
+								</a>
+							</div>
+
+							<!-- Wishlist (Desktop only) -->
+							<div class="hidden-xs hidden-sm">
+								<a href="#" style="color: #333; font-size: 18px; text-decoration: none; display: flex; align-items: center; gap: 5px;">
+									<i class="fa fa-heart-o"></i>
+									<span style="font-size: 13px; font-weight: 500;">Wishlist</span>
+								</a>
+							</div>
+
+							<!-- Cart -->
+							<div class="dropdown">
+								<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" style="color: #333; font-size: 18px; position: relative; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 5px;">
+									<i class="fa fa-shopping-cart"></i>
+									<span class="hidden-xs hidden-sm" style="font-size: 13px; font-weight: 500;">Your Cart</span>
+									<div class="qty" style="position: absolute; right: -8px; top: -8px; width: 18px; height: 18px; line-height: 18px; text-align: center; border-radius: 50%; font-size: 9px; color: #FFF; background-color: #2563EB;">1</div>
+								</a>
+								<div class="cart-dropdown" style="right: 0; left: auto; box-shadow: 0px 10px 30px rgba(0,0,0,0.1); border-radius: 8px; padding: 20px; width: 300px;">
+									<div class="cart-list">
+										<div class="product-widget" style="margin-bottom: 15px;">
+											<div class="product-img">
+												<img src="~/img/product01.png" alt="">
+											</div>
+											<div class="product-body">
+												<h3 class="product-name"><a href="#">product name goes here</a></h3>
+												<h4 class="product-price"><span class="qty">1x</span>$980.00</h4>
+											</div>
+											<button class="delete" style="background: none; border: none; color: #8D99AE;"><i class="fa fa-close"></i></button>
+										</div>
+									</div>
+									<div class="cart-summary" style="border-top: 1px solid #E4E7ED; padding-top: 15px; margin-bottom: 15px;">
+										<small style="color: #8D99AE;">1 Item(s) selected</small>
+										<h5 style="font-size: 16px; font-weight: 700; color: #2B2D42; margin-top: 5px;">SUBTOTAL: $980.00</h5>
+									</div>
+									<div class="cart-btns" style="display: flex; gap: 10px;">
+										<a href="#" style="flex: 1; text-align: center; border: 1px solid #E4E7ED; padding: 8px; border-radius: 4px; font-weight: 600; text-decoration: none; color: #333; font-size: 12px; transition: 0.2s;">View Cart</a>
+										<a href="#" style="flex: 1; text-align: center; background: #2563EB; color: #FFF; padding: 8px; border-radius: 4px; font-weight: 600; text-decoration: none; font-size: 12px; transition: 0.2s;">Checkout</a>
+									</div>
+								</div>
+							</div>
+							
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<!-- /MAIN HEADER -->
+	</header>
+	<!-- /HEADER -->
+	<!-- NAVIGATION -->
+	<nav id="navigation" style="background-color: #FFFFFF; border-bottom: 2px solid #E4E7ED; border-top: 1px solid #E4E7ED;">
+		<!-- container -->
+		<div class="container">
+			<!-- responsive-nav -->
+			<div id="responsive-nav">
+				<!-- Sidebar Profile Section -->
+				<div class="sidebar-profile visible-sm visible-xs" style="padding: 30px 20px; background: #0F172A; text-align: center; border-bottom: 1px solid #1E293B;">
+					<div class="profile-img" style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; margin: 0 auto 15px; border: 2px solid #2563EB;">
+						<img src="~/img/user-avatar.png" alt="Profile" onerror="this.src='https://via.placeholder.com/80x80?text=User'" style="width: 100%; height: 100%; object-fit: cover;">
+					</div>
+					<p class="profile-email" style="margin-bottom: 15px; font-weight: 500; color: #FFF;">user@example.com</p>
+					<div class="profile-actions" style="margin-bottom: 20px;">
+						<a href="#" style="color: #D10024; font-size: 24px;"><i class="fa fa-heart"></i></a>
+					</div>
+					<div class="profile-account" style="text-align: left; margin-top: 20px;">
+						<h5 style="margin-bottom: 15px; text-transform: uppercase; color: #8D99AE; font-size: 13px; letter-spacing: 1px;">Account</h5>
+						<a href="#" style="display: block; margin-bottom: 10px; color: #FFF; font-weight: 500; font-size: 16px;"><i class="fa fa-sign-in" style="width: 25px;"></i> Log In</a>
+						<a href="#" style="display: block; color: #FFF; font-weight: 500; font-size: 16px;"><i class="fa fa-user-plus" style="width: 25px;"></i> Register</a>
+					</div>
+				</div>
+				<!-- /Sidebar Profile Section -->
+				<!-- NAV -->
+				<ul class="main-nav nav navbar-nav">
+					<li class="active"><a href="/Customer/Home/Store" style="color: #2563EB; font-weight: 600;">Home</a></li>
+					<li><a href="#">Hot Deals</a></li>
+					<li><a href="#">Categories</a></li>
+					<li><a href="#">Laptops</a></li>
+					<li><a href="#">Smartphones</a></li>
+					<li><a href="#">Cameras</a></li>
+					<li><a href="#">Accessories</a></li>
+				</ul>
+				<!-- /NAV -->
+			</div>
+			<!-- /responsive-nav -->
+		</div>
+		<!-- /container -->
+	</nav>
+	<!-- /NAVIGATION -->
+	<!-- BREADCRUMB -->
+	<div id="breadcrumb" class="section">
+		<!-- container -->
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+				<div class="col-md-12">
+					<ul class="breadcrumb-tree">
+						<li><a href="#">Home</a></li>
+						<li><a href="#">All Categories</a></li>
+						<li><a href="#">Accessories</a></li>
+						<li class="active">Headphones (227,490 Results)</li>
+					</ul>
+				</div>
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /BREADCRUMB -->
+	<!-- SECTION -->
+	<div class="section">
+		<!-- container -->
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+				<!-- ASIDE -->
+				<div id="aside" class="col-md-3">
+					<!-- Mobile Close Button -->
+					<div class="aside-close visible-sm visible-xs" style="position: absolute; right: 15px; top: 15px; font-size: 24px; cursor: pointer; z-index: 10;">
+						<i class="fa fa-times"></i>
+					</div>
+					<div class="row">
+						<div class="col-xs-6 col-md-12">
+							<!-- aside Widget -->
+							<div class="aside">
+								<h3 class="aside-title">Categories</h3>
+								<div class="checkbox-filter">
+
+									@foreach (var category in Model.Select(item => item.Category).DistinctBy(c => c!.Id))
+									{
+										@if (category != null)
+										{
+											<div class="input-checkbox">
+												<input type="checkbox" id="category-@category.Id" name="selectedCategories" value="@category.Id">
+            
+												<label for="category-@category.Id">
+													<span></span>
+													@category.Name
+													<small>(@Model.Count(item => item.CategoryId == category.Id))</small>
+												</label>
+											</div>
+										}
+									}
+								</div>
+							</div>
+							<!-- /aside Widget -->
+						</div>
+
+						<div class="col-xs-6 col-md-12">
+							<!-- aside Widget -->
+							<div class="aside">
+								<h3 class="aside-title">Brand</h3>
+								<div class="checkbox-filter">
+									@foreach (var brand in Model.Select(item => item.Brand).DistinctBy(b => b!.Id))
+									{
+										@if (brand != null)
+										{
+											<div class="input-checkbox">
+												<input type="checkbox" id="brand-@brand.Id" name="selectedBrands" value="@brand.Id">
+            
+												<label for="brand-@brand.Id">
+													<span></span>
+													@brand.Name
+													<small>(@Model.Count(item => item.BrandId == brand.Id))</small>
+												</label>
+											</div>
+										}
+									}
+									
+								</div>
+							</div>
+							<!-- /aside Widget -->
+						</div>
+					</div>
+
+					<!-- aside Widget -->
+					<div class="aside">
+						<h3 class="aside-title">Price</h3>
+						<div class="price-filter">
+							<div id="price-slider"></div>
+							<div class="input-number price-min">
+								<input id="price-min" type="number">
+								<span class="qty-up">+</span>
+								<span class="qty-down">-</span>
+							</div>
+							<span>-</span>
+							<div class="input-number price-max">
+								<input id="price-max" type="number">
+								<span class="qty-up">+</span>
+								<span class="qty-down">-</span>
+							</div>
+						</div>
+					</div>
+					<!-- /aside Widget -->
+
+
+				</div>
+				<!-- /ASIDE -->
+				<!-- STORE -->
+				<div id="store" class="col-md-9">
+					<!-- store top filter -->
+					<div class="store-filter clearfix">
+						<div class="visible-sm visible-xs" style="margin-bottom: 15px;">
+							<button class="primary-btn aside-toggle" style="width: 100%; background-color: #2B2D42;"><i class="fa fa-filter"></i> Filter Menu</button>
+						</div>
+						<div class="store-sort">
+							<label>
+								Sort By:
+								<select class="input-select">
+									<option value="0">Popular</option>
+									<option value="1">Position</option>
+								</select>
+							</label>
+
+							<label>
+								Show:
+								<select class="input-select">
+									<option value="0">20</option>
+									<option value="1">50</option>
+								</select>
+							</label>
+						</div>
+						<ul class="store-grid">
+							<li class="active"><i class="fa fa-th"></i></li>
+							<li><a href="#"><i class="fa fa-th-list"></i></a></li>
+						</ul>
+					</div>
+					<!-- /store top filter -->
+					<!-- store products -->
+					<div class="row">
+						<!-- product -->
+						@foreach(var item in Model)
+							{
+							<div class="col-md-4 col-xs-6">
+								<div class="product">
+									<div class="product-img">
+										<img src="~/img/@item.MainImg" alt="">
+										<div class="product-label">
+											<span class="sale">-@item.Discount%</span>
+    
+											@if ((DateTime.Now - item.CreateAt).TotalDays <= 3)
+											{
+												<span class="new">NEW</span>
+											}
+										</div>
+									</div>
+									<div class="product-body">
+										<p class="product-category">@item.Category!.Name</p>
+										<h3 class="product-name"><a href="#">@item.Name</a></h3>
+										<h4 class="product-price">
+											@( (item.Price - (item.Price * (item.Discount / 100))).ToString("0") )
+											<del class="product-old-price">@item.Price</del>
+										</h4>
+										<div class="product-rating">
+											@for (int i = 1; i <= 5; i++)
+											{
+												if (i <= item.Rate)
+												{
+													<i class="fa fa-star" style="color: #FFD700;"></i>
+												}
+												else
+												{
+													<i class="fa fa-star-o" style="color: #ccc;"></i>
+												}
+											}
+										</div>
+										<div class="product-btns">
+											<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+											<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+											<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+										</div>
+									</div>
+									<div class="add-to-cart">
+										<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+									</div>
+								</div>
+							</div>
+								
+							}
+							<!-- /product -->
+					</div>
+					<!-- /store products -->
+					<!-- store bottom filter -->
+					<div class="store-filter clearfix">
+						<span class="store-qty">Showing 20-100 products</span>
+						<ul class="store-pagination">
+							<li class="active">1</li>
+							<li><a href="#">2</a></li>
+							<li><a href="#">3</a></li>
+							<li><a href="#">4</a></li>
+							<li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+						</ul>
+					</div>
+					<!-- /store bottom filter -->
+				</div>
+				<!-- /STORE -->
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /SECTION -->
+	<!-- NEWSLETTER -->
+	<div id="newsletter" class="section">
+		<!-- container -->
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+				<div class="col-md-12">
+					<div class="newsletter">
+						<p>Sign Up for the <strong>NEWSLETTER</strong></p>
+						<form>
+							<input class="input" type="email" placeholder="Enter Your Email">
+							<button class="newsletter-btn"><i class="fa fa-envelope"></i> Subscribe</button>
+						</form>
+						<ul class="newsletter-follow">
+							<li>
+								<a href="#"><i class="fa fa-facebook"></i></a>
+							</li>
+							<li>
+								<a href="#"><i class="fa fa-twitter"></i></a>
+							</li>
+							<li>
+								<a href="#"><i class="fa fa-instagram"></i></a>
+							</li>
+							<li>
+								<a href="#"><i class="fa fa-pinterest"></i></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+	<!-- /NEWSLETTER -->
+	<!-- FOOTER -->
+	<footer id="footer">
+		<!-- top footer -->
+		<div class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<div class="col-md-3 col-xs-6">
+						<div class="footer">
+							<h3 class="footer-title">About Us</h3>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</p>
+							<ul class="footer-links">
+								<li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
+								<li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
+								<li><a href="#"><i class="fa fa-envelope-o"></i>email@email.com</a></li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="col-md-3 col-xs-6">
+						<div class="footer">
+							<h3 class="footer-title">Categories</h3>
+							<ul class="footer-links">
+								<li><a href="#">Hot deals</a></li>
+								<li><a href="#">Laptops</a></li>
+								<li><a href="#">Smartphones</a></li>
+								<li><a href="#">Cameras</a></li>
+								<li><a href="#">Accessories</a></li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="clearfix visible-xs"></div>
+
+					<div class="col-md-3 col-xs-6">
+						<div class="footer">
+							<h3 class="footer-title">Information</h3>
+							<ul class="footer-links">
+								<li><a href="#">About Us</a></li>
+								<li><a href="#">Contact Us</a></li>
+								<li><a href="#">Privacy Policy</a></li>
+								<li><a href="#">Orders and Returns</a></li>
+								<li><a href="#">Terms & Conditions</a></li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="col-md-3 col-xs-6">
+						<div class="footer">
+							<h3 class="footer-title">Service</h3>
+							<ul class="footer-links">
+								<li><a href="#">My Account</a></li>
+								<li><a href="#">View Cart</a></li>
+								<li><a href="#">Wishlist</a></li>
+								<li><a href="#">Track My Order</a></li>
+								<li><a href="#">Help</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /top footer -->
+		<!-- bottom footer -->
+		<div id="bottom-footer" class="section">
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<div class="col-md-12 text-center">
+						<ul class="footer-payments">
+							<li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
+							<li><a href="#"><i class="fa fa-credit-card"></i></a></li>
+							<li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
+							<li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
+							<li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
+							<li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
+						</ul>
+						<span class="copyright">
+							Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by Moaz
+						</span>
+					</div>
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /bottom footer -->
+	</footer>
+	<!-- /FOOTER -->
+	<!-- jQuery Plugins -->
+	<script src="~/js/user-js/jquery.min.js"></script>
+	<script src="~/js/user-js/bootstrap.min.js"></script>
+	<script src="~/js/user-js/slick.min.js"></script>
+	<script src="~/js/user-js/nouislider.min.js"></script>
+	<script src="~/js/user-js/jquery.zoom.min.js"></script>
+	<script src="~/js/user-js/main.js" asp-append-version="true"></script>
+
+</body>
+</html>
+

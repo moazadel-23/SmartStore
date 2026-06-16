@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@(ViewData["Title"] != null ? ViewData["Title"] + " - SmartStore" : "SmartStore")</title>
+    <meta name="description" content="SmartStore account access">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true">
+</head>
+<body class="auth-body">
+    <div class="auth-root">
+        <div class="auth-container">
+            <div class="brand-logo-container">
+                <a asp-area="Admin" asp-controller="DashBoard" asp-action="Index" class="brand-logo">
+                    <span class="brand-logo-icon">S</span>
+                    <span class="brand-logo-text">SmartStore</span>
+                </a>
+            </div>
+            <main class="auth-form-panel">
+                <section class="auth-form-wrap" aria-label="Account form">
+                    @RenderBody()
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

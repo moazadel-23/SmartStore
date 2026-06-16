@@ -88,6 +88,93 @@ namespace SmartStore.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Update(int id, CancellationToken cancellationToken)
+        {
+            var product = await _productRepository.GetOneAsync(e => e.Id == id, include: [e => e.Category!, e => e.Brand!, e => e.ProductSubImgs!], tracked: true);
+            if (product == null) return NotFound();
+
+            ViewBag.category = await _categoryRepository.GetAsync(cancellationToken: cancellationToken) ?? new List<Category>();
+            ViewBag.brand = await _brandRepository.GetAsync(cancellationToken: cancellationToken) ?? new List<Brand>();
+
+            return View(product);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(
+            Product model,
+            IFormFile? Img,
+            List<IFormFile>? SubImgFiles,
+            List<int>? DeletedSubImgIds,
+            int CategoryId,
+            int BrandId,
+            CancellationToken cancellationToken)
+        {
+            var existingProduct = await _productRepository.GetOneAsync(e => e.Id == model.Id, include: [e => e.ProductSubImgs!], tracked: true);
+            if (existingProduct == null) return NotFound();
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.category = await _categoryRepository.GetAsync(cancellationToken: cancellationToken) ?? new List<Category>();
+                ViewBag.brand = await _brandRepository.GetAsync(cancellationToken: cancellationToken) ?? new List<Brand>();
+                return View(model);
+            }
+
+            existingProduct.Name = model.Name;
+            existingProduct.description = model.description;
+            existingProduct.Price = model.Price;
+            existingProduct.Quantity = model.Quantity;
+            existingProduct.Discount = model.Discount;
+            existingProduct.Rate = model.Rate;
+            existingProduct.Status = model.Status;
+            existingProduct.CategoryId = CategoryId;
+            existingProduct.BrandId = BrandId;
+
+            if (Img != null && Img.Length > 0)
+            {
+                var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\ProductImg");
+                Directory.CreateDirectory(folder);
+                var fileName = Guid.NewGuid() + Path.GetExtension(Img.FileName);
+                var filePath = Path.Combine(folder, fileName);
+                using var stream = System.IO.File.Create(filePath);
+                await Img.CopyToAsync(stream);
+                existingProduct.MainImg = fileName;
+            }
+
+            if (SubImgFiles != null && SubImgFiles.Count > 0)
+            {
+                if (existingProduct.ProductSubImgs == null)
+                    existingProduct.ProductSubImgs = new List<ProductImges>();
+
+                foreach (var file in SubImgFiles)
+                {
+                    var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\ProductSubImges");
+                    Directory.CreateDirectory(folder);
+                    var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+                    var filePath = Path.Combine(folder, fileName);
+                    using var stream = System.IO.File.Create(filePath);
+                    await file.CopyToAsync(stream);
+                    existingProduct.ProductSubImgs.Add(new ProductImges
+                    {
+                        SubImg = fileName
+                    });
+                }
+            }
+
+            if (DeletedSubImgIds != null && DeletedSubImgIds.Count > 0 && existingProduct.ProductSubImgs != null)
+            {
+                var imgsToRemove = existingProduct.ProductSubImgs.Where(img => DeletedSubImgIds.Contains(img.Id)).ToList();
+                foreach (var imgToRemove in imgsToRemove)
+                {
+                    existingProduct.ProductSubImgs.Remove(imgToRemove);
+                }
+            }
+
+            await _productRepository.Commit(cancellationToken);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             var product = await _productRepository.GetOneAsync(e => e.Id == id);

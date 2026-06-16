@@ -1,13 +1,25 @@
 using Microsoft.AspNetCore.Mvc;
+using SmartStore.Models;
+using SmartStore.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace SmartStore.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class DashBoardController : Controller
     {
-        public IActionResult Index()
+        private readonly IRepository<Order> _orderRepository;
+
+        public DashBoardController(IRepository<Order> orderRepository)
         {
-            return View();
+            _orderRepository = orderRepository;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var allOrders = await _orderRepository.GetAsync();
+            var recentOrders = allOrders.OrderByDescending(o => o.OrderDate).Take(5).ToList();
+            return View(recentOrders);
         }
     }
 }

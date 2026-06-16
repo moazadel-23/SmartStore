@@ -270,6 +270,7 @@ body {
   border-radius: 50%;
   margin-right: 15px;
   border: 2px solid var(--sidebar-bg);
+  flex-shrink: 0;
 }
 .sidebar li.profile .name,
 .sidebar li.profile .job {
@@ -347,6 +348,7 @@ body {
   align-items: center;
   justify-content: center;
   transition: 0.3s ease;
+  flex-shrink: 0;
 }
 .top-nav .notification i, .top-nav .mode-switch i {
   font-size: 22px;
@@ -918,6 +920,7 @@ table tr:hover {
   transition: background 0.3s ease, box-shadow 0.2s;
   color: var(--text-muted);
   font-size: 22px;
+  flex-shrink: 0;
 }
 
 .theme-picker-btn:hover {
@@ -1097,6 +1100,7 @@ table tr:hover {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .profile-avatar-btn img {

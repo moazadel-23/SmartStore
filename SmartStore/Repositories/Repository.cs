@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace SmartStore.Repositories
@@ -78,13 +78,12 @@ namespace SmartStore.Repositories
             return (await GetAsync(expression, include, tracked, cancellationToken)).FirstOrDefault();
         }
 
-        public async Task Commit(CancellationToken cancellationToken)
+        public async Task Commit(CancellationToken cancellationToken = default)
         {
             try
             {
                 await _context.SaveChangesAsync(cancellationToken);
             }
-
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);

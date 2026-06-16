@@ -25,8 +25,7 @@ namespace SmartStore.Areas.Admin.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var order = await _orderRepository.GetOneAsync(
-                e => e.Id == id,
-                new Expression<Func<Order, object>>[] { o => o.OrderItems }
+                e => e.Id == id, include:[o => o.OrderItems]
             );
 
             if (order == null) return NotFound();

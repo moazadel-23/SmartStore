@@ -1,4 +1,6 @@
-﻿namespace SmartStore.Models
+﻿using System.Data;
+
+namespace SmartStore.Models
 {
     public class Product
     {
@@ -11,6 +13,7 @@
         public decimal Quantity { get; set; }
         public decimal Discount { get; set; }
         public bool Status { get; set; }
+        public DateTime CreateAt { get; set; } = DateTime.Now;
         public Brand? Brand { get; set; }
         public int BrandId { get; set; }
         public Category? Category { get; set; }
