@@ -1,0 +1,114 @@
+@model StoreViewModel
+
+@{
+    var products = Model.Products;
+    var pagination = Model.Pagination;
+    var filter = Model.Filter;
+    var categories = Model.Categories;
+    var brands = Model.Brands;
+}
+
+<div class="col-md-9" id="productGrid">
+    <!-- Sort Bar -->
+    <div class="sort-bar">
+        <span class="result-count">Showing <strong>@products.Count()</strong> of <strong>@pagination.TotalCount</strong> results</span>
+        <button class="mobile-filter-btn" id="filterToggleBtn"><i class="fa fa-filter"></i> Filters</button>
+        <select id="sortSelect" style="margin-left:auto;">
+            <option value="popular" selected="@(filter.SortBy == "popular")">Most Popular</option>
+            <option value="price-low" selected="@(filter.SortBy == "price-low")">Price: Low to High</option>
+            <option value="price-high" selected="@(filter.SortBy == "price-high")">Price: High to Low</option>
+            <option value="newest" selected="@(filter.SortBy == "newest")">Newest</option>
+            <option value="rating" selected="@(filter.SortBy == "rating")">Highest Rated</option>
+        </select>
+    </div>
+
+    <!-- Active Filter Chips -->
+    @if (filter.CategoryIds.Any() || filter.BrandIds.Any() || filter.MinPrice.HasValue || filter.MaxPrice.HasValue || filter.MinRating.HasValue || filter.InStockOnly == true || !string.IsNullOrWhiteSpace(Model.SearchQuery))
+    {
+        <div class="active-filters">
+            @if (!string.IsNullOrWhiteSpace(Model.SearchQuery))
+            {
+                <span class="filter-chip" data-remove="search">Search: "@Model.SearchQuery" <i class="fa fa-times"></i></span>
+            }
+            @foreach (var cid in filter.CategoryIds)
+            {
+                var cname = categories.FirstOrDefault(c => c.Id == cid)?.Name ?? $"Category {cid}";
+                <span class="filter-chip" data-remove="cat-@cid">@cname <i class="fa fa-times"></i></span>
+            }
+            @foreach (var bid in filter.BrandIds)
+            {
+                var bname = brands.FirstOrDefault(b => b.Id == bid)?.Name ?? $"Brand {bid}";
+                <span class="filter-chip" data-remove="brand-@bid">@bname <i class="fa fa-times"></i></span>
+            }
+            @if (filter.MinPrice.HasValue || filter.MaxPrice.HasValue)
+            {
+                <span class="filter-chip" data-remove="price">$@(filter.MinPrice ?? 0)–$@(filter.MaxPrice ?? 9999) <i class="fa fa-times"></i></span>
+            }
+            @if (filter.MinRating.HasValue)
+            {
+                <span class="filter-chip" data-remove="rating">@filter.MinRating★ & up <i class="fa fa-times"></i></span>
+            }
+            @if (filter.InStockOnly == true)
+            {
+                <span class="filter-chip" data-remove="instock">In Stock <i class="fa fa-times"></i></span>
+            }
+        </div>
+    }
+
+    <!-- Products -->
+    <div class="row">
+        @if (!products.Any())
+        {
+            <div class="col-12 text-center py-5">
+                <i class="fa fa-search" style="font-size:48px;color:#ddd;"></i>
+                <h4 style="margin-top:16px;color:#6B7280;">No products found</h4>
+                <p style="color:#9CA3AF;">Try adjusting your filters or search terms</p>
+            </div>
+        }
+        else
+        {
+            @foreach (var item in products)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                    @await Html.PartialAsync("_ProductCard", item)
+                </div>
+            }
+        }
+    </div>
+
+    <!-- Pagination -->
+    @if (pagination.TotalPages > 1)
+    {
+        <div class="pagination-wrap">
+            @if (pagination.HasPrevious)
+            {
+                <a href="#" data-page="@(pagination.Page - 1)"><i class="fa fa-chevron-left"></i></a>
+            }
+            else
+            {
+                <span class="disabled"><i class="fa fa-chevron-left"></i></span>
+            }
+
+            @for (int p = 1; p <= pagination.TotalPages; p++)
+            {
+                if (p == pagination.Page)
+                {
+                    <span class="active">@p</span>
+                }
+                else
+                {
+                    <a href="#" data-page="@p">@p</a>
+                }
+            }
+
+            @if (pagination.HasNext)
+            {
+                <a href="#" data-page="@(pagination.Page + 1)"><i class="fa fa-chevron-right"></i></a>
+            }
+            else
+            {
+                <span class="disabled"><i class="fa fa-chevron-right"></i></span>
+            }
+        </div>
+    }
+</div>

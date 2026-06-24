@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // ── Sidebar Toggle ──────────────────────────────────────────
     const sidebar   = document.querySelector(".sidebar");
     const closeBtn  = document.querySelector("#btn");
-    const searchBtn = document.querySelector(".bx-search");
 
     if (closeBtn && sidebar) {
         closeBtn.addEventListener("click", () => {
@@ -12,21 +11,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    if (searchBtn && sidebar) {
-        searchBtn.addEventListener("click", () => {
-            sidebar.classList.remove("close");
-            menuBtnChange();
-        });
-    }
-
     function menuBtnChange() {
         if (!closeBtn) return;
         if (sidebar.classList.contains("close")) {
-            closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+            closeBtn.classList.replace("bx-arrow-from-right", "bx-arrow-to-right");
         } else {
-            closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+            closeBtn.classList.replace("bx-arrow-to-right", "bx-arrow-from-right");
         }
     }
+
+    // ── Sidebar Submenus Toggle ──────────────────────────────────
+    const submenuToggles = document.querySelectorAll(".submenu-toggle");
+    submenuToggles.forEach(toggle => {
+        toggle.addEventListener("click", (e) => {
+            const parentLi = toggle.parentElement;
+            parentLi.classList.toggle("showMenu");
+        });
+    });
 
     // ── Mobile Sidebar Toggle ──────────────────────────────────
     const mobileToggle = document.getElementById("mobile-toggle");
@@ -57,6 +58,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const href = link.getAttribute("href") || "";
         if (href !== "#" && currentPath.includes(href.toLowerCase().split("/").pop())) {
             link.classList.add("active");
+            
+            // If inside a submenu, expand parent
+            const parentSubmenu = link.closest(".has-submenu");
+            if (parentSubmenu) {
+                parentSubmenu.classList.add("showMenu");
+            }
         }
     });
 
@@ -91,8 +98,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Initialize: read stored preference or default to "light"
-    const storedTheme = localStorage.getItem("adminTheme") || "light";
+    // Initialize: read stored preference or default to "dark"
+    const storedTheme = localStorage.getItem("adminTheme") || "dark";
     applyTheme(storedTheme);
 
     // Listen for system dark mode changes (relevant when mode === "auto")
@@ -155,9 +162,9 @@ document.addEventListener("DOMContentLoaded", () => {
             50%       { transform: scale(1.25); }
           }
           .top-nav .badge { display: flex; align-items: center; justify-content: center; }
-          .sidebar li a.active { background: var(--primary-color) !important; }
+          .sidebar li a.active { background: rgba(16, 185, 129, 0.12) !important; border-left: none !important; border-radius: 8px !important; padding-left: 12px !important; }
           .sidebar li a.active .links_name,
-          .sidebar li a.active i { color: #fff !important; }
+          .sidebar li a.active i { color: #10b981 !important; }
         `;
         document.head.appendChild(style);
     }
@@ -210,6 +217,43 @@ document.addEventListener("DOMContentLoaded", () => {
                 card.style.opacity = "1";
                 card.style.transform = "translateY(0)";
             }, 50);
+        });
+    });
+
+    // ── Notification Drawer Toggle ──────────────────────────────
+    const notificationBtn = document.getElementById("notificationBtn");
+    const notificationDrawer = document.getElementById("notificationDrawer");
+    const closeNotificationDrawer = document.getElementById("closeNotificationDrawer");
+    const drawerOverlay = document.getElementById("drawerOverlay");
+
+    if (notificationBtn && notificationDrawer && drawerOverlay) {
+        notificationBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            notificationDrawer.classList.add("open");
+            drawerOverlay.classList.add("active");
+        });
+    }
+
+    if (closeNotificationDrawer && notificationDrawer && drawerOverlay) {
+        closeNotificationDrawer.addEventListener("click", () => {
+            notificationDrawer.classList.remove("open");
+            drawerOverlay.classList.remove("active");
+        });
+    }
+
+    if (drawerOverlay && notificationDrawer) {
+        drawerOverlay.addEventListener("click", () => {
+            notificationDrawer.classList.remove("open");
+            drawerOverlay.classList.remove("active");
+        });
+    }
+
+    // ── Notification Tabs click ─────────────────────────────────
+    const ndTabs = document.querySelectorAll(".nd-tab");
+    ndTabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            ndTabs.forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
         });
     });
 

@@ -68,7 +68,7 @@ namespace SmartStore.Areas.Identity.Controllers
                 ModelState.AddModelError(String.Empty, "Invalid email or password");
                 return View(login);
             }
-            return RedirectToAction("Index", "DashBoard", new { area = "Admin" });
+            return RedirectToAction("Index", "Home", new { area = "Customer" });
         }
 
         [HttpGet]

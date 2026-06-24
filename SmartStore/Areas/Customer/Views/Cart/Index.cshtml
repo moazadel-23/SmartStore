@@ -1,0 +1,552 @@
+@model IEnumerable<SmartStore.Models.Cart>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "سلة المشتريات";
+}
+
+<link rel="stylesheet" href="~/css/store.css" asp-append-version="true" />
+
+@{
+    ViewData["HideWishlist"] = false;
+    ViewData["HideSubNav"] = true;
+}
+@await Html.PartialAsync("_BTechHeader")
+
+<style>
+    /* Styling elements for smooth interaction */
+    .cart-item-card {
+        transition: all 0.3s ease;
+    }
+    .cart-item-card.removing {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    .free-shipping-progress {
+        transition: width 0.5s ease-in-out;
+    }
+    /* Hide input number arrows */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+    }
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+
+<div class="bg-gray-50 min-h-screen pb-16 font-cairo" dir="rtl" text-right>
+    <div class="max-w-8xl mx-auto px-4 pt-6">
+        
+        <!-- Breadcrumb -->
+        <nav class="flex text-xs text-gray-500 mb-6 gap-2">
+            <a href="/" class="hover:text-btech-orange transition-colors">الرئيسية</a>
+            <span>/</span>
+            <span class="text-gray-900 font-bold">سلة المشتريات</span>
+        </nav>
+
+        <h1 class="text-2xl sm:text-3xl font-black text-btech-black mb-8 flex items-center gap-3">
+            <i class="fas fa-shopping-cart text-btech-orange"></i>
+            <span>سلة المشتريات</span>
+            <span id="cart-badge-count" class="text-sm bg-btech-orange-light text-btech-orange px-3 py-1 rounded-full font-bold">0 منتج</span>
+        </h1>
+
+        <!-- Main Grid Layout -->
+        <div id="cart-main-layout" class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start hidden">
+            
+            <!-- Right Column: Cart Items -->
+            <div class="lg:col-span-2 space-y-4">
+                
+                <!-- Free Shipping Progress -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-2">
+                    <span id="shipping-progress-text" class="text-sm font-bold text-gray-700"></span>
+                    <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
+                        <div id="shipping-progress-bar" class="bg-btech-orange h-full free-shipping-progress" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Items Container -->
+                <div id="cart-items-list" class="space-y-4">
+                    @if (User.Identity!.IsAuthenticated && Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            var prod = item.Product!;
+                            <div class="cart-item-card bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4" data-product-id="@item.ProductId">
+                                <div class="flex items-center gap-4 w-full sm:w-auto">
+                                    <img src="~/img/@prod.MainImg" alt="@prod.Name" class="w-20 h-20 object-contain rounded-xl border border-gray-100 p-1 bg-white flex-shrink-0" asp-append-version="true" />
+                                    <div class="text-right">
+                                        <span class="text-xs text-gray-400 font-bold">@prod.Brand?.Name</span>
+                                        <h3 class="text-sm font-bold text-btech-black line-clamp-2 mt-0.5 leading-snug">@prod.Name</h3>
+                                        <div class="flex items-center gap-2 mt-1">
+                                            <span class="text-sm font-black text-btech-orange">@prod.Price.ToString("F2") ج.م</span>
+                                            @if (prod.Discount > 0)
+                                            {
+                                                <span class="text-xs text-gray-400 line-through">@((prod.Price + prod.Discount).ToString("F2")) ج.م</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-t-0 pt-3 sm:pt-0">
+                                    <!-- Quantity Control -->
+                                    <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden bg-gray-50 h-9">
+                                        <button type="button" class="px-3 h-full hover:bg-gray-100 text-gray-500 font-bold border-0 bg-transparent transition-colors" onclick="adjustQty(@item.ProductId, -1)">-</button>
+                                        <input type="number" class="w-10 text-center font-bold text-sm bg-transparent border-0 focus:outline-none" value="@item.Count" min="1" max="99" onchange="onQtyInputChange(@item.ProductId, this)" />
+                                        <button type="button" class="px-3 h-full hover:bg-gray-100 text-gray-500 font-bold border-0 bg-transparent transition-colors" onclick="adjustQty(@item.ProductId, 1)">+</button>
+                                    </div>
+
+                                    <!-- Total Price & Remove -->
+                                    <div class="flex items-center gap-4 min-w-[120px] justify-end">
+                                        <span class="item-subtotal font-black text-base text-btech-black text-left" data-price="@prod.Price">@((prod.Price * item.Count).ToString("F2")) ج.م</span>
+                                        <button type="button" class="text-gray-300 hover:text-red-500 transition-colors border-0 bg-transparent cursor-pointer p-1" onclick="deleteItem(@item.ProductId)">
+                                            <i class="fas fa-trash-alt text-base"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+
+                <!-- Clear Cart button -->
+                <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                    <a href="/Customer/Home/Store" class="text-sm font-bold text-btech-orange hover:text-btech-orange-dark transition-colors flex items-center gap-1.5 border-0 bg-transparent">
+                        <i class="fas fa-arrow-right text-xs"></i>
+                        <span>مواصلة التسوق</span>
+                    </a>
+                    <button type="button" class="text-sm font-bold text-gray-400 hover:text-red-500 transition-colors border-0 bg-transparent cursor-pointer flex items-center gap-1.5" onclick="clearCart()">
+                        <i class="fas fa-trash"></i>
+                        <span>تفريغ السلة</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Left Column: Order Summary -->
+            <div class="space-y-4 sticky top-24">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <h2 class="text-lg font-black text-btech-black mb-6 border-b border-gray-100 pb-3">ملخص الطلب</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between text-sm text-gray-500">
+                            <span>المجموع الفرعي</span>
+                            <span id="summary-subtotal" class="font-bold text-btech-black">0.00 ج.م</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-500">
+                            <span>تكلفة الشحن</span>
+                            <span id="summary-shipping" class="font-bold text-btech-black">0.00 ج.م</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-green-600 font-bold border-b border-gray-100 pb-4">
+                            <span>الخصم</span>
+                            <span id="summary-discount">0.00 - ج.م</span>
+                        </div>
+                        
+                        <div class="flex justify-between text-lg font-black text-btech-black pt-2">
+                            <span>الإجمالي الكلي</span>
+                            <span id="summary-total" class="text-btech-orange text-xl">0.00 ج.م</span>
+                        </div>
+                    </div>
+
+                    <!-- Promo code input -->
+                    <div class="mt-6">
+                        <div class="flex gap-2">
+                            <input type="text" id="coupon-code" placeholder="كود الخصم (كوبون)" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:border-btech-orange focus:outline-none" />
+                            <button type="button" class="bg-btech-black text-white hover:bg-gray-800 px-4 rounded-xl text-sm font-bold transition-colors border-0" onclick="applyCoupon()">تطبيق</button>
+                        </div>
+                        <div id="coupon-message" class="text-xs mt-1 text-red-500 hidden"></div>
+                    </div>
+
+                    <a href="/Checkout" class="mt-6 w-full bg-btech-orange hover:bg-btech-orange-dark text-white py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all hover:gap-3 shadow-md shadow-orange-100 hover:shadow-orange-200 border-0">
+                        <span>إتمام عملية الشراء</span>
+                        <i class="fas fa-chevron-left text-sm"></i>
+                    </a>
+                </div>
+
+                <!-- Trust Badge Info -->
+                <div class="bg-white p-4 rounded-2xl border border-gray-100 space-y-3">
+                    <div class="flex items-center gap-3 text-xs text-gray-500">
+                        <i class="fas fa-lock text-btech-orange text-sm"></i>
+                        <span>دفع آمن 100% وحماية كاملة لبياناتك</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-xs text-gray-500 border-t border-gray-50 pt-2">
+                        <i class="fas fa-undo-alt text-btech-orange text-sm"></i>
+                        <span>إرجاع سهل واستبدال خلال 14 يوماً</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Loading View -->
+        <div id="cart-loading-view" class="text-center py-20">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-btech-orange border-t-transparent mb-4"></div>
+            <p class="text-gray-500 font-bold">جاري تحميل السلة...</p>
+        </div>
+
+        <!-- Empty Cart View -->
+        <div id="cart-empty-view" class="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm max-w-2xl mx-auto px-6 hidden">
+            <div class="w-24 h-24 bg-btech-orange-light text-btech-orange rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-shopping-bag text-4xl"></i>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-black text-btech-black mb-2">سلة المشتريات فارغة</h2>
+            <p class="text-gray-500 text-sm max-w-sm mx-auto mb-8">يبدو أنك لم تقم بإضافة أي منتجات إلى سلتك حتى الآن. استعرض عروضنا المميزة وابدأ التسوق!</p>
+            <a href="/Customer/Home/Store" class="bg-btech-orange hover:bg-btech-orange-dark text-white px-8 py-3 rounded-xl font-bold text-sm transition-colors border-0 inline-flex items-center gap-2">
+                <span>تصفح المنتجات الآن</span>
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<footer class="store-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-6">
+                <h5>About Us</h5>
+                <p style="font-size:13px;line-height:1.7;">Your destination for premium electronics at unbeatable prices. Fast shipping, easy returns.</p>
+            </div>
+            <div class="col-md-3 col-6">
+                <h5>Categories</h5>
+                <a href="#">Laptops</a>
+                <a href="#">Smartphones</a>
+                <a href="#">Cameras</a>
+                <a href="#">Accessories</a>
+            </div>
+            <div class="col-md-3 col-6">
+                <h5>Customer Service</h5>
+                <a href="#">Contact Us</a>
+                <a href="#">Shipping & Returns</a>
+                <a href="#">FAQ</a>
+                <a href="#">Warranty</a>
+            </div>
+            <div class="col-md-3 col-6">
+                <h5>My Account</h5>
+                <a href="#">My Orders</a>
+                <a href="/Customer/Wishlist/Index">My Wishlist</a>
+                <a href="/Cart">My Cart</a>
+                <a href="#">Account Settings</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; @DateTime.Now.Year SmartStore. All rights reserved.</span>
+            <span>
+                <i class="fa fa-cc-visa" style="font-size:24px;margin-left:8px;"></i>
+                <i class="fa fa-cc-mastercard" style="font-size:24px;margin-left:8px;"></i>
+                <i class="fa fa-cc-paypal" style="font-size:24px;margin-left:8px;"></i>
+            </span>
+        </div>
+    </div>
+</footer>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    window.isAuthenticated = @(User.Identity?.IsAuthenticated.ToString().ToLower() ?? "false");
+</script>
+<script src="~/js/store.js" asp-append-version="true"></script>
+
+<script>
+    // State management for Cart page
+    const IsAuthenticated = @(User.Identity?.IsAuthenticated.ToString().ToLower() ?? "false");
+    const allProducts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.AllProducts));
+    let cartItemsList = []; // Used for guest storage details
+
+    $(document).ready(function () {
+        initializeCart();
+    });
+
+    async function initializeCart() {
+        if (IsAuthenticated) {
+            // For authenticated user, load items from server-side markup
+            readServerItems();
+            updateSummaryUI();
+            toggleViews(false);
+        } else {
+            // For guest, fetch from sessionStorage
+            const guestCart = JSON.parse(sessionStorage.getItem('store_cart') || '[]');
+            if (guestCart.length === 0) {
+                toggleViews(true);
+            } else {
+                // Map the guest cart items using the embedded allProducts list
+                cartItemsList = [];
+                guestCart.forEach(item => {
+                    const prod = allProducts.find(p => p.Id === item.id);
+                    if (prod) {
+                        cartItemsList.push({
+                            productId: prod.Id,
+                            name: prod.Name,
+                            price: prod.Price,
+                            discount: prod.Discount,
+                            mainImg: prod.MainImg,
+                            count: item.qty,
+                            description: prod.description
+                        });
+                    }
+                });
+                
+                if (cartItemsList.length === 0) {
+                    toggleViews(true);
+                } else {
+                    renderGuestItems();
+                    updateSummaryUI();
+                    toggleViews(false);
+                }
+            }
+        }
+    }
+
+    function toggleViews(isEmpty) {
+        $('#cart-loading-view').addClass('hidden');
+        if (isEmpty) {
+            $('#cart-main-layout').addClass('hidden');
+            $('#cart-empty-view').removeClass('hidden');
+        } else {
+            $('#cart-empty-view').addClass('hidden');
+            $('#cart-main-layout').removeClass('hidden');
+        }
+    }
+
+    function readServerItems() {
+        cartItemsList = [];
+        $('#cart-items-list .cart-item-card').each(function () {
+            const row = $(this);
+            const productId = parseInt(row.data('product-id'));
+            const price = parseFloat(row.find('.item-subtotal').data('price'));
+            const count = parseInt(row.find('input[type=number]').val());
+            cartItemsList.push({
+                productId: productId,
+                price: price,
+                count: count
+            });
+        });
+    }
+
+    function renderGuestItems() {
+        const listContainer = $('#cart-items-list');
+        listContainer.empty();
+
+        cartItemsList.forEach(item => {
+            const discountBadge = item.discount > 0 
+                ? `<span class="text-xs text-gray-400 line-through">${(item.price + item.discount).toFixed(2)} ج.م</span>`
+                : '';
+
+            const itemHtml = `
+                <div class="cart-item-card bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4" data-product-id="${item.productId}">
+                    <div class="flex items-center gap-4 w-full sm:w-auto">
+                        <img src="/img/${item.mainImg}" alt="${item.name}" class="w-20 h-20 object-contain rounded-xl border border-gray-100 p-1 bg-white flex-shrink-0" />
+                        <div class="text-right">
+                            <h3 class="text-sm font-bold text-btech-black line-clamp-2 leading-snug">${item.name}</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-sm font-black text-btech-orange">${item.price.toFixed(2)} ج.م</span>
+                                ${discountBadge}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-t-0 pt-3 sm:pt-0">
+                        <!-- Quantity Control -->
+                        <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden bg-gray-50 h-9">
+                            <button type="button" class="px-3 h-full hover:bg-gray-100 text-gray-500 font-bold border-0 bg-transparent transition-colors" onclick="adjustQty(${item.productId}, -1)">-</button>
+                            <input type="number" class="w-10 text-center font-bold text-sm bg-transparent border-0 focus:outline-none" value="${item.count}" min="1" max="99" onchange="onQtyInputChange(${item.productId}, this)" />
+                            <button type="button" class="px-3 h-full hover:bg-gray-100 text-gray-500 font-bold border-0 bg-transparent transition-colors" onclick="adjustQty(${item.productId}, 1)">+</button>
+                        </div>
+
+                        <!-- Total Price & Remove -->
+                        <div class="flex items-center gap-4 min-w-[120px] justify-end">
+                            <span class="item-subtotal font-black text-base text-btech-black text-left" data-price="${item.price}">${(item.price * item.count).toFixed(2)} ج.م</span>
+                            <button type="button" class="text-gray-300 hover:text-red-500 transition-colors border-0 bg-transparent cursor-pointer p-1" onclick="deleteItem(${item.productId})">
+                                <i class="fas fa-trash-alt text-base"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            listContainer.append(itemHtml);
+        });
+    }
+
+    // Function to calculate and update totals
+    function updateSummaryUI() {
+        let subtotal = 0;
+        let totalQty = 0;
+
+        cartItemsList.forEach(item => {
+            subtotal += item.price * item.count;
+            totalQty += item.count;
+        });
+
+        // Free shipping progress calculation (Free if > 300 EGP)
+        const freeShippingThreshold = 300;
+        let shipping = 0;
+        
+        if (subtotal === 0) {
+            shipping = 0;
+            $('#shipping-progress-text').text('أضف منتجات للبدء');
+            $('#shipping-progress-bar').css('width', '0%');
+        } else if (subtotal >= freeShippingThreshold) {
+            shipping = 0;
+            $('#shipping-progress-text').html('<i class="fas fa-check text-green-500 ml-1"></i> مبروك! لقد حصلت على شحن مجاني');
+            $('#shipping-progress-bar').css('width', '100%');
+        } else {
+            shipping = 50;
+            const remaining = freeShippingThreshold - subtotal;
+            const pct = (subtotal / freeShippingThreshold) * 100;
+            $('#shipping-progress-text').html(`أضف <span class="text-btech-orange font-bold">${remaining.toFixed(2)} ج.م</span> إضافية للحصول على شحن مجاني!`);
+            $('#shipping-progress-bar').css('width', `${pct}%`);
+        }
+
+        const total = subtotal + shipping;
+
+        // Update UI
+        $('#cart-badge-count').text(`${totalQty} ${totalQty === 1 ? 'منتج' : totalQty > 10 ? 'منتج' : 'منتجات'}`);
+        $('#summary-subtotal').text(`${subtotal.toFixed(2)} ج.م`);
+        $('#summary-shipping').text(shipping === 0 ? 'مجاني' : `${shipping.toFixed(2)} ج.م`);
+        $('#summary-total').text(`${total.toFixed(2)} ج.م`);
+        
+        // Update header cart count
+        const headerBadge = document.getElementById('cartCount');
+        if (headerBadge) headerBadge.textContent = totalQty;
+    }
+
+    // Handle AJAX updates for quantity
+    async function adjustQty(productId, delta) {
+        const item = cartItemsList.find(i => i.productId === productId);
+        if (!item) return;
+
+        const newCount = item.count + delta;
+        if (newCount < 1) return;
+
+        item.count = newCount;
+
+        // Update UI immediately for responsiveness
+        const card = $(`.cart-item-card[data-product-id=${productId}]`);
+        card.find('input[type=number]').val(newCount);
+        card.find('.item-subtotal').text(`${(item.price * newCount).toFixed(2)} ج.م`);
+        updateSummaryUI();
+
+        if (IsAuthenticated) {
+            // DB Sync
+            try {
+                const response = await fetch(`/Cart/UpdateQuantity?productId=${productId}&qty=${newCount}`, { method: 'POST' });
+                const result = await response.json();
+                if (!result.success) {
+                    console.error('Failed to update DB quantity:', result.message);
+                }
+            } catch (error) {
+                console.error('Error updating DB quantity:', error);
+            }
+        } else {
+            // Session Sync
+            syncGuestSessionStorage();
+        }
+    }
+
+    function onQtyInputChange(productId, input) {
+        let val = parseInt($(input).val());
+        if (isNaN(val) || val < 1) {
+            val = 1;
+            $(input).val(1);
+        }
+        if (val > 99) {
+            val = 99;
+            $(input).val(99);
+        }
+
+        const item = cartItemsList.find(i => i.productId === productId);
+        if (!item) return;
+
+        item.count = val;
+
+        const card = $(`.cart-item-card[data-product-id=${productId}]`);
+        card.find('.item-subtotal').text(`${(item.price * val).toFixed(2)} ج.m`);
+        updateSummaryUI();
+
+        if (IsAuthenticated) {
+            fetch(`/Cart/UpdateQuantity?productId=${productId}&qty=${val}`, { method: 'POST' })
+                .then(r => r.json())
+                .then(res => {
+                    if (!res.success) console.error(res.message);
+                });
+        } else {
+            syncGuestSessionStorage();
+        }
+    }
+
+    // Handle AJAX Deletion
+    async function deleteItem(productId) {
+        const card = $(`.cart-item-card[data-product-id=${productId}]`);
+        card.addClass('removing');
+
+        // Wait for CSS animation
+        setTimeout(async () => {
+            cartItemsList = cartItemsList.filter(i => i.productId !== productId);
+            card.remove();
+            
+            updateSummaryUI();
+
+            if (cartItemsList.length === 0) {
+                toggleViews(true);
+            }
+
+            if (IsAuthenticated) {
+                try {
+                    await fetch(`/Cart/Remove?productId=${productId}`, { method: 'POST' });
+                } catch (error) {
+                    console.error('Error removing item from DB:', error);
+                }
+            } else {
+                syncGuestSessionStorage();
+            }
+        }, 300);
+    }
+
+    // Clear cart completely
+    async function clearCart() {
+        if (!confirm('هل أنت متأكد من رغبتك في تفريغ سلة المشتريات بالكامل؟')) return;
+
+        if (IsAuthenticated) {
+            // Remove all items in DB
+            for (let item of cartItemsList) {
+                await fetch(`/Cart/Remove?productId=${item.productId}`, { method: 'POST' });
+            }
+        }
+
+        cartItemsList = [];
+        $('#cart-items-list').empty();
+        syncGuestSessionStorage();
+        updateSummaryUI();
+        toggleViews(true);
+    }
+
+    function syncGuestSessionStorage() {
+        const formatData = cartItemsList.map(i => ({ id: i.productId, qty: i.count }));
+        sessionStorage.setItem('store_cart', JSON.stringify(formatData));
+    }
+
+    function applyCoupon() {
+        const code = $('#coupon-code').val().trim();
+        const msg = $('#coupon-message');
+        msg.addClass('hidden');
+
+        if (!code) {
+            msg.text('يرجى إدخال كود كوبون صالح').removeClass('hidden');
+            return;
+        }
+
+        // Simulating simple coupons
+        if (code.toLowerCase() === 'btech10') {
+            msg.text('تم تطبيق كوبون خصم 10% بنجاح!').removeClass('hidden').removeClass('text-red-500').addClass('text-green-600');
+            // We can deduct from the summary total
+            let subtotal = cartItemsList.reduce((sum, i) => sum + (i.price * i.count), 0);
+            let shipping = subtotal >= 300 ? 0 : 50;
+            let discount = subtotal * 0.10;
+            let finalTotal = subtotal + shipping - discount;
+
+            $('#summary-discount').text(`${discount.toFixed(2)} - ج.م`);
+            $('#summary-total').text(`${finalTotal.toFixed(2)} ج.م`);
+        } else {
+            msg.text('كود الخصم غير صالح أو منتهي الصلاحية').removeClass('hidden').removeClass('text-green-600').addClass('text-red-500');
+        }
+    }
+</script>

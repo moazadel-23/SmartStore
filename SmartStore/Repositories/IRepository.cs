@@ -7,8 +7,8 @@ namespace SmartStore.Repositories
         Task AddAsync(T entity, CancellationToken cancellationToken = default);
         void Update(T entity, CancellationToken cancellationToken = default);
         void Delete(T entity, CancellationToken cancellationToken = default);
+        Task<int> CountAsync(CancellationToken cancellationToken = default);
         Task Commit(CancellationToken cancellationToken = default);
-
 
         Task<IEnumerable<T>> GetAsync(
             Expression<Func<T, bool>>? expression = null,
@@ -21,6 +21,5 @@ namespace SmartStore.Repositories
             Expression<Func<T, object>>[]? include = null,
             bool tracked = true,
             CancellationToken cancellationToken = default);
-      
     }
 }

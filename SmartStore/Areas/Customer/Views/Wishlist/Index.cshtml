@@ -1,0 +1,108 @@
+@model List<Product>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "My Wishlist";
+}
+<link rel="stylesheet" href="~/css/store.css" asp-append-version="true" />
+
+@{
+    ViewData["HideWishlist"] = true;
+    ViewData["HideSubNav"] = true;
+}
+@await Html.PartialAsync("_BTechHeader")
+
+<div class="container" style="margin-top:32px;">
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show text-right" role="alert" dir="rtl">
+            <span>@TempData["Message"]</span>
+            <button type="button" class="btn-close float-start" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="section-header">
+        <h2>My Wishlist</h2>
+        <span class="text-muted">@Model.Count item(s)</span>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row">
+            @foreach (var product in Model)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6 col-6 mb-4">
+                    @{
+                        ViewBag.Wishlisted = true;
+                    }
+                    @await Html.PartialAsync("../Home/_ProductCard", product)
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            @if (!string.IsNullOrEmpty(Context.Request.Query["SearchQuery"]))
+            {
+                <i class="fa fa-search" style="font-size:64px;color:#ccc;"></i>
+                <h3 class="mt-3">No products found matching "@Context.Request.Query["SearchQuery"]"</h3>
+                <p class="text-muted">Try checking your spelling or search for another item.</p>
+                <a href="/Customer/Wishlist/Index" class="btn btn-primary mt-2">Clear Search</a>
+            }
+            else
+            {
+                <i class="fa fa-heart-o" style="font-size:64px;color:#ccc;"></i>
+                <h3 class="mt-3">Your wishlist is empty</h3>
+                <p class="text-muted">Start adding products you love!</p>
+                <a href="/Customer/Home/Store" class="btn btn-primary mt-2">Browse Products</a>
+            }
+        </div>
+    }
+</div>
+
+<footer class="store-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-6">
+                <h5>About Us</h5>
+                <p style="font-size:13px;line-height:1.7;">Your destination for premium electronics at unbeatable prices. Fast shipping, easy returns.</p>
+            </div>
+            <div class="col-md-3 col-6">
+                <h5>Categories</h5>
+                <a href="#">Laptops</a>
+                <a href="#">Smartphones</a>
+                <a href="#">Cameras</a>
+                <a href="#">Accessories</a>
+            </div>
+            <div class="col-md-3 col-6">
+                <h5>Customer Service</h5>
+                <a href="#">Contact Us</a>
+                <a href="#">Shipping & Returns</a>
+                <a href="#">FAQ</a>
+                <a href="#">Warranty</a>
+            </div>
+            <div class="col-md-3 col-6">
+                <h5>My Account</h5>
+                <a href="#">My Orders</a>
+                <a href="/Customer/Wishlist/Index">My Wishlist</a>
+                <a href="#">My Cart</a>
+                <a href="#">Account Settings</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; @DateTime.Now.Year SmartStore. All rights reserved.</span>
+            <span>
+                <i class="fa fa-cc-visa" style="font-size:24px;margin-left:8px;"></i>
+                <i class="fa fa-cc-mastercard" style="font-size:24px;margin-left:8px;"></i>
+                <i class="fa fa-cc-paypal" style="font-size:24px;margin-left:8px;"></i>
+            </span>
+        </div>
+    </div>
+</footer>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    window.isAuthenticated = @(User.Identity?.IsAuthenticated.ToString().ToLower() ?? "false");
+</script>
+<script src="~/js/store.js" asp-append-version="true"></script>

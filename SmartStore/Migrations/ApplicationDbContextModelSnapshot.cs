@@ -228,6 +228,85 @@ namespace SmartStore.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("SmartStore.Models.BannerModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AnkerImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AnkerLinkUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AnkerSubtitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AnkerTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HuaweiImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HuaweiLinkUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HuaweiSubtitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HuaweiTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Installment1Duration")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Installment1LinkUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Installment1Subtitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Installment1Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Installment2Duration")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Installment2LinkUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Installment2Subtitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Installment2Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slide1ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slide1LinkUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slide2ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slide2LinkUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slide3ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slide3LinkUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Banners");
+                });
+
             modelBuilder.Entity("SmartStore.Models.Brand", b =>
                 {
                     b.Property<int>("Id")
@@ -252,6 +331,24 @@ namespace SmartStore.Migrations
                     b.ToTable("Brands");
                 });
 
+            modelBuilder.Entity("SmartStore.Models.Cart", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Carts");
+                });
+
             modelBuilder.Entity("SmartStore.Models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -274,6 +371,21 @@ namespace SmartStore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("SmartStore.Models.Favorite", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Favorites");
                 });
 
             modelBuilder.Entity("SmartStore.Models.Order", b =>
@@ -467,6 +579,36 @@ namespace SmartStore.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SmartStore.Models.Cart", b =>
+                {
+                    b.HasOne("SmartStore.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SmartStore.Models.ApplicationUser", "applicationUser")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("applicationUser");
+                });
+
+            modelBuilder.Entity("SmartStore.Models.Favorite", b =>
+                {
+                    b.HasOne("SmartStore.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("SmartStore.Models.OrderItem", b =>

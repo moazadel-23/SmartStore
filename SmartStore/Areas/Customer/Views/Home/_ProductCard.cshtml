@@ -1,0 +1,81 @@
+@model Product
+@{
+    var discountedPrice = Model.Price - (Model.Price * Model.Discount / 100);
+    var secondaryImg = Model.ProductSubImgs?.FirstOrDefault()?.SubImg;
+    var hasSecondImg = !string.IsNullOrEmpty(secondaryImg);
+    var isNew = (DateTime.Now - Model.CreateAt).TotalDays <= 14;
+    var isSoldOut = Model.Quantity <= 0;
+    var isWishlisted = ViewBag.Wishlisted == true || 
+                       (ViewBag.WishlistProducts as List<Product>)?.Any(p => p.Id == Model.Id) == true;
+}
+<div class="product-card @(hasSecondImg ? "has-second-img" : "")"
+     data-id="@Model.Id"
+     data-name="@Model.Name"
+     data-price="@discountedPrice"
+     data-original="@Model.Price"
+     data-image="@Model.MainImg"
+     data-rating="@Model.Rate"
+     data-discount="@Model.Discount"
+     data-url="/Customer/Home/Product/@Model.Id">
+    <a href="/Customer/Home/Product/@Model.Id" style="text-decoration:none;color:inherit;">
+        <div class="card-img">
+            <img class="img-primary" src="~/img/@Model.MainImg" alt="@Model.Name" loading="lazy" onerror="this.src='https://via.placeholder.com/400x400?text=No+Image'">
+            @if (hasSecondImg)
+            {
+                <img class="img-secondary" src="~/ProductSubImges/@secondaryImg" alt="@Model.Name" loading="lazy" onerror="this.style.display='none'">
+            }
+            <div class="card-badges">
+                @if (Model.Discount > 0)
+                {
+                    <span class="badge-sale">-@(Model.Discount)%</span>
+                }
+                @if (isNew)
+                {
+                    <span class="badge-new">New</span>
+                }
+                @if (isSoldOut)
+                {
+                    <span class="badge-soldout">Sold Out</span>
+                }
+            </div>
+        </div>
+    </a>
+    <button class="card-wishlist @(isWishlisted ? "active" : "")" data-product-id="@Model.Id" title="Add to Wishlist">
+        <i class="fa @(isWishlisted ? "fa-heart" : "fa-heart-o")"></i>
+    </button>
+    <div class="card-body">
+        <h3 class="card-title"><a href="/Customer/Home/Product/@Model.Id">@Model.Name</a></h3>
+        <div class="card-rating">
+            <span class="stars">
+                @for (int s = 1; s <= 5; s++)
+                {
+                    if (s <= Model.Rate)
+                    {
+                        <text>★</text>
+                    }
+                    else
+                    {
+                        <span class="empty">★</span>
+                    }
+                }
+            </span>
+            <span class="rating-count">(@Model.Rate.ToString("0.0"))</span>
+        </div>
+        <div class="card-price-action">
+            <div class="card-price">
+                @if (Model.Discount > 0)
+                {
+                    <span class="current">$@discountedPrice.ToString("N0")</span>
+                    <span class="original">$@Model.Price.ToString("N0")</span>
+                }
+                else
+                {
+                    <span class="current">$@Model.Price.ToString("N0")</span>
+                }
+            </div>
+            <button class="card-add" data-product-id="@Model.Id" @(isSoldOut ? "disabled" : "") title="@(isSoldOut ? "Sold Out" : "Add to Cart")">
+                <i class="fa fa-shopping-cart"></i>
+            </button>
+        </div>
+    </div>
+</div>

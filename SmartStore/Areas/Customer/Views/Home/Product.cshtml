@@ -1,0 +1,380 @@
+@model SmartStore.ViewModel.Store.ProductDetailViewModel
+@{
+    Layout = null;
+    var p = Model.Product;
+    var discountedPrice = p.Price - (p.Price * p.Discount / 100);
+    var mainImg = p.MainImg;
+    var subImgs = p.ProductSubImgs?.ToList() ?? new();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@p.Name - SmartStore</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="~/css/user-css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/user-css/slick.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/user-css/slick-theme.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/user-css/nouislider.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="~/css/user-css/style.css" />
+    <link rel="stylesheet" href="~/css/store.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- ─── Top Bar ─── -->
+    <div class="store-topbar">
+        <div class="container d-flex align-items-center">
+            <div class="topbar-links">
+                <a href="tel:+021-95-51-84"><i class="fa fa-phone"></i> +021-95-51-84</a>
+                <a href="mailto:support@smartstore.com"><i class="fa fa-envelope-o"></i> support@smartstore.com</a>
+            </div>
+            <div class="topbar-right">
+                <a href="#">Track Order</a>
+                <a href="#">Help</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── Nav ─── -->
+    <nav class="store-nav">
+        <div class="container nav-inner">
+            <a href="/Customer/Home/Index" class="nav-logo">Smart<span>Store</span></a>
+            <div class="nav-search">
+                <form id="searchForm" method="get" action="/Customer/Home/Store">
+                    <input type="text" id="searchInput" name="SearchQuery" placeholder="Search products..." autocomplete="off">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+                <div class="search-suggestions" id="searchSuggestions"></div>
+            </div>
+            <div class="nav-actions">
+                <a href="/Customer/Home/Index#wishlistSection" title="Wishlist" id="wishlistIcon">
+                    <i class="fa fa-heart-o"></i>
+                    <span class="badge" id="wishlistCount">0</span>
+                </a>
+                <a href="#" title="Cart" id="cartIcon">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span class="badge" id="cartCount">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- BREADCRUMB -->
+    <div id="breadcrumb" class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="breadcrumb-tree">
+                        <li><a href="/Customer/Home/Store">Home</a></li>
+                        <li><a href="/Customer/Home/Store">All Categories</a></li>
+                        @if (p.Category != null)
+                        {
+                            <li><a href="/Customer/Home/Store?Filter.CategoryIds=@p.CategoryId">@p.Category.Name</a></li>
+                        }
+                        @if (p.Brand != null)
+                        {
+                            <li><a href="/Customer/Home/Store?Filter.BrandIds=@p.BrandId">@p.Brand.Name</a></li>
+                        }
+                        <li class="active">@p.Name</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /BREADCRUMB -->
+
+    <!-- SECTION -->
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <!-- Product main img -->
+                <div class="col-md-5 col-md-push-2">
+                    <div id="product-main-img">
+                        <div class="product-preview">
+                            <img src="~/img/@mainImg" alt="@p.Name">
+                        </div>
+                        @foreach (var sub in subImgs)
+                        {
+                            <div class="product-preview">
+                                <img src="~/ProductSubImges/@sub.SubImg" alt="@p.Name">
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Product thumb imgs -->
+                <div class="col-md-2 col-md-pull-5">
+                    <div id="product-imgs">
+                        <div class="product-preview">
+                            <img src="~/img/@mainImg" alt="@p.Name">
+                        </div>
+                        @foreach (var sub in subImgs)
+                        {
+                            <div class="product-preview">
+                                <img src="~/ProductSubImges/@sub.SubImg" alt="@p.Name">
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Product details -->
+                <div class="col-md-5">
+                    <div class="product-details">
+                        <h2 class="product-name">@p.Name</h2>
+                        <div>
+                            <div class="product-rating">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= p.Rate)
+                                    {
+                                        <i class="fa fa-star"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-star-o"></i>
+                                    }
+                                }
+                            </div>
+                            <a class="review-link" href="#">@p.Rate.ToString("0.0") Review(s) | Add your review</a>
+                        </div>
+                        <div>
+                            @if (p.Discount > 0)
+                            {
+                                <h3 class="product-price">$@discountedPrice.ToString("N2") <del class="product-old-price">$@p.Price.ToString("N2")</del></h3>
+                            }
+                            else
+                            {
+                                <h3 class="product-price">$@p.Price.ToString("N2")</h3>
+                            }
+                            @if (p.Quantity > 0)
+                            {
+                                <span class="product-available">In Stock</span>
+                            }
+                            else
+                            {
+                                <span class="product-available" style="color:#D10024;">Out of Stock</span>
+                            }
+                        </div>
+                        <p>@p.description</p>
+
+                        <div class="product-options">
+                            <label>
+                                Size
+                                <select class="input-select">
+                                    <option value="0">X</option>
+                                </select>
+                            </label>
+                            <label>
+                                Color
+                                <select class="input-select">
+                                    <option value="0">Red</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="add-to-cart">
+                            <div class="qty-label">
+                                Qty
+                                <div class="input-number">
+                                    <input type="number" value="1" min="1" max="@((int)Math.Max(1, p.Quantity))">
+                                    <span class="qty-up">+</span>
+                                    <span class="qty-down">-</span>
+                                </div>
+                            </div>
+                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+                        </div>
+
+                        <ul class="product-btns">
+                            <li><a href="#"><i class="fa fa-heart-o"></i> add to wishlist</a></li>
+                            <li><a href="#"><i class="fa fa-exchange"></i> add to compare</a></li>
+                        </ul>
+
+                        <ul class="product-links">
+                            <li>Category:</li>
+                            @if (p.Category != null)
+                            {
+                                <li><a href="/Customer/Home/Store?Filter.CategoryIds=@p.CategoryId">@p.Category.Name</a></li>
+                            }
+                        </ul>
+
+                        <ul class="product-links">
+                            <li>Share:</li>
+                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                            <li><a href="#"><i class="fa fa-envelope"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Product tab -->
+                <div class="col-md-12">
+                    <div id="product-tab">
+                        <ul class="tab-nav">
+                            <li class="active"><a data-toggle="tab" href="#tab1">Description</a></li>
+                            <li><a data-toggle="tab" href="#tab2">Details</a></li>
+                            <li><a data-toggle="tab" href="#tab3">Reviews (0)</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab1" class="tab-pane fade in active">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>@p.description</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab2" class="tab-pane fade in">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p><strong>Brand:</strong> @(p.Brand?.Name ?? "N/A")</p>
+                                        <p><strong>Category:</strong> @(p.Category?.Name ?? "N/A")</p>
+                                        <p><strong>Price:</strong> $@p.Price.ToString("N2")</p>
+                                        <p><strong>Discount:</strong> @(p.Discount)%</p>
+                                        <p><strong>Stock:</strong> @((int)p.Quantity) units</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab3" class="tab-pane fade in">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>No reviews yet. Be the first to review this product!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section: Related Products -->
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="section-title text-center">
+                        <h3 class="title">Related Products</h3>
+                    </div>
+                </div>
+                @foreach (var item in Model.RelatedProducts)
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6 col-6 mb-4">
+                        @await Html.PartialAsync("_ProductCard", item)
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div id="newsletter" class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="newsletter">
+                        <p>Sign Up for the <strong>NEWSLETTER</strong></p>
+                        <form>
+                            <input class="input" type="email" placeholder="Enter Your Email">
+                            <button class="newsletter-btn"><i class="fa fa-envelope"></i> Subscribe</button>
+                        </form>
+                        <ul class="newsletter-follow">
+                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                            <li><a href="#"><i class="fa fa-pinterest"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        <div class="section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 col-xs-6">
+                        <div class="footer">
+                            <h3 class="footer-title">About Us</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</p>
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
+                                <li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
+                                <li><a href="#"><i class="fa fa-envelope-o"></i>email@email.com</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-xs-6">
+                        <div class="footer">
+                            <h3 class="footer-title">Categories</h3>
+                            <ul class="footer-links">
+                                <li><a href="#">Hot deals</a></li>
+                                <li><a href="#">Laptops</a></li>
+                                <li><a href="#">Smartphones</a></li>
+                                <li><a href="#">Cameras</a></li>
+                                <li><a href="#">Accessories</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="clearfix visible-xs"></div>
+                    <div class="col-md-3 col-xs-6">
+                        <div class="footer">
+                            <h3 class="footer-title">Information</h3>
+                            <ul class="footer-links">
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">Contact Us</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Orders and Returns</a></li>
+                                <li><a href="#">Terms & Conditions</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-xs-6">
+                        <div class="footer">
+                            <h3 class="footer-title">Service</h3>
+                            <ul class="footer-links">
+                                <li><a href="#">My Account</a></li>
+                                <li><a href="#">View Cart</a></li>
+                                <li><a href="#">Wishlist</a></li>
+                                <li><a href="#">Track My Order</a></li>
+                                <li><a href="#">Help</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="bottom-footer" class="section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <ul class="footer-payments">
+                            <li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
+                            <li><a href="#"><i class="fa fa-credit-card"></i></a></li>
+                            <li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
+                            <li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
+                            <li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
+                            <li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
+                        </ul>
+                        <span class="copyright">
+                            Copyright &copy; @DateTime.Now.Year All rights reserved | SmartStore
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/js/user-js/jquery.min.js"></script>
+    <script src="~/js/user-js/bootstrap.min.js"></script>
+    <script src="~/js/user-js/slick.min.js"></script>
+    <script src="~/js/user-js/nouislider.min.js"></script>
+    <script src="~/js/user-js/jquery.zoom.min.js"></script>
+    <script src="~/js/user-js/main.js"></script>
+</body>
+</html>

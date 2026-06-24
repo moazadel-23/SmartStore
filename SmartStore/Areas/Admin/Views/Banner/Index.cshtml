@@ -1,0 +1,485 @@
+@model SmartStore.Models.BannerModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "تعديل البانرات";
+    ViewData["PageTitle"] = "إدارة البانرات";
+}
+<!-- Custom Styles for Form Fields and Tabs -->
+<style>
+    .form-field { margin-bottom: 20px; }
+    .field-label { display: block; font-size: 13px; font-weight: 700; color: var(--text-dark, #1f2937); margin-bottom: 6px; }
+    
+    .create-layout { display: grid; grid-template-columns: 1fr 320px; gap: 24px; margin-top: 24px; }
+    @@media (max-width: 992px) {
+        .create-layout { grid-template-columns: 1fr; }
+    }
+    
+    .create-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 24px; }
+    .create-card-header { padding: 14px 20px; border-bottom: 1px solid #e5e7eb; background: #f9fafb; display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: var(--text-dark, #111827); }
+    .create-card-header i { font-size: 18px; color: #ff6a00; }
+    .create-card-body { padding: 20px; }
+    
+    .publish-actions { display: flex; flex-direction: column; gap: 10px; }
+    .pub-submit-btn { width: 100%; height: 42px; background: #ff6a00; color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: background 0.2s; }
+    .pub-submit-btn:hover { background: #e05d00; }
+    .pub-cancel-btn { width: 100%; height: 42px; background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; border-radius: 8px; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; transition: background 0.2s; }
+    .pub-cancel-btn:hover { background: #e5e7eb; }
+    
+    .form-input-custom {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 13px;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        direction: ltr;
+        text-align: left;
+    }
+    .form-input-custom:focus {
+        border-color: #ff6a00;
+        box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.1);
+    }
+    
+    /* Toast / Success Message styling */
+    .success-alert { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; color: #065f46; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+    .success-alert i { font-size: 18px; }
+
+    /* RTL Layout Helpers */
+    .home-content { direction: rtl; text-align: right; padding: 20px; }
+    .breadcrumb-bar { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #6b7280; margin-bottom: 20px; }
+    .bc-sep { transform: rotate(180deg); }
+    .bc-current { font-weight: 700; color: var(--text-dark, #111827); }
+    .bc-date { margin-right: auto; display: flex; align-items: center; gap: 4px; }
+    
+    .create-page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .create-page-title { display: flex; align-items: center; gap: 12px; }
+    .create-icon-wrap { width: 48px; height: 48px; border-radius: 12px; background: #fff0e6; color: #ff6a00; display: flex; align-items: center; justify-content: center; font-size: 24px; border: 1px solid #ffe0cc; }
+    .create-page-title h2 { font-size: 20px; font-weight: 800; color: var(--text-dark, #111827); margin: 0; }
+    .create-page-title p { font-size: 13px; color: #6b7280; margin: 2px 0 0 0; }
+
+    /* Premium Custom Uploader */
+    .uploader-card {
+        position: relative;
+        border: 2px dashed #d1d5db;
+        border-radius: 12px;
+        padding: 24px;
+        text-align: center;
+        background: #fafafa;
+        transition: border-color 0.2s, background-color 0.2s, transform 0.2s;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+    .uploader-card:hover {
+        border-color: #ff6a00;
+        background-color: #fffaf5;
+        transform: translateY(-2px);
+    }
+    .uploader-file-input {
+        display: none;
+    }
+    .uploader-preview-wrap {
+        width: 100%;
+        height: 240px;
+        background: #f3f4f6;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .uploader-preview-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .uploader-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #ff6a00;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 13px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s, transform 0.1s;
+        box-shadow: 0 4px 6px -1px rgba(255, 106, 0, 0.2), 0 2px 4px -1px rgba(255, 106, 0, 0.1);
+    }
+    .uploader-btn:hover {
+        background: #e05d00;
+        transform: translateY(-1px);
+    }
+    .uploader-btn:active {
+        transform: translateY(1px);
+    }
+    .uploader-hint {
+        font-size: 11px;
+        color: #9ca3af;
+        margin: 0;
+    }
+    
+    /* Tabs Navigation */
+    .tabs-nav { display: flex; gap: 10px; border-bottom: 2px solid #e5e7eb; margin-bottom: 24px; padding-bottom: 2px; }
+    .tab-btn { background: none; border: none; padding: 12px 20px; font-weight: 700; font-size: 14px; color: #6b7280; cursor: pointer; position: relative; transition: color 0.2s; outline: none; }
+    .tab-btn.active { color: #ff6a00; }
+    .tab-btn.active::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 3px; background: #ff6a00; border-radius: 3px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+</style>
+
+<div class="home-content">
+
+    <!-- ── Breadcrumb ─────────────────────────── -->
+    <div class="breadcrumb-bar">
+        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> الرئيسية</span>
+        <i class='bx bx-chevron-right bc-sep'></i>
+        <span class="bc-current">إدارة البوسترات والبنرات</span>
+        <span class="bc-date"><i class='bx bx-calendar'></i> @DateTime.Now.ToString("dddd, MMMM dd yyyy")</span>
+    </div>
+
+    <!-- ── Page Title ─────────────────────────── -->
+    <div class="create-page-header">
+        <div class="create-page-title">
+            <div class="create-icon-wrap">
+                <i class='bx bx-image'></i>
+            </div>
+            <div>
+                <h2>إدارة البوسترات والإعلانات</h2>
+                <p>قم بتحديث وتغيير محتوى وتصميم كافة الإعلانات والبنرات المعروضة في الصفحة الرئيسية</p>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="success-alert animate-fade-in">
+            <i class='bx bx-check-circle'></i>
+            <span>@TempData["SuccessMessage"]</span>
+        </div>
+    }
+
+    <!-- Tabs Nav -->
+    <div class="tabs-nav">
+        <button type="button" class="tab-btn active" onclick="switchTab('slider-tab', this)">البانرات الدوارة الرئيسية (السلايدر)</button>
+        <button type="button" class="tab-btn" onclick="switchTab('offers-tab', this)">عروض مهرجان هواوي وأنكر</button>
+        <button type="button" class="tab-btn" onclick="switchTab('installments-tab', this)">بنرات تقسيط الكاش</button>
+    </div>
+
+    <!-- ── Form ───────────────────────────────── -->
+    <form asp-action="Index" asp-controller="Banner" asp-area="Admin" method="post" id="bannersForm" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+
+        <div class="create-layout">
+
+            <!-- LEFT: Banners Details ────────────────────── -->
+            <div class="create-main">
+
+                <!-- TAB 1: SLIDER BANNERS -->
+                <div id="slider-tab" class="tab-content active">
+                    <!-- 1. SLIDE 1 -->
+                    <div class="create-card">
+                        <div class="create-card-header">
+                            <i class='bx bx-image'></i>
+                            <span>البانر الأول (Slide 1)</span>
+                        </div>
+                        <div class="create-card-body">
+                            <input type="hidden" asp-for="Slide1ImageUrl" id="slide1ImgInp" />
+                            
+                            <div class="uploader-card" onclick="document.getElementById('slide1FileInp').click()">
+                                <div class="uploader-preview-wrap">
+                                    <img src="@Model.Slide1ImageUrl" id="prevSlide1Img" alt="Slide 1 Preview" class="uploader-preview-img" />
+                                </div>
+                                <input type="file" name="Slide1ImgFile" accept="image/*" class="uploader-file-input" id="slide1FileInp" />
+                                <button type="button" class="uploader-btn">
+                                    <i class='bx bx-cloud-upload'></i>
+                                    <span>رفع صورة جديدة</span>
+                                </button>
+                                <p class="uploader-hint">صيغ الصور المدعومة: PNG, JPG, JPEG, WebP. الحجم الأقصى: 5 ميجابايت.</p>
+                            </div>
+                            <div class="form-field" style="margin-top: 16px; margin-bottom: 0;">
+                                <label class="field-label" asp-for="Slide1LinkUrl">رابط التوجيه لزر "تسوق الآن"</label>
+                                <input type="text" asp-for="Slide1LinkUrl" class="form-input-custom" placeholder="مثال: /Customer/Home/Store" />
+                                <span asp-validation-for="Slide1LinkUrl" class="text-danger" style="font-size: 11px; margin-top: 4px; display: block;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. SLIDE 2 -->
+                    <div class="create-card">
+                        <div class="create-card-header">
+                            <i class='bx bx-image'></i>
+                            <span>البانر الثاني (Slide 2)</span>
+                        </div>
+                        <div class="create-card-body">
+                            <input type="hidden" asp-for="Slide2ImageUrl" id="slide2ImgInp" />
+                            
+                            <div class="uploader-card" onclick="document.getElementById('slide2FileInp').click()">
+                                <div class="uploader-preview-wrap">
+                                    <img src="@Model.Slide2ImageUrl" id="prevSlide2Img" alt="Slide 2 Preview" class="uploader-preview-img" />
+                                </div>
+                                <input type="file" name="Slide2ImgFile" accept="image/*" class="uploader-file-input" id="slide2FileInp" />
+                                <button type="button" class="uploader-btn">
+                                    <i class='bx bx-cloud-upload'></i>
+                                    <span>رفع صورة جديدة</span>
+                                </button>
+                                <p class="uploader-hint">صيغ الصور المدعومة: PNG, JPG, JPEG, WebP. الحجم الأقصى: 5 ميجابايت.</p>
+                            </div>
+                            <div class="form-field" style="margin-top: 16px; margin-bottom: 0;">
+                                <label class="field-label" asp-for="Slide2LinkUrl">رابط التوجيه لزر "تسوق الآن"</label>
+                                <input type="text" asp-for="Slide2LinkUrl" class="form-input-custom" placeholder="مثال: /Customer/Home/Store" />
+                                <span asp-validation-for="Slide2LinkUrl" class="text-danger" style="font-size: 11px; margin-top: 4px; display: block;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. SLIDE 3 -->
+                    <div class="create-card">
+                        <div class="create-card-header">
+                            <i class='bx bx-image'></i>
+                            <span>البانر الثالث (Slide 3)</span>
+                        </div>
+                        <div class="create-card-body">
+                            <input type="hidden" asp-for="Slide3ImageUrl" id="slide3ImgInp" />
+                            
+                            <div class="uploader-card" onclick="document.getElementById('slide3FileInp').click()">
+                                <div class="uploader-preview-wrap">
+                                    <img src="@Model.Slide3ImageUrl" id="prevSlide3Img" alt="Slide 3 Preview" class="uploader-preview-img" />
+                                </div>
+                                <input type="file" name="Slide3ImgFile" accept="image/*" class="uploader-file-input" id="slide3FileInp" />
+                                <button type="button" class="uploader-btn">
+                                    <i class='bx bx-cloud-upload'></i>
+                                    <span>رفع صورة جديدة</span>
+                                </button>
+                                <p class="uploader-hint">صيغ الصور المدعومة: PNG, JPG, JPEG, WebP. الحجم الأقصى: 5 ميجابايت.</p>
+                            </div>
+                            <div class="form-field" style="margin-top: 16px; margin-bottom: 0;">
+                                <label class="field-label" asp-for="Slide3LinkUrl">رابط التوجيه لزر "تسوق الآن"</label>
+                                <input type="text" asp-for="Slide3LinkUrl" class="form-input-custom" placeholder="مثال: /Customer/Home/Store" />
+                                <span asp-validation-for="Slide3LinkUrl" class="text-danger" style="font-size: 11px; margin-top: 4px; display: block;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: HUAWEI & ANKER OFFERS -->
+                <div id="offers-tab" class="tab-content">
+                    <!-- Huawei Banner -->
+                    <div class="create-card">
+                        <div class="create-card-header">
+                            <i class='bx bx-gift'></i>
+                            <span>بانر مهرجان هواوي (Huawei Banner)</span>
+                        </div>
+                        <div class="create-card-body">
+                            <input type="hidden" asp-for="HuaweiImageUrl" id="huaweiImgInp" />
+                            
+                            <div class="uploader-card" onclick="document.getElementById('huaweiFileInp').click()">
+                                <div class="uploader-preview-wrap">
+                                    <img src="@Model.HuaweiImageUrl" id="prevHuaweiImg" alt="Huawei Preview" class="uploader-preview-img" onerror="this.src='https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=200&fit=crop&q=80'" />
+                                </div>
+                                <input type="file" name="HuaweiImgFile" accept="image/*" class="uploader-file-input" id="huaweiFileInp" />
+                                <button type="button" class="uploader-btn">
+                                    <i class='bx bx-cloud-upload'></i>
+                                    <span>رفع صورة جديدة</span>
+                                </button>
+                                <p class="uploader-hint">صيغ الصور المدعومة: PNG, JPG, JPEG, WebP. الحجم الأقصى: 5 ميجابايت.</p>
+                            </div>
+                            
+                            <div class="form-field" style="margin-top: 16px;">
+                                <label class="field-label" asp-for="HuaweiTitle">العنوان الرئيسي للبنر</label>
+                                <input type="text" asp-for="HuaweiTitle" class="form-input-custom" style="direction: rtl; text-align: right;" placeholder="مثال: مهرجان هواوي HUAWEI" />
+                            </div>
+                            <div class="form-field">
+                                <label class="field-label" asp-for="HuaweiSubtitle">الوصف / العنوان الفرعي للبنر</label>
+                                <textarea asp-for="HuaweiSubtitle" class="form-input-custom" style="direction: rtl; text-align: right; height: 80px; resize: none;" placeholder="مثال: احصل على كوبونات خصم فورية وهدايا مجانية..."></textarea>
+                            </div>
+                            <div class="form-field" style="margin-bottom: 0;">
+                                <label class="field-label" asp-for="HuaweiLinkUrl">رابط التوجيه عند الضغط على البنر</label>
+                                <input type="text" asp-for="HuaweiLinkUrl" class="form-input-custom" placeholder="مثال: /Customer/Home/Store?SearchQuery=Huawei" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Anker Banner -->
+                    <div class="create-card">
+                        <div class="create-card-header">
+                            <i class='bx bx-bolt'></i>
+                            <span>بانر عروض أنكر (Anker Banner)</span>
+                        </div>
+                        <div class="create-card-body">
+                            <input type="hidden" asp-for="AnkerImageUrl" id="ankerImgInp" />
+                            
+                            <div class="uploader-card" onclick="document.getElementById('ankerFileInp').click()">
+                                <div class="uploader-preview-wrap">
+                                    <img src="@Model.AnkerImageUrl" id="prevAnkerImg" alt="Anker Preview" class="uploader-preview-img" onerror="this.src='https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400&h=200&fit=crop&q=80'" />
+                                </div>
+                                <input type="file" name="AnkerImgFile" accept="image/*" class="uploader-file-input" id="ankerFileInp" />
+                                <button type="button" class="uploader-btn">
+                                    <i class='bx bx-cloud-upload'></i>
+                                    <span>رفع صورة جديدة</span>
+                                </button>
+                                <p class="uploader-hint">صيغ الصور المدعومة: PNG, JPG, JPEG, WebP. الحجم الأقصى: 5 ميجابايت.</p>
+                            </div>
+                            
+                            <div class="form-field" style="margin-top: 16px;">
+                                <label class="field-label" asp-for="AnkerTitle">العنوان الرئيسي للبنر</label>
+                                <input type="text" asp-for="AnkerTitle" class="form-input-custom" style="direction: rtl; text-align: right;" placeholder="مثال: أنكر ANKER لشواحن الهواتف وملحقاتها" />
+                            </div>
+                            <div class="form-field">
+                                <label class="field-label" asp-for="AnkerSubtitle">الوصف / العنوان الفرعي للبنر</label>
+                                <textarea asp-for="AnkerSubtitle" class="form-input-custom" style="direction: rtl; text-align: right; height: 80px; resize: none;" placeholder="مثال: أقوى حماية وأسرع شحن لهواتفك الذكية..."></textarea>
+                            </div>
+                            <div class="form-field" style="margin-bottom: 0;">
+                                <label class="field-label" asp-for="AnkerLinkUrl">رابط التوجيه عند الضغط على البنر</label>
+                                <input type="text" asp-for="AnkerLinkUrl" class="form-input-custom" placeholder="مثال: /Customer/Home/Store?SearchQuery=Anker" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: INSTALLMENT BANNERS -->
+                <div id="installments-tab" class="tab-content">
+                    <!-- Installment 1 -->
+                    <div class="create-card">
+                        <div class="create-card-header">
+                            <i class='bx bx-calendar-star'></i>
+                            <span>بنر التقسيط الأول (البرتقالي - 12 شهر كاش)</span>
+                        </div>
+                        <div class="create-card-body">
+                            <div class="form-field">
+                                <label class="field-label" asp-for="Installment1Title">عنوان البنر</label>
+                                <input type="text" asp-for="Installment1Title" class="form-input-custom" style="direction: rtl; text-align: right;" placeholder="مثال: قسط على سعر الكاش" />
+                            </div>
+                            <div class="form-field">
+                                <label class="field-label" asp-for="Installment1Subtitle">تفاصيل العرض (الفرعي)</label>
+                                <input type="text" asp-for="Installment1Subtitle" class="form-input-custom" style="direction: rtl; text-align: right;" placeholder="مثال: 0% فوائد | 0% مقدم | 0% مصاريف إدارية" />
+                            </div>
+                            <div class="form-field">
+                                <label class="field-label" asp-for="Installment1Duration">مدة التقسيط (شريط التاج)</label>
+                                <input type="text" asp-for="Installment1Duration" class="form-input-custom" style="direction: rtl; text-align: right;" placeholder="مثال: 12 شهر" />
+                            </div>
+                            <div class="form-field" style="margin-bottom: 0;">
+                                <label class="field-label" asp-for="Installment1LinkUrl">رابط التوجيه عند الضغط على البنر</label>
+                                <input type="text" asp-for="Installment1LinkUrl" class="form-input-custom" placeholder="مثال: /Customer/Home/Store" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Installment 2 -->
+                    <div class="create-card">
+                        <div class="create-card-header">
+                            <i class='bx bx-calendar-event'></i>
+                            <span>بنر التقسيط الثاني (الأسود - 3 شهور كاش)</span>
+                        </div>
+                        <div class="create-card-body">
+                            <div class="form-field">
+                                <label class="field-label" asp-for="Installment2Title">عنوان البنر</label>
+                                <input type="text" asp-for="Installment2Title" class="form-input-custom" style="direction: rtl; text-align: right;" placeholder="مثال: قسط على سعر الكاش" />
+                            </div>
+                            <div class="form-field">
+                                <label class="field-label" asp-for="Installment2Subtitle">تفاصيل العرض (الفرعي)</label>
+                                <input type="text" asp-for="Installment2Subtitle" class="form-input-custom" style="direction: rtl; text-align: right;" placeholder="مثال: 0% فوائد | 0% مقدم | 0% مصاريف إدارية" />
+                            </div>
+                            <div class="form-field">
+                                <label class="field-label" asp-for="Installment2Duration">مدة التقسيط (شريط التاج)</label>
+                                <input type="text" asp-for="Installment2Duration" class="form-input-custom" style="direction: rtl; text-align: right;" placeholder="مثال: 3 شهور" />
+                            </div>
+                            <div class="form-field" style="margin-bottom: 0;">
+                                <label class="field-label" asp-for="Installment2LinkUrl">رابط التوجيه عند الضغط على البنر</label>
+                                <input type="text" asp-for="Installment2LinkUrl" class="form-input-custom" placeholder="مثال: /Customer/Home/Store" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT: Actions ───────────────────────────── -->
+            <div class="create-sidebar">
+                
+                <div class="create-card">
+                    <div class="create-card-header">
+                        <i class='bx bx-send'></i>
+                        <span>حفظ التعديلات</span>
+                    </div>
+                    <div class="create-card-body">
+                        <div class="publish-actions">
+                            <button type="submit" class="pub-submit-btn">
+                                <i class='bx bx-save'></i>
+                                <span>حفظ الآن</span>
+                            </button>
+                            <a href="@Url.Action("Index", "DashBoard", new { area = "Admin" })" class="pub-cancel-btn">
+                                <i class='bx bx-x'></i> إلغاء
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="create-card">
+                    <div class="create-card-header">
+                        <i class='bx bx-bulb'></i>
+                        <span>نصائح هامة</span>
+                    </div>
+                    <div class="create-card-body">
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 12px; color: #4b5563; line-height: 1.8;">
+                            <li style="margin-bottom: 8px;"><i class='bx bx-check-circle' style="color: #ff6a00; margin-left: 6px;"></i> يفضل استخدام صور عالية الجودة لتظهر البانرات بشكل جذاب وتجذب انتباه العملاء.</li>
+                            <li style="margin-bottom: 8px;"><i class='bx bx-check-circle' style="color: #ff6a00; margin-left: 6px;"></i> البانرات تظهر في الصفحة الرئيسية بالتناوب التلقائي كل 5 ثوانٍ.</li>
+                            <li style="margin-bottom: 8px;"><i class='bx bx-check-circle' style="color: #ff6a00; margin-left: 6px;"></i> تظهر التحديثات فوراً في الصفحة الرئيسية فور الضغط على حفظ.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+@section Scripts {
+    <script>
+        function setupPreview(fileInpId, imgId) {
+            const fileInp = document.getElementById(fileInpId);
+            const prevImg = document.getElementById(imgId);
+            fileInp?.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        prevImg.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        setupPreview('slide1FileInp', 'prevSlide1Img');
+        setupPreview('slide2FileInp', 'prevSlide2Img');
+        setupPreview('slide3FileInp', 'prevSlide3Img');
+        setupPreview('huaweiFileInp', 'prevHuaweiImg');
+        setupPreview('ankerFileInp', 'prevAnkerImg');
+
+        function switchTab(tabId, btn) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(button => {
+                button.classList.remove('active');
+            });
+            // Show clicked tab content
+            document.getElementById(tabId).classList.add('active');
+            // Add active class to clicked tab button
+            btn.classList.add('active');
+        }
+    </script>
+}

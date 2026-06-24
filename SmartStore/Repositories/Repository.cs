@@ -17,36 +17,19 @@ namespace SmartStore.Repositories
         }
         public async Task AddAsync(T entity, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                await _db.AddAsync(entity, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error adding entity of type {typeof(T).Name}");
-            }
+            await _db.AddAsync(entity, cancellationToken);
         }
         public void Update(T entity, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                _db.Update(entity);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error adding entity of type {typeof(T).Name}");
-            }
+            _db.Update(entity);
         }
         public void Delete(T entity, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                _db.Remove(entity);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error adding entity of type {typeof(T).Name}");
-            }
+            _db.Remove(entity);
+        }
+        public async Task<int> CountAsync(CancellationToken cancellationToken = default)
+        {
+            return await _context.Set<T>().CountAsync();
         }
         public async Task<IEnumerable<T>> GetAsync(
             Expression<Func<T, bool>>? expression = null,
@@ -80,14 +63,7 @@ namespace SmartStore.Repositories
 
         public async Task Commit(CancellationToken cancellationToken = default)
         {
-            try
-            {
-                await _context.SaveChangesAsync(cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

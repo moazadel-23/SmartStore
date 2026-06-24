@@ -48,6 +48,7 @@ namespace SmartStore.Areas.Admin.Controllers
            {
               ViewBag.category= await _categoryRepository.GetAsync(cancellationToken:cancellationToken)?? new List<Category>();
               ViewBag.brand= await _brandRepository.GetAsync(cancellationToken: cancellationToken) ?? new List<Brand>();
+              return View(product);
            }
             product.CategoryId = CategoryId;
             product.BrandId = BrandId;

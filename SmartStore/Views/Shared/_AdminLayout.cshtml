@@ -12,115 +12,145 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Admin CSS -->
-    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true">
 </head>
-<body>
+<body class="dark-mode">
 
     <!-- ==================== SIDEBAR ==================== -->
     <aside class="sidebar" id="sidebar">
         <!-- Logo -->
         <div class="logo-details">
-            <i class='bx bxs-store icon'></i>
-            <div class="logo_name">SmartStore</div>
-            <i class='bx bx-menu' id="btn"></i>
+            <div class="logo-icon-wrap">
+                <i class='bx bx-shape-polygon'></i>
+            </div>
+            <div class="logo_name" style="color: #10b981;">Dasher</div>
         </div>
 
         <ul class="nav-list">
-            <!-- Search -->
-            <li>
-                <i class='bx bx-search'></i>
-                <input type="text" placeholder="Search...">
-                <span class="tooltip">Search</span>
-            </li>
-
-            <!-- Dashboard -->
+            <!-- Ecommerce (active dashboard) -->
             <li>
                 <a href="@Url.Action("Index", "DashBoard", new { area = "Admin" })"
                    class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "DashBoard" ? "active" : "")">
-                    <i class='bx bxs-dashboard'></i>
-                    <span class="links_name">Dashboard</span>
+                    <i class='bx bx-shopping-bag'></i>
+                    <span class="links_name">Ecommerce</span>
                 </a>
-                <span class="tooltip">Dashboard</span>
+                <span class="tooltip">Ecommerce</span>
             </li>
 
-            <!-- Categories -->
-            <li>
-                <a href="@Url.Action("Index", "Category", new { area = "Admin" })"
-                   class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Category" ? "active" : "")">
-                    <i class='bx bx-category'></i>
-                    <span class="links_name">Categories</span>
+            <li class="nav-header">PAGES</li>
+
+            <!-- Pages Submenu -->
+            <li class="has-submenu @(new[]{"Category", "Brand", "Product", "Order", "Banner"}.Contains(ViewContext.RouteData.Values["controller"]?.ToString()) ? "showMenu" : "")">
+                <a href="javascript:void(0)" class="submenu-toggle">
+                    <i class='bx bx-file'></i>
+                    <span class="links_name">Pages</span>
+                    <i class='bx bx-chevron-down arrow'></i>
                 </a>
-                <span class="tooltip">Categories</span>
-            </li>
-            <li>
-                <a href="@Url.Action("Index", "Brand", new { area = "Admin" })"
-                   class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Brand" ? "active" : "")">
-                    <i class='bx bx-purchase-tag'></i>
-                    <span class="links_name">Brands</span>
-                </a>
-                <span class="tooltip">Brands</span>
+                <ul class="submenu-list">
+                    <li>
+                        <a href="@Url.Action("Index", "Category", new { area = "Admin" })"
+                           class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Category" ? "active" : "")">
+                            <i class='bx bx-category'></i> Categories
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index", "Brand", new { area = "Admin" })"
+                           class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Brand" ? "active" : "")">
+                            <i class='bx bx-purchase-tag'></i> Brands
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index", "Product", new { area = "Admin" })"
+                           class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "active" : "")">
+                            <i class='bx bx-box'></i> Products
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index", "Order", new { area = "Admin" })"
+                           class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Order" ? "active" : "")">
+                            <i class='bx bx-cart-alt'></i> Orders
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index", "Banner", new { area = "Admin" })"
+                           class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Banner" ? "active" : "")">
+                            <i class='bx bx-image'></i> Banners
+                        </a>
+                    </li>
+                </ul>
             </li>
 
-            <!-- Products -->
-            <li>
-                <a href="@Url.Action("Index", "Product", new { area = "Admin" })"
-                   class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "active" : "")">
-                    <i class='bx bx-package'></i>
-                    <span class="links_name">Products</span>
+            <!-- Authentication Submenu -->
+            <li class="has-submenu">
+                <a href="javascript:void(0)" class="submenu-toggle">
+                    <i class='bx bx-lock-alt'></i>
+                    <span class="links_name">Authentication</span>
+                    <i class='bx bx-chevron-down arrow'></i>
                 </a>
-                <span class="tooltip">Products</span>
+                <ul class="submenu-list">
+                    <li><a href="/Identity/Account/Login"><i class='bx bx-log-in'></i> Sign In</a></li>
+                    <li><a href="/Identity/Account/Register"><i class='bx bx-user-plus'></i> Sign Up</a></li>
+                    <li><a href="/Identity/Account/ForgotPassword"><i class='bx bx-help-circle'></i> Forget Password</a></li>
+                    <li><a href="/Identity/Account/ResetPassword"><i class='bx bx-key'></i> Reset Password</a></li>
+                    <li><a href="/Identity/Account/LoginWith2fa"><i class='bx bx-shield-quarter'></i> Otp Verification</a></li>
+                </ul>
             </li>
 
-            <!-- Orders -->
-            <li>
-                <a href="@Url.Action("Index", "Order", new { area = "Admin" })"
-                   class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Order" ? "active" : "")">
-                    <i class='bx bx-cart-alt'></i>
-                    <span class="links_name">Orders</span>
+            <!-- Menu Level Submenu -->
+            <li class="has-submenu">
+                <a href="javascript:void(0)" class="submenu-toggle">
+                    <i class='bx bx-menu'></i>
+                    <span class="links_name">Menu Level</span>
+                    <i class='bx bx-chevron-down arrow'></i>
                 </a>
-                <span class="tooltip">Orders</span>
+                <ul class="submenu-list">
+                    <li><a href="#"><i class='bx bx-chevron-right'></i> Level 1</a></li>
+                    <li><a href="#"><i class='bx bx-chevron-right'></i> Level 2</a></li>
+                </ul>
             </li>
 
-            <!-- Customers -->
+            <!-- Disabled -->
+            <li class="disabled">
+                <a href="javascript:void(0)" style="opacity: 0.5; pointer-events: none;">
+                    <i class='bx bx-minus-circle'></i>
+                    <span class="links_name">Disabled</span>
+                </a>
+            </li>
+
+            <!-- Label -->
             <li>
                 <a href="#">
-                    <i class='bx bx-group'></i>
-                    <span class="links_name">Customers</span>
+                    <i class='bx bx-tag'></i>
+                    <span class="links_name">Label</span>
+                    <span class="badge" style="background: #2563eb; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; margin-left: auto; border: none; position: static; width: auto; height: auto; display: inline-block;">New</span>
                 </a>
-                <span class="tooltip">Customers</span>
             </li>
 
-           
+            <!-- External Link -->
+            <li>
+                <a href="#" target="_blank">
+                    <i class='bx bx-link-external'></i>
+                    <span class="links_name">External Link</span>
+                </a>
+            </li>
 
-            <!-- Messages -->
+            <!-- Blank -->
             <li>
                 <a href="#">
-                    <i class='bx bx-message-square-dots'></i>
-                    <span class="links_name">Messages</span>
+                    <i class='bx bx-file'></i>
+                    <span class="links_name">Blank</span>
                 </a>
-                <span class="tooltip">Messages</span>
-            </li>
-
-            <!-- Settings -->
-            <li>
-                <a href="#">
-                    <i class='bx bx-cog'></i>
-                    <span class="links_name">Settings</span>
-                </a>
-                <span class="tooltip">Settings</span>
-            </li>
-
-            <!-- Profile (pinned bottom) -->
-            <li class="profile">
-                <div class="profile-details">
-                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=4F46E5&color=fff&bold=true" alt="Admin">
-                    <div class="name_job">
-                        <div class="name">Admin User</div>
-                        <div class="job">Super Admin</div>
-                    </div>
-                </div>
             </li>
         </ul>
+
+        <!-- Profile (pinned bottom) -->
+        <div class="profile-card-new">
+            <img src="https://ui-avatars.com/api/?name=Jitu+Chauhan&background=10b981&color=fff&bold=true&size=40" alt="Admin">
+            <div class="profile-info">
+                <span class="profile-name">Jitu Chauhan</span>
+                <span class="profile-status">Free Version - 1 Month</span>
+            </div>
+        </div>
     </aside>
 
     <!-- ==================== MAIN SECTION ==================== -->
@@ -128,9 +158,18 @@
 
         <!-- Top Navbar -->
         <nav class="top-nav">
-            <div class="nav-left" style="display: flex; align-items: center;">
-                <i class='bx bx-menu' id="mobile-toggle" style="font-size: 28px; cursor: pointer; margin-right: 15px; color: var(--text-dark); display: none;"></i>
-                <h2>@(ViewData["PageTitle"] ?? ViewData["Title"] ?? "Dashboard")</h2>
+            <div class="nav-left" style="display: flex; align-items: center; gap: 15px;">
+                <i class='bx bx-arrow-from-right' id="btn" style="font-size: 22px; cursor: pointer; color: var(--text-muted);" title="Toggle Sidebar"></i>
+                <i class='bx bx-menu' id="mobile-toggle" style="font-size: 28px; cursor: pointer; color: var(--text-dark); display: none;"></i>
+                
+                <div class="top-search-wrap">
+                    <i class='bx bx-search'></i>
+                    <input type="text" placeholder="Search...">
+                    <div class="top-search-kbd">
+                        <span>⌘</span>
+                        <span>K</span>
+                    </div>
+                </div>
             </div>
             <div class="nav-right">
                 <!-- Theme Mode Picker -->
@@ -142,50 +181,42 @@
                         <div class="theme-dropdown-header">Appearance</div>
                         <button class="theme-option" data-theme="light" role="menuitem">
                             <span class="theme-option-icon"><i class='bx bx-sun'></i></span>
-                            <span class="theme-option-text">
-                                <span class="to-title">Light</span>
-                                <span class="to-desc">Always light mode</span>
-                            </span>
+                            <span class="to-title">Light</span>
                             <i class='bx bx-check theme-option-check'></i>
                         </button>
                         <button class="theme-option" data-theme="dark" role="menuitem">
                             <span class="theme-option-icon"><i class='bx bx-moon'></i></span>
-                            <span class="theme-option-text">
-                                <span class="to-title">Dark</span>
-                                <span class="to-desc">Always dark mode</span>
-                            </span>
+                            <span class="to-title">Dark</span>
                             <i class='bx bx-check theme-option-check'></i>
                         </button>
                         <button class="theme-option" data-theme="auto" role="menuitem">
                             <span class="theme-option-icon"><i class='bx bx-laptop'></i></span>
-                            <span class="theme-option-text">
-                                <span class="to-title">Auto</span>
-                                <span class="to-desc">Follows system setting</span>
-                            </span>
+                            <span class="to-title">Auto</span>
                             <i class='bx bx-check theme-option-check'></i>
                         </button>
                     </div>
                 </div>
-                <div class="notification" title="Notifications">
+                <!-- Notification Trigger -->
+                <div class="notification" id="notificationBtn" title="Notifications" style="position: relative; cursor: pointer;">
                     <i class='bx bx-bell'></i>
-                    <span class="badge">3</span>
+                    <span class="badge" style="background: #ef4444; border: 2px solid var(--card-bg);">2</span>
                 </div>
                 <!-- Profile Menu -->
                 <div class="profile-menu-wrap" id="profileMenuWrap">
                     <button class="profile-avatar-btn" id="profileAvatarBtn" title="Account menu">
-                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=4F46E5&color=fff&bold=true&size=40" alt="Admin">
+                        <img src="https://ui-avatars.com/api/?name=Jitu+Chauhan&background=10b981&color=fff&bold=true&size=40" alt="Admin">
                     </button>
                     <div class="profile-menu" id="profileMenu">
                         <div class="pm-header">
-                            <img src="https://ui-avatars.com/api/?name=Admin+User&background=4F46E5&color=fff&bold=true&size=60" alt="Admin">
+                            <img src="https://ui-avatars.com/api/?name=Jitu+Chauhan&background=10b981&color=fff&bold=true&size=60" alt="Admin">
                             <div class="pm-info">
-                                <span class="pm-name">Admin User</span>
-                                <span class="pm-role">@@adminuser</span>
+                                <span class="pm-name">Jitu Chauhan</span>
+                                <span class="pm-role">@@imjituchauhan</span>
                             </div>
                         </div>
                         <div class="pm-divider"></div>
                         <a href="@Url.Action("Index", "DashBoard", new { area = "Admin" })" class="pm-item">
-                            <i class='bx bx-home-alt'></i> Home
+                            <i class='bx bx-home'></i> Home
                         </a>
                         <a href="#" class="pm-item">
                             <i class='bx bx-envelope'></i> Inbox
@@ -212,6 +243,93 @@
         @RenderBody()
 
     </section>
+
+    <!-- ==================== NOTIFICATION DRAWER ==================== -->
+    <div class="notification-drawer" id="notificationDrawer">
+        <div class="nd-header">
+            <h3>Notifications</h3>
+            <div class="nd-actions">
+                <button class="nd-action-btn" title="Mark all as read"><i class='bx bx-check-double'></i></button>
+                <button class="nd-action-btn" title="Notification Settings"><i class='bx bx-cog'></i></button>
+                <button class="nd-action-btn close-btn" id="closeNotificationDrawer"><i class='bx bx-x'></i></button>
+            </div>
+        </div>
+        <div class="nd-tabs">
+            <button class="nd-tab active" data-tab="all">All</button>
+            <button class="nd-tab" data-tab="following">Following</button>
+            <button class="nd-tab" data-tab="archive">Archive</button>
+        </div>
+        <div class="nd-content">
+            <!-- Item 1 -->
+            <div class="nd-item">
+                <div class="nd-item-icon-wrap" style="color: #3b82f6; background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.15);">
+                    <i class='bx bx-message-square-dots'></i>
+                </div>
+                <div class="nd-item-body">
+                    <p class="nd-item-text">New message from <strong>John Doe</strong></p>
+                    <span class="nd-item-time">2 minutes ago</span>
+                </div>
+                <span class="nd-unread-dot"></span>
+            </div>
+            <!-- Item 2 -->
+            <div class="nd-item">
+                <div class="nd-item-icon-wrap" style="color: #ef4444; background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.15);">
+                    <i class='bx bx-error-alt'></i>
+                </div>
+                <div class="nd-item-body">
+                    <p class="nd-item-text">Your password will expire soon.</p>
+                    <span class="nd-item-time">2 minutes ago</span>
+                </div>
+                <span class="nd-unread-dot"></span>
+            </div>
+            <!-- Item 3 -->
+            <div class="nd-item">
+                <img src="https://ui-avatars.com/api/?name=Alice+Smith&background=3b82f6&color=fff&bold=true" class="nd-item-avatar" alt="Alice">
+                <div class="nd-item-body">
+                    <p class="nd-item-text"><strong>Alice</strong> uploaded a new profile picture.</p>
+                    <span class="nd-item-time">1 hour ago</span>
+                </div>
+                <span class="nd-unread-dot"></span>
+            </div>
+            <!-- Item 4 -->
+            <div class="nd-item">
+                <img src="https://ui-avatars.com/api/?name=Mike+Jones&background=10b981&color=fff&bold=true" class="nd-item-avatar" alt="Mike">
+                <div class="nd-item-body">
+                    <p class="nd-item-text"><strong>Mike</strong> sent you a friend request.</p>
+                    <span class="nd-item-time">5 minutes ago</span>
+                    <div class="nd-item-btns">
+                        <button class="nd-btn primary">Accept</button>
+                        <button class="nd-btn secondary">Decline</button>
+                    </div>
+                </div>
+                <span class="nd-unread-dot"></span>
+            </div>
+            <!-- Item 5 -->
+            <div class="nd-item">
+                <img src="https://ui-avatars.com/api/?name=Sophia+Brown&background=f59e0b&color=fff&bold=true" class="nd-item-avatar" alt="Sophia">
+                <div class="nd-item-body">
+                    <p class="nd-item-text"><strong>Sophia</strong> commented on your post.</p>
+                    <span class="nd-item-time">20 minutes ago</span>
+                </div>
+                <span class="nd-unread-dot"></span>
+            </div>
+            <!-- Item 6 -->
+            <div class="nd-item">
+                <div class="nd-item-icon-wrap" style="color: #10b981; background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.15);">
+                    <i class='bx bx-cog'></i>
+                </div>
+                <div class="nd-item-body">
+                    <p class="nd-item-text">A system update has been installed.</p>
+                    <span class="nd-item-time">30 minutes ago</span>
+                </div>
+                <span class="nd-unread-dot"></span>
+            </div>
+        </div>
+        <div class="nd-footer">
+            <a href="#">View all</a>
+        </div>
+    </div>
+    <div class="drawer-overlay" id="drawerOverlay"></div>
 
     <!-- Scripts -->
     <script src="~/js/main.js"></script>

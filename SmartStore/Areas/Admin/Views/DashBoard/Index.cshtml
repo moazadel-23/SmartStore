@@ -1,94 +1,130 @@
-@model IEnumerable<SmartStore.Models.Order>
+@model SmartStore.ViewModel.DashboardViewModel
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Dashboard";
-    ViewData["PageTitle"] = "Dashboard Overview";
+
 }
 
 <div class="home-content">
 
-    <!-- ── Breadcrumb ─────────────────────────── -->
-    <div class="breadcrumb-bar">
-        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> Home</span>
-        <i class='bx bx-chevron-right bc-sep'></i>
-        <span class="bc-current">Dashboard</span>
-        <span class="bc-date"><i class='bx bx-calendar'></i> @DateTime.Now.ToString("dddd, MMMM dd yyyy")</span>
+    <!-- ── Gradient Hero & Ideas Row ────────────────────────── -->
+    <div class="dashboard-hero-row">
+        <!-- Welcome Hero Card -->
+        <div class="hero-gradient-card">
+            <h1>Hello Ana,</h1>
+            <p>Welcome to your E-commerce Dashboard! Monitor your sales, orders, and gain valuable insights.</p>
+        </div>
+
+        <!-- Ideas for You Card -->
+        <div class="ideas-card">
+            <div class="ideas-header">
+                <h3>Ideas for You</h3>
+                <div class="ideas-nav-btns">
+                    <button class="ideas-nav-btn"><i class='bx bx-chevron-left'></i></button>
+                    <button class="ideas-nav-btn"><i class='bx bx-chevron-right'></i></button>
+                </div>
+            </div>
+            <div class="ideas-content">
+                <h4>Create a Blog Post for your product</h4>
+                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem</p>
+                <button class="read-btn">Read Now</button>
+            </div>
+        </div>
     </div>
 
     <!-- ── KPI Cards ──────────────────────────── -->
-    <div class="overview-boxes">
-
-        <div class="box kpi-card" id="kpi-revenue">
-            <div class="kpi-left">
-                <p class="box-topic">Total Revenue</p>
-                <span class="number">$34,500</span>
-                <div class="indicator">
-                    <i class='bx bx-up-arrow-alt'></i>
-                    <span>+12.5% vs last month</span>
+    <div class="kpis-grid">
+        <!-- Total Products -->
+        <div class="kpi-card-new" id="kpi-products">
+            <div class="kpi-header">
+                <div class="kpi-icon-container products">
+                    <i class='bx bx-box'></i>
                 </div>
+                <span class="kpi-title">Total Products</span>
             </div>
-            <div class="cart one">
-                <i class='bx bx-dollar-circle'></i>
+            <div class="kpi-body">
+                <span class="kpi-value" style="margin-left: 15px;">@(Model?.TotalProduct ?? 0)</span>
+                <span class="kpi-trend up">
+                    <i class='bx bx-trending-up'></i>
+                    <span>4.12%</span>
+                </span>
+            </div>
+        </div>
+        <!-- Orders -->
+        <div class="kpi-card-new" id="kpi-orders">
+            <div class="kpi-header">
+                <div class="kpi-icon-container orders">
+                    <i class='bx bx-shopping-bag'></i>
+                </div>
+                <span class="kpi-title">Orders</span>
+            </div>
+            <div class="kpi-body">
+                <span class="kpi-value">5,312</span>
+                <span class="kpi-trend up">
+                    <i class='bx bx-trending-up'></i>
+                    <span>2.29%</span>
+                </span>
             </div>
         </div>
 
-        <div class="box kpi-card" id="kpi-orders">
-            <div class="kpi-left">
-                <p class="box-topic">Total Orders</p>
-                <span class="number">1,245</span>
-                <div class="indicator">
-                    <i class='bx bx-up-arrow-alt'></i>
-                    <span>+5.2% vs last month</span>
+        <!-- Revenue -->
+        <div class="kpi-card-new" id="kpi-revenue">
+            <div class="kpi-header">
+                <div class="kpi-icon-container revenue">
+                    <i class='bx bx-dollar-circle'></i>
                 </div>
+                <span class="kpi-title">Revenue</span>
             </div>
-            <div class="cart two">
-                <i class='bx bx-shopping-bag'></i>
+            <div class="kpi-body">
+                <span class="kpi-value">$120,000</span>
+                <span class="kpi-trend up">
+                    <i class='bx bx-trending-up'></i>
+                    <span>2.19%</span>
+                </span>
             </div>
         </div>
 
-        <div class="box kpi-card" id="kpi-users">
-            <div class="kpi-left">
-                <p class="box-topic">Active Users</p>
-                <span class="number">8,105</span>
-                <div class="indicator down">
-                    <i class='bx bx-down-arrow-alt'></i>
-                    <span>-1.2% vs last month</span>
+        <!-- Total Users -->
+        <div class="kpi-card-new" id="kpi-users">
+            <div class="kpi-header">
+                <div class="kpi-icon-container conversion">
+                    <i class='bx bx-group'></i>
                 </div>
+                <span class="kpi-title">Total Users</span>
             </div>
-            <div class="cart three">
-                <i class='bx bx-group'></i>
+            <div class="kpi-body">
+                <span class="kpi-value" style="margin-left: 15px;">@(Model?.TotalUsersCount ?? 0)</span>
+                <span class="kpi-trend down">
+                    <i class='bx bx-trending-down'></i>
+                    <span>1.2%</span>
+                </span>
             </div>
         </div>
 
-        <div class="box kpi-card" id="kpi-conversion">
-            <div class="kpi-left">
-                <p class="box-topic">Conversion Rate</p>
-                <span class="number">4.6%</span>
-                <div class="indicator">
-                    <i class='bx bx-up-arrow-alt'></i>
-                    <span>+0.8% vs last month</span>
-                </div>
-            </div>
-            <div class="cart four">
-                <i class='bx bx-trending-up'></i>
-            </div>
-        </div>
-
+       
     </div>
 
-    <!-- ── Charts Row ─────────────────────────── -->
+    <!-- ── Charts Grid ─────────────────────────── -->
     <div class="charts-row">
-
         <!-- Revenue Line Chart -->
-        <div class="chart-box chart-main">
-            <div class="box-header">
-                <div>
-                    <h3>Revenue Overview</h3>
-                    <p class="chart-sub">Monthly performance for 2026</p>
+        <div class="chart-box">
+            <div class="box-header" style="margin-bottom: 0;">
+                <h3>Revenue</h3>
+                <i class='bx bx-dots-horizontal-rounded' style="color: var(--text-muted); cursor: pointer;"></i>
+            </div>
+            <div class="chart-summary-header">
+                <div class="summary-item-col active" id="showIncomeBtn">
+                    <span class="summary-item-label">
+                        <span class="legend-dot" style="background: #10b981;"></span>
+                        Total Income
+                    </span>
+                    <span class="summary-item-value">$120,000</span>
                 </div>
-                <div class="chart-tabs">
-                    <button class="chart-tab active" data-period="monthly">Monthly</button>
-                    <button class="chart-tab" data-period="weekly">Weekly</button>
+                <div class="summary-item-col" id="showExpensesBtn">
+                    <span class="summary-item-label">
+                        <span class="legend-dot" style="background: #f59e0b;"></span>
+                        Total expenses
+                    </span>
+                    <span class="summary-item-value">$198,214</span>
                 </div>
             </div>
             <div class="chart-container">
@@ -96,23 +132,58 @@
             </div>
         </div>
 
-        <!-- Donut Chart -->
-        <div class="chart-box chart-side">
+        <!-- Product Sales Donut Chart -->
+        <div class="chart-box">
             <div class="box-header">
-                <h3>Traffic Sources</h3>
-                <i class='bx bx-dots-horizontal-rounded'></i>
+                <h3>Product Sales</h3>
+                <i class='bx bx-dots-horizontal-rounded' style="color: var(--text-muted); cursor: pointer;"></i>
             </div>
-            <div class="donut-wrap">
-                <canvas id="trafficChart"></canvas>
+            <div class="donut-wrap" style="height: 180px;">
+                <canvas id="productSalesChart"></canvas>
             </div>
-            <div class="donut-legend">
-                <div class="legend-item"><span class="dot dot-primary"></span> Direct <strong>35%</strong></div>
-                <div class="legend-item"><span class="dot dot-success"></span> Organic <strong>25%</strong></div>
-                <div class="legend-item"><span class="dot dot-warning"></span> Social <strong>25%</strong></div>
-                <div class="legend-item"><span class="dot dot-danger"></span> Referral <strong>15%</strong></div>
+            <div style="margin-top: 20px; display: flex; flex-direction: column;">
+                <div class="legend-item-new">
+                    <div class="legend-left-side">
+                        <span class="legend-dot" style="background: #10b981;"></span>
+                        <span>Smartphones</span>
+                    </div>
+                    <div class="legend-value-row">
+                        <span>$22,120</span>
+                        <span class="legend-percent">38.1%</span>
+                    </div>
+                </div>
+                <div class="legend-item-new">
+                    <div class="legend-left-side">
+                        <span class="legend-dot" style="background: #f59e0b;"></span>
+                        <span>Laptops</span>
+                    </div>
+                    <div class="legend-value-row">
+                        <span>$4510</span>
+                        <span class="legend-percent">28.6%</span>
+                    </div>
+                </div>
+                <div class="legend-item-new">
+                    <div class="legend-left-side">
+                        <span class="legend-dot" style="background: #3b82f6;"></span>
+                        <span>Headphones</span>
+                    </div>
+                    <div class="legend-value-row">
+                        <span>$800</span>
+                        <span class="legend-percent">23.8%</span>
+                    </div>
+                </div>
+                <div class="legend-item-new">
+                    <div class="legend-left-side">
+                        <span class="legend-dot" style="background: #ef4444;"></span>
+                        <span>Cameras</span>
+                    </div>
+                    <div class="legend-value-row">
+                        <span>$420</span>
+                        <span class="legend-percent">9.5%</span>
+                    </div>
+                </div>
             </div>
         </div>
-
     </div>
 
     <!-- ── Bottom Row ─────────────────────────── -->
@@ -137,15 +208,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model != null && Model.Any())
+                        @if (Model != null && Model.RecentOrders != null && Model.RecentOrders.Any())
                         {
-                            foreach (var order in Model)
+                            foreach (var order in Model.RecentOrders)
                             {
                                 <tr>
                                     <td><span class="order-id">#@order.Id</span></td>
                                     <td>
                                         <div class="customer-info">
-                                            <div class="cust-avatar" style="width:32px; height:32px; border-radius:50%; background-color:#4F46E5; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:12px;">
+                                            <div class="cust-avatar" style="width:32px; height:32px; border-radius:50%; background-color:#10b981; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:12px;">
                                                 @(string.IsNullOrEmpty(order.CustomerName) ? "?" : order.CustomerName.Substring(0,1).ToUpper())
                                             </div>
                                             <div style="margin-left: 10px;">
@@ -223,14 +294,6 @@
                         <span class="act-time"><i class='bx bx-time-five'></i> 5 hours ago</span>
                     </div>
                 </div>
-                <div class="activity-item">
-                    <div class="activity-icon ai-blue"><i class='bx bx-tag'></i></div>
-                    <div class="activity-body">
-                        <p class="act-title">New Category Added</p>
-                        <p class="act-desc">Category <strong>'Smart Home'</strong> was published.</p>
-                        <span class="act-time"><i class='bx bx-time-five'></i> 8 hours ago</span>
-                    </div>
-                </div>
             </div>
 
             <!-- Quick Stats Mini -->
@@ -259,38 +322,55 @@
 (function () {
     // ── Revenue Chart ──────────────────────────────────────
     const ctx1 = document.getElementById('revenueChart').getContext('2d');
-    const isDark = document.body.classList.contains('dark-mode');
+    
+    // Gradients
+    const gradIncome = ctx1.createLinearGradient(0, 0, 0, 300);
+    gradIncome.addColorStop(0, 'rgba(16, 185, 129, 0.24)');
+    gradIncome.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
 
-    const grad = ctx1.createLinearGradient(0, 0, 0, 320);
-    grad.addColorStop(0, 'rgba(79,70,229,0.28)');
-    grad.addColorStop(1, 'rgba(79,70,229,0.0)');
+    const gradExpenses = ctx1.createLinearGradient(0, 0, 0, 300);
+    gradExpenses.addColorStop(0, 'rgba(245, 158, 11, 0.24)');
+    gradExpenses.addColorStop(1, 'rgba(245, 158, 11, 0.0)');
 
-    const monthlyData = {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        data:   [12000, 19000, 15000, 22000, 18000, 28000, 24000, 31000, 29000, 35000, 32000, 40000]
+    const incomeData = {
+        labels: ['Jan', 'Feb', 'March', 'April', 'May', 'Jun', 'Jul'],
+        data:   [30000, 40000, 28000, 51000, 42000, 105000, 97000],
+        borderColor: '#10b981',
+        backgroundColor: gradIncome,
+        pointBorderColor: '#10b981',
+        minY: 20000,
+        maxY: 110000,
+        stepY: 10000
     };
-    const weeklyData = {
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-        data:   [3200, 4100, 3800, 5200, 4700, 6100, 5400]
+
+    const expensesData = {
+        labels: ['Jan', 'Feb', 'March', 'April', 'May', 'Jun', 'Jul'],
+        data:   [11000, 32000, 45000, 32000, 34000, 52000, 41000],
+        borderColor: '#f59e0b',
+        backgroundColor: gradExpenses,
+        pointBorderColor: '#f59e0b',
+        minY: 10000,
+        maxY: 55000,
+        stepY: 5000
     };
 
     const revenueChart = new Chart(ctx1, {
         type: 'line',
         data: {
-            labels: monthlyData.labels,
+            labels: incomeData.labels,
             datasets: [{
                 label: 'Revenue ($)',
-                data: monthlyData.data,
-                backgroundColor: grad,
-                borderColor: '#4F46E5',
-                borderWidth: 2.5,
-                pointBackgroundColor: '#fff',
-                pointBorderColor: '#4F46E5',
-                pointBorderWidth: 2,
-                pointRadius: 4,
-                pointHoverRadius: 7,
+                data: incomeData.data,
+                backgroundColor: incomeData.backgroundColor,
+                borderColor: incomeData.borderColor,
+                borderWidth: 3,
+                pointBackgroundColor: '#ffffff',
+                pointBorderColor: incomeData.pointBorderColor,
+                pointBorderWidth: 2.5,
+                pointRadius: 5,
+                pointHoverRadius: 8,
                 fill: true,
-                tension: 0.42
+                tension: 0.4
             }]
         },
         options: {
@@ -299,9 +379,11 @@
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    backgroundColor: isDark ? '#1e293b' : '#111827',
+                    backgroundColor: '#111c2e',
                     titleColor: '#f9fafb',
                     bodyColor: '#d1d5db',
+                    borderColor: '#1e293b',
+                    borderWidth: 1,
                     padding: 12,
                     displayColors: false,
                     callbacks: {
@@ -311,42 +393,73 @@
             },
             scales: {
                 y: {
-                    beginAtZero: false,
-                    grid: { color: isDark ? '#334155' : '#F1F5F9', borderDash: [4,4], drawBorder: false },
-                    ticks: { color: isDark ? '#94a3b8' : '#6B7280', callback: v => '$' + (v/1000) + 'k' }
+                    min: incomeData.minY,
+                    max: incomeData.maxY,
+                    grid: { color: '#1e293b', borderDash: [5,5], drawBorder: false },
+                    ticks: { color: '#94a3b8', stepSize: incomeData.stepY, callback: v => (v/1000) + 'k' }
                 },
                 x: {
                     grid: { display: false, drawBorder: false },
-                    ticks: { color: isDark ? '#94a3b8' : '#6B7280' }
+                    ticks: { color: '#94a3b8' }
                 }
             },
             interaction: { intersect: false, mode: 'index' }
         }
     });
 
-    // Tab switching
-    document.querySelectorAll('.chart-tab').forEach(btn => {
-        btn.addEventListener('click', function () {
-            document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            const d = this.dataset.period === 'weekly' ? weeklyData : monthlyData;
-            revenueChart.data.labels = d.labels;
-            revenueChart.data.datasets[0].data = d.data;
+    // ── Swapping Logic ────────────────────────────────────
+    const showIncomeBtn = document.getElementById("showIncomeBtn");
+    const showExpensesBtn = document.getElementById("showExpensesBtn");
+
+    if (showIncomeBtn && showExpensesBtn) {
+        showIncomeBtn.addEventListener("click", () => {
+            showIncomeBtn.classList.add("active");
+            showExpensesBtn.classList.remove("active");
+
+            // Update Dataset
+            revenueChart.data.datasets[0].data = incomeData.data;
+            revenueChart.data.datasets[0].borderColor = incomeData.borderColor;
+            revenueChart.data.datasets[0].backgroundColor = incomeData.backgroundColor;
+            revenueChart.data.datasets[0].pointBorderColor = incomeData.pointBorderColor;
+
+            // Update Scales
+            revenueChart.options.scales.y.min = incomeData.minY;
+            revenueChart.options.scales.y.max = incomeData.maxY;
+            revenueChart.options.scales.y.ticks.stepSize = incomeData.stepY;
+
             revenueChart.update();
         });
-    });
 
-    // ── Traffic Donut Chart ────────────────────────────────
-    const ctx2 = document.getElementById('trafficChart').getContext('2d');
+        showExpensesBtn.addEventListener("click", () => {
+            showExpensesBtn.classList.add("active");
+            showIncomeBtn.classList.remove("active");
+
+            // Update Dataset
+            revenueChart.data.datasets[0].data = expensesData.data;
+            revenueChart.data.datasets[0].borderColor = expensesData.borderColor;
+            revenueChart.data.datasets[0].backgroundColor = expensesData.backgroundColor;
+            revenueChart.data.datasets[0].pointBorderColor = expensesData.pointBorderColor;
+
+            // Update Scales
+            revenueChart.options.scales.y.min = expensesData.minY;
+            revenueChart.options.scales.y.max = expensesData.maxY;
+            revenueChart.options.scales.y.ticks.stepSize = expensesData.stepY;
+
+            revenueChart.update();
+        });
+    }
+
+    // ── Product Sales Donut Chart ────────────────────────────────
+    const ctx2 = document.getElementById('productSalesChart').getContext('2d');
     new Chart(ctx2, {
         type: 'doughnut',
         data: {
-            labels: ['Direct', 'Organic', 'Social', 'Referral'],
+            labels: ['Smartphones', 'Laptops', 'Headphones', 'Cameras'],
             datasets: [{
-                data: [35, 25, 25, 15],
-                backgroundColor: ['#4F46E5', '#10B981', '#F59E0B', '#EF4444'],
+                data: [38.1, 28.6, 23.8, 9.5],
+                backgroundColor: ['#10b981', '#f59e0b', '#3b82f6', '#ef4444'],
                 borderWidth: 3,
-                borderColor: isDark ? '#1e293b' : '#ffffff',
+                borderColor: '#111c2e',
                 hoverOffset: 6
             }]
         },
@@ -357,9 +470,11 @@
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    backgroundColor: isDark ? '#1e293b' : '#111827',
+                    backgroundColor: '#111c2e',
                     titleColor: '#f9fafb',
                     bodyColor: '#d1d5db',
+                    borderColor: '#1e293b',
+                    borderWidth: 1,
                     padding: 10,
                     callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.parsed + '%' }
                 }
@@ -368,21 +483,27 @@
     });
 
     // ── KPI card counter animation ─────────────────────────
-    function animateCount(el, target, prefix, suffix) {
+    function animateCount(el, target, prefix, suffix, isFloat = false) {
+        if (!el) return;
         let start = 0;
-        const duration = 1200;
+        const duration = 1000;
         const step = target / (duration / 16);
         const timer = setInterval(() => {
             start = Math.min(start + step, target);
-            el.textContent = prefix + Math.round(start).toLocaleString() + suffix;
+            if (isFloat) {
+                el.textContent = prefix + start.toFixed(1) + suffix;
+            } else {
+                el.textContent = prefix + Math.round(start).toLocaleString() + suffix;
+            }
             if (start >= target) clearInterval(timer);
         }, 16);
     }
 
     // run on load
-    animateCount(document.querySelector('#kpi-revenue .number'),  34500, '$', '');
-    animateCount(document.querySelector('#kpi-orders .number'),   1245,  '',  '');
-    animateCount(document.querySelector('#kpi-users .number'),    8105,  '',  '');
+    animateCount(document.querySelector('#kpi-revenue .kpi-value'),  120000, '$', '');
+    animateCount(document.querySelector('#kpi-orders .kpi-value'),   5312,  '',  '');
+    animateCount(document.querySelector('#kpi-users .kpi-value'),    @(Model?.TotalUsersCount ?? 0),  '',  '');
+    animateCount(document.querySelector('#kpi-products .kpi-value'), @(Model?.TotalProduct ?? 0),  '',  '');
 })();
 </script>
 }
