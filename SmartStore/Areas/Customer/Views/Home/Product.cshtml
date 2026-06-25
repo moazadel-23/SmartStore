@@ -143,11 +143,11 @@
                         <div>
                             @if (p.Discount > 0)
                             {
-                                <h3 class="product-price">$@discountedPrice.ToString("N2") <del class="product-old-price">$@p.Price.ToString("N2")</del></h3>
+                                <h3 class="product-price">@discountedPrice.ToString("N2") <del class="product-old-price">@p.Price.ToString("N0")</del></h3>
                             }
                             else
                             {
-                                <h3 class="product-price">$@p.Price.ToString("N2")</h3>
+                                <h3 class="product-price">@p.Price.ToString("N2")</h3>
                             }
                             @if (p.Quantity > 0)
                             {
@@ -231,7 +231,7 @@
                                     <div class="col-md-12">
                                         <p><strong>Brand:</strong> @(p.Brand?.Name ?? "N/A")</p>
                                         <p><strong>Category:</strong> @(p.Category?.Name ?? "N/A")</p>
-                                        <p><strong>Price:</strong> $@p.Price.ToString("N2")</p>
+                                        <p><strong>Price:</strong> @(p.Discount > 0 ? p.Price.ToString("N0") : p.Price.ToString("N2"))</p>
                                         <p><strong>Discount:</strong> @(p.Discount)%</p>
                                         <p><strong>Stock:</strong> @((int)p.Quantity) units</p>
                                     </div>

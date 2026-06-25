@@ -1,34 +1,15 @@
-@model IEnumerable<SmartStore.Models.Product>
+@model IEnumerable<SmartStore.Models.Promotion>
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Products";
-    ViewData["PageTitle"] = "Product Management";
+    ViewData["Title"] = "Promotions";
+    ViewData["PageTitle"] = "Promotion Management";
 
-    var totalProducts    = Model?.Count() ?? 0;
-    var activeProducts   = Model?.Count(p => p.Status) ?? 0;
-    var inactiveProducts = totalProducts - activeProducts;
+    var totalPromotions    = Model?.Count() ?? 0;
+    var activePromotions   = Model?.Count(c => c.IsValid && c.ValidTo > DateTime.Now) ?? 0;
+    var inactivePromotions = totalPromotions - activePromotions;
 }
 
 <link rel="stylesheet" href="~/css/category-admin.css">
-
-<style>
-    /* Add any small specific adjustments for product images */
-    .prod-img-wrap {
-        width: 40px;
-        height: 40px;
-        border-radius: 8px;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #f3f4f6;
-    }
-    .prod-img-wrap img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-</style>
 
 <div class="home-content">
 
@@ -36,24 +17,24 @@
     <div class="breadcrumb-bar">
         <span class="bc-home"><i class='bx bxs-home-alt-2'></i> Home</span>
         <i class='bx bx-chevron-right bc-sep'></i>
-        <span class="bc-current">Products</span>
+        <span class="bc-current">Promotions</span>
         <span class="bc-date"><i class='bx bx-calendar'></i> @DateTime.Now.ToString("dddd, MMMM dd yyyy")</span>
     </div>
 
     <!-- ── KPI Strip ──────────────────────────── -->
     <div class="cat-kpi-strip">
         <div class="cat-kpi-item">
-            <div class="cat-kpi-icon ck-blue"><i class='bx bx-box'></i></div>
+            <div class="cat-kpi-icon ck-blue"><i class='bx bxs-offer'></i></div>
             <div>
-                <div class="cat-kpi-val">@totalProducts</div>
-                <div class="cat-kpi-label">Total Products</div>
+                <div class="cat-kpi-val">@totalPromotions</div>
+                <div class="cat-kpi-label">Total Promotions</div>
             </div>
         </div>
         <div class="cat-kpi-divider"></div>
         <div class="cat-kpi-item">
             <div class="cat-kpi-icon ck-green"><i class='bx bx-check-circle'></i></div>
             <div>
-                <div class="cat-kpi-val">@activeProducts</div>
+                <div class="cat-kpi-val">@activePromotions</div>
                 <div class="cat-kpi-label">Active</div>
             </div>
         </div>
@@ -61,15 +42,15 @@
         <div class="cat-kpi-item">
             <div class="cat-kpi-icon ck-red"><i class='bx bx-x-circle'></i></div>
             <div>
-                <div class="cat-kpi-val">@inactiveProducts</div>
-                <div class="cat-kpi-label">Inactive</div>
+                <div class="cat-kpi-val">@inactivePromotions</div>
+                <div class="cat-kpi-label">Expired / Inactive</div>
             </div>
         </div>
         <div class="cat-kpi-divider"></div>
         <div class="cat-kpi-item">
             <div class="cat-kpi-icon ck-purple"><i class='bx bx-trending-up'></i></div>
             <div>
-                <div class="cat-kpi-val">@(totalProducts > 0 ? Math.Round((double)activeProducts / totalProducts * 100, 0) : 0)%</div>
+                <div class="cat-kpi-val">@(totalPromotions > 0 ? Math.Round((double)activePromotions / totalPromotions * 100, 0) : 0)%</div>
                 <div class="cat-kpi-label">Active Rate</div>
             </div>
         </div>
@@ -83,15 +64,15 @@
             <div class="cat-card-title">
                 <i class='bx bx-list-ul'></i>
                 <div>
-                    <h3>All Products</h3>
-                    <p>Manage and organise your store products</p>
+                    <h3>All Promotions</h3>
+                    <p>Manage and organize store discount coupons and offers</p>
                 </div>
             </div>
             <div class="cat-card-actions">
                 <!-- Search -->
                 <div class="cat-search-wrap">
                     <i class='bx bx-search'></i>
-                    <input type="text" id="productSearch" placeholder="Search products…">
+                    <input type="text" id="promoSearch" placeholder="Search by code or product…">
                     <span class="cat-search-clear" id="clearSearch" title="Clear"><i class='bx bx-x'></i></span>
                 </div>
                 <!-- Filter -->
@@ -99,14 +80,14 @@
                     <select id="statusFilter" class="cat-filter-select">
                         <option value="all">All Status</option>
                         <option value="active">Active Only</option>
-                        <option value="inactive">Inactive Only</option>
+                        <option value="inactive">Expired / Inactive Only</option>
                     </select>
                     <i class='bx bx-chevron-down cat-filter-arrow'></i>
                 </div>
                 <!-- Add Button -->
-                <a asp-area="Admin" asp-controller="Product" asp-action="Create" class="cat-add-btn" id="addProductBtn">
+                <a asp-area="Admin" asp-controller="Promotion" asp-action="Create" class="cat-add-btn" id="addPromoBtn">
                     <i class='bx bx-plus'></i>
-                    <span>Add Product</span>
+                    <span>Add Promotion</span>
                 </a>
             </div>
         </div>
@@ -116,83 +97,92 @@
         {
             <!-- Result Counter -->
             <div class="cat-result-bar">
-                <span id="resultCount">Showing <strong>@totalProducts</strong> products</span>
+                <span id="resultCount">Showing <strong>@totalPromotions</strong> promotions</span>
             </div>
 
             <div class="cat-table-wrap">
-                <table class="cat-table" id="productTable">
+                <table class="cat-table" id="promoTable">
                     <thead>
                         <tr>
                             <th class="th-check">
                                 <input type="checkbox" id="selectAll" class="cat-checkbox">
                             </th>
                             <th class="sortable" data-col="1">
-                                Product <i class='bx bx-sort'></i>
+                                Code <i class='bx bx-sort'></i>
                             </th>
-                            <th>Category & Brand</th>
+                            <th>Target Scope</th>
                             <th class="sortable" data-col="3">
-                                Price <i class='bx bx-sort'></i>
+                                Discount <i class='bx bx-sort'></i>
                             </th>
                             <th class="sortable" data-col="4">
-                                Qty <i class='bx bx-sort'></i>
+                                Expiration <i class='bx bx-sort'></i>
                             </th>
                             <th class="sortable" data-col="5">
                                 Status <i class='bx bx-sort'></i>
                             </th>
+                            <th class="th-id sortable" data-col="0">
+                                ID <i class='bx bx-sort'></i>
+                            </th>
                             <th class="th-actions">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="productTableBody">
+                    <tbody id="promoTableBody">
                         @{
                             var colors = new[] { "#4F46E5","#10B981","#F59E0B","#EF4444","#8B5CF6","#06B6D4","#EC4899","#14B8A6" };
                             int idx = 0;
                         }
-                        @foreach (var product in Model)
+                        @foreach (var promotion in Model)
                         {
                             var color = colors[idx % colors.Length];
-                            var initial = string.IsNullOrEmpty(product.Name) ? "?" : product.Name.Substring(0, 1).ToUpper();
+                            var initial = string.IsNullOrEmpty(promotion.Code) ? "?" : promotion.Code.Substring(0, 1).ToUpper();
                             idx++;
-                            <tr data-status="@(product.Status ? "active" : "inactive")" class="cat-row">
+                            bool isPromoActive = promotion.IsValid && promotion.ValidTo > DateTime.Now;
+                            <tr data-status="@(isPromoActive ? "active" : "inactive")" class="cat-row">
                                 <td class="td-check">
                                     <input type="checkbox" class="cat-checkbox row-check">
                                 </td>
                                 <td>
                                     <div class="cat-name-cell">
-                                        @if (!string.IsNullOrEmpty(product.MainImg))
-                                        {
-                                            <div class="prod-img-wrap">
-                                                <img src="~/img/@product.MainImg" alt="@product.Name" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="display:block;">
-                                                <div class="cat-avatar" style="background: @(color)20; color: @color; display:none;">
-                                                    @initial
-                                                </div>
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <div class="cat-avatar" style="background: @(color)20; color: @color;">
-                                                @initial
-                                            </div>
-                                        }
+                                        <div class="cat-avatar" style="background: @(color)20; color: @color;">
+                                            @initial
+                                        </div>
                                         <div class="cat-meta">
-                                            <span class="cat-name">@product.Name</span>
-                                            <small style="color: #6b7280; font-size: 0.8rem;">#@product.Id</small>
+                                            <span class="cat-name" style="font-family: monospace; font-size: 1.1rem; letter-spacing: 0.5px;">@promotion.Code</span>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <div style="display: flex; flex-direction: column;">
-                                        <strong style="color: #374151; font-size: 0.875rem;">@(product.Category?.Name ?? "—")</strong>
-                                        <span style="color: #6b7280; font-size: 0.75rem;">@(product.Brand?.Name ?? "—")</span>
-                                    </div>
+                                    <span class="cat-desc">
+                                        @if (promotion.ProductId != null)
+                                        {
+                                            <span style="font-weight:600;"><i class='bx bx-shopping-bag'></i> Product:</span> @(promotion.Product?.Name ?? $"ID: {promotion.ProductId}")
+                                        }
+                                        else if (promotion.CategoryId != null)
+                                        {
+                                            <span style="font-weight:600;"><i class='bx bx-category'></i> Category:</span> @(promotion.Category?.Name ?? $"ID: {promotion.CategoryId}")
+                                        }
+                                        else if (promotion.BrandId != null)
+                                        {
+                                            <span style="font-weight:600;"><i class='bx bx-purchase-tag'></i> Brand:</span> @(promotion.Brand?.Name ?? $"ID: {promotion.BrandId}")
+                                        }
+                                        else
+                                        {
+                                            <span style="font-weight:600; color:var(--text-muted);"><i class='bx bx-globe'></i> General (All)</span>
+                                        }
+                                    </span>
                                 </td>
                                 <td>
-                                    <span class="cat-desc">$@product.Price.ToString("0.00")</span>
+                                    <span class="cat-badge" style="background: var(--blue-color-light, #eff6ff); color: var(--blue-color, #2563eb); font-weight: 600;">
+                                        @promotion.Discount.ToString("G29")% Off
+                                    </span>
                                 </td>
                                 <td>
-                                    <span class="cat-desc">@product.Quantity</span>
+                                    <span class="cat-desc" style="font-size: 0.85rem;">
+                                        @promotion.ValidTo.ToString("yyyy-MM-dd HH:mm")
+                                    </span>
                                 </td>
                                 <td>
-                                    @if (product.Status)
+                                    @if (isPromoActive)
                                     {
                                         <span class="cat-badge badge-active">
                                             <i class='bx bxs-circle'></i> Active
@@ -201,21 +191,24 @@
                                     else
                                     {
                                         <span class="cat-badge badge-inactive">
-                                            <i class='bx bxs-circle'></i> Inactive
+                                            <i class='bx bxs-circle'></i> Expired / Inactive
                                         </span>
                                     }
                                 </td>
                                 <td>
+                                    <span class="cat-id">#@promotion.Id</span>
+                                </td>
+                                <td>
                                     <div class="cat-action-group">
-                                        <a asp-area="Admin" asp-controller="Product" asp-action="Update" asp-route-id="@product.Id"
-                                           class="cat-btn cat-btn-edit" title="Edit product">
+                                        <a asp-area="Admin" asp-controller="Promotion" asp-action="Update" asp-route-id="@promotion.Id"
+                                           class="cat-btn cat-btn-edit" title="Edit promotion">
                                             <i class='bx bx-edit-alt'></i>
                                         </a>
                                         <button type="button"
                                                 class="cat-btn cat-btn-delete"
-                                                title="Delete product"
-                                                data-id="@product.Id"
-                                                data-name="@product.Name"
+                                                title="Delete promotion"
+                                                data-id="@promotion.Id"
+                                                data-name="@promotion.Code"
                                                 onclick="openDeleteModal(this)">
                                             <i class='bx bx-trash'></i>
                                         </button>
@@ -241,12 +234,12 @@
         {
             <div class="cat-empty">
                 <div class="cat-empty-icon">
-                    <i class='bx bx-box'></i>
+                    <i class='bx bxs-offer'></i>
                 </div>
-                <h3>No Products Yet</h3>
-                <p>Get started by adding your first product to the store.</p>
+                <h3>No Promotions Yet</h3>
+                <p>Get started by adding your first product promotion or coupon code.</p>
                 <a asp-action="Create" class="cat-add-btn">
-                    <i class='bx bx-plus'></i> Create First Product
+                    <i class='bx bx-plus'></i> Create First Promotion
                 </a>
             </div>
         }
@@ -259,15 +252,15 @@
         <div class="cat-modal-icon">
             <i class='bx bx-trash'></i>
         </div>
-        <h3 class="cat-modal-title">Delete Product?</h3>
+        <h3 class="cat-modal-title">Delete Promotion?</h3>
         <p class="cat-modal-desc">
-            You are about to delete <strong id="deleteProductName">this product</strong>.
+            You are about to delete promotion <strong id="deletePromoName">this promotion</strong>.
             This action cannot be undone.
         </p>
         <div class="cat-modal-actions">
             <button class="cat-modal-cancel" onclick="closeDeleteModal()">Cancel</button>
-            <form id="deleteForm" method="post" asp-area="Admin" asp-controller="Product" asp-action="Delete">
-                 <input type="hidden" name="id" id="deleteProductId" value="" />
+            <form id="deleteForm" method="post" asp-area="Admin" asp-controller="Promotion" asp-action="Delete">
+                 <input type="hidden" name="id" id="deletePromoId" value="" />
                  <button type="submit" class="cat-modal-confirm" style="border:none; cursor:pointer; font-family: inherit; font-size: 1rem;">
                      <i class='bx bx-trash'></i> Delete
                  </button>
@@ -285,8 +278,8 @@
 function openDeleteModal(btn) {
     const id   = btn.dataset.id;
     const name = btn.dataset.name;
-    document.getElementById('deleteProductName').textContent = name;
-    document.getElementById('deleteProductId').value = id;
+    document.getElementById('deletePromoName').textContent = name;
+    document.getElementById('deletePromoId').value = id;
     document.getElementById('deleteModal').classList.add('show');
 }
 function closeDeleteModal() {
@@ -297,10 +290,10 @@ document.getElementById('deleteModal')?.addEventListener('click', function(e) {
 });
 
 /* ── Search + Filter ───────────────────────── */
-const searchInput  = document.getElementById('productSearch');
+const searchInput  = document.getElementById('promoSearch');
 const clearBtn     = document.getElementById('clearSearch');
 const statusFilter = document.getElementById('statusFilter');
-const tableBody    = document.getElementById('productTableBody');
+const tableBody    = document.getElementById('promoTableBody');
 const resultCount  = document.getElementById('resultCount');
 
 function filterTable() {
@@ -310,9 +303,9 @@ function filterTable() {
 
     tableBody?.querySelectorAll('tr.cat-row').forEach(row => {
         const name     = row.cells[1]?.textContent.toLowerCase() || '';
-        const catBrand = row.cells[2]?.textContent.toLowerCase() || '';
+        const prod     = row.cells[2]?.textContent.toLowerCase() || '';
         const rowStat  = row.dataset.status || '';
-        const matchSearch = name.includes(term) || catBrand.includes(term);
+        const matchSearch = name.includes(term) || prod.includes(term);
         const matchStatus = status === 'all' || rowStat === status;
 
         if (matchSearch && matchStatus) {
@@ -324,7 +317,7 @@ function filterTable() {
     });
 
     if (resultCount) {
-        resultCount.innerHTML = `Showing <strong>${visible}</strong> products`;
+        resultCount.innerHTML = `Showing <strong>${visible}</strong> promotions`;
     }
 }
 
@@ -375,8 +368,8 @@ document.querySelectorAll('th.sortable').forEach(th => {
         }
 
         rows.sort((a, b) => {
-            let at = a.cells[col]?.textContent.trim().replace('$', '') || '';
-            let bt = b.cells[col]?.textContent.trim().replace('$', '') || '';
+            const at = a.cells[col]?.textContent.trim().replace('#','').replace('% Off','') || '';
+            const bt = b.cells[col]?.textContent.trim().replace('#','').replace('% Off','') || '';
             const an = parseFloat(at); const bn = parseFloat(bt);
             if (!isNaN(an) && !isNaN(bn)) return asc ? an - bn : bn - an;
             return asc ? at.localeCompare(bt) : bt.localeCompare(at);
@@ -395,5 +388,21 @@ document.querySelectorAll('.cat-row').forEach((row, i) => {
         row.style.transform  = 'translateY(0)';
     }, 60 + i * 45);
 });
+
+/* ── Toast Notification ────────────────────── */
+function showToast(message, duration = 3000) {
+    const toast = document.getElementById('catToast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), duration);
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <text>
+    showToast("@Html.Raw(TempData["SuccessMessage"])");
+    </text>
+}
 </script>
 }

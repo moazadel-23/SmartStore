@@ -65,12 +65,12 @@
             <div class="card-price">
                 @if (Model.Discount > 0)
                 {
-                    <span class="current">$@discountedPrice.ToString("N0")</span>
-                    <span class="original">$@Model.Price.ToString("N0")</span>
+                    <span class="current">@discountedPrice.ToString("N0")</span>
+                    <span class="original">@Model.Price.ToString("N0")</span>
                 }
                 else
                 {
-                    <span class="current">$@Model.Price.ToString("N0")</span>
+                    <span class="current">@Model.Price.ToString("N0")</span>
                 }
             </div>
             <button class="card-add" data-product-id="@Model.Id" @(isSoldOut ? "disabled" : "") title="@(isSoldOut ? "Sold Out" : "Add to Cart")">

@@ -1,0 +1,541 @@
+@model SmartStore.Models.Promotion
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Create Promotion";
+    ViewData["PageTitle"] = "Promotion Management";
+    var products = ViewBag.products as IEnumerable<SmartStore.Models.Product> ?? new List<SmartStore.Models.Product>();
+    var categories = ViewBag.categories as IEnumerable<SmartStore.Models.Category> ?? new List<SmartStore.Models.Category>();
+    var brands = ViewBag.brands as IEnumerable<SmartStore.Models.Brand> ?? new List<SmartStore.Models.Brand>();
+}
+
+<link rel="stylesheet" href="~/css/category-admin.css">
+
+<div class="home-content">
+
+    <!-- ── Breadcrumb ─────────────────────────── -->
+    <div class="breadcrumb-bar">
+        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> Home</span>
+        <i class='bx bx-chevron-right bc-sep'></i>
+        <a asp-action="Index" class="bc-link">Promotions</a>
+        <i class='bx bx-chevron-right bc-sep'></i>
+        <span class="bc-current">New Promotion</span>
+        <span class="bc-date">
+            <i class='bx bx-calendar'></i>
+            @DateTime.Now.ToString("dddd, MMMM dd yyyy")
+        </span>
+    </div>
+
+    <!-- ── Page Title Row ─────────────────────── -->
+    <div class="create-page-header">
+        <div class="create-page-title">
+            <div class="create-icon-wrap">
+                <i class='bx bxs-offer'></i>
+            </div>
+            <div>
+                <h2>Create New Promotion</h2>
+                <p>Define a new discount promotion applied to a specific product, category, brand, or store-wide</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Form ───────────────────────────────── -->
+    <form asp-action="Create" asp-controller="Promotion" asp-area="Admin"
+          method="post" id="createPromoForm" novalidate>
+        @Html.AntiForgeryToken()
+
+        <div class="create-layout">
+
+            <!-- LEFT: Main Details ────────────── -->
+            <div class="create-main">
+
+                <!-- Promotion Details Card -->
+                <div class="create-card">
+                    <div class="create-card-header">
+                        <i class='bx bx-info-circle'></i>
+                        <span>Promotion Details</span>
+                    </div>
+                    <div class="create-card-body">
+
+                        <!-- Target Scope Selection -->
+                        <div class="form-field">
+                            <label class="field-label">Promotion Target Scope</label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-bullseye field-icon'></i>
+                                <select id="targetScopeSelect" class="field-input" style="appearance: none; padding-right: 2rem;">
+                                    <option value="product">Apply to Specific Product</option>
+                                    <option value="category">Apply to Specific Category</option>
+                                    <option value="brand">Apply to Specific Brand</option>
+                                    <option value="general">General (Apply to All Products)</option>
+                                </select>
+                                <i class='bx bx-chevron-down' style="position: absolute; right: 1rem; pointer-events: none; color: var(--text-muted, #6b7280);"></i>
+                            </div>
+                            <div class="field-hint">Choose whether this promotion applies to a product, category, brand, or the entire store.</div>
+                        </div>
+
+                        <!-- Product Selection -->
+                        <div class="form-field target-select-field" id="field-product">
+                            <label asp-for="ProductId" class="field-label">
+                                Target Product
+                                <span class="field-required">*</span>
+                            </label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-shopping-bag field-icon'></i>
+                                <select asp-for="ProductId" class="field-input" id="productSelect" style="appearance: none; padding-right: 2rem;">
+                                    <option value="">-- Select a Product --</option>
+                                    @foreach (var prod in products)
+                                    {
+                                        <option value="@prod.Id" data-name="@prod.Name">@prod.Name (Price: @prod.Price.ToString("F2") ج.م)</option>
+                                    }
+                                </select>
+                                <i class='bx bx-chevron-down' style="position: absolute; right: 1rem; pointer-events: none; color: var(--text-muted, #6b7280);"></i>
+                            </div>
+                            <span asp-validation-for="ProductId" class="field-error"></span>
+                        </div>
+
+                        <!-- Category Selection -->
+                        <div class="form-field target-select-field" id="field-category" style="display: none;">
+                            <label asp-for="CategoryId" class="field-label">
+                                Target Category
+                                <span class="field-required">*</span>
+                            </label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-category field-icon'></i>
+                                <select asp-for="CategoryId" class="field-input" id="categorySelect" style="appearance: none; padding-right: 2rem;">
+                                    <option value="">-- Select a Category --</option>
+                                    @foreach (var cat in categories)
+                                    {
+                                        <option value="@cat.Id" data-name="@cat.Name">@cat.Name</option>
+                                    }
+                                </select>
+                                <i class='bx bx-chevron-down' style="position: absolute; right: 1rem; pointer-events: none; color: var(--text-muted, #6b7280);"></i>
+                            </div>
+                            <span asp-validation-for="CategoryId" class="field-error"></span>
+                        </div>
+
+                        <!-- Brand Selection -->
+                        <div class="form-field target-select-field" id="field-brand" style="display: none;">
+                            <label asp-for="BrandId" class="field-label">
+                                Target Brand
+                                <span class="field-required">*</span>
+                            </label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-purchase-tag field-icon'></i>
+                                <select asp-for="BrandId" class="field-input" id="brandSelect" style="appearance: none; padding-right: 2rem;">
+                                    <option value="">-- Select a Brand --</option>
+                                    @foreach (var b in brands)
+                                    {
+                                        <option value="@b.Id" data-name="@b.Name">@b.Name</option>
+                                    }
+                                </select>
+                                <i class='bx bx-chevron-down' style="position: absolute; right: 1rem; pointer-events: none; color: var(--text-muted, #6b7280);"></i>
+                            </div>
+                            <span asp-validation-for="BrandId" class="field-error"></span>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <!-- Code -->
+                            <div class="form-field" id="field-code">
+                                <label asp-for="Code" class="field-label">
+                                    Promo Code
+                                    <span class="field-required">*</span>
+                                </label>
+                                <div class="field-input-wrap">
+                                    <i class='bx bx-barcode field-icon'></i>
+                                    <input asp-for="Code"
+                                           class="field-input"
+                                           placeholder="e.g. SAVE20, SUMMER50…"
+                                           autocomplete="off"
+                                           id="codeInput"
+                                           style="text-transform: uppercase;">
+                                </div>
+                                <span asp-validation-for="Code" class="field-error"></span>
+                                <div class="field-hint">Unique coupon code (e.g. UPPERCASE letters & numbers).</div>
+                            </div>
+
+                            <!-- Discount -->
+                            <div class="form-field" id="field-discount">
+                                <label asp-for="Discount" class="field-label">
+                                    Discount Percentage (%)
+                                    <span class="field-required">*</span>
+                                </label>
+                                <div class="field-input-wrap">
+                                    <i class='bx bx-percentage field-icon'></i>
+                                    <input asp-for="Discount"
+                                           type="number"
+                                           class="field-input"
+                                           placeholder="e.g. 15.00"
+                                           id="discountInput"
+                                           min="0"
+                                           max="100"
+                                           step="0.01">
+                                </div>
+                                <span asp-validation-for="Discount" class="field-error"></span>
+                                <div class="field-hint">Enter discount value from 0 to 100%.</div>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <!-- Publish At -->
+                            <div class="form-field" id="field-publish">
+                                <label asp-for="PublishAt" class="field-label">
+                                    Publish / Start Date
+                                    <span class="field-required">*</span>
+                                </label>
+                                <div class="field-input-wrap">
+                                    <i class='bx bx-calendar-star field-icon'></i>
+                                    <input asp-for="PublishAt"
+                                           type="datetime-local"
+                                           class="field-input"
+                                           id="publishInput"
+                                           value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")">
+                                </div>
+                                <span asp-validation-for="PublishAt" class="field-error"></span>
+                                <div class="field-hint">When the promotion starts becoming active.</div>
+                            </div>
+
+                            <!-- Valid To -->
+                            <div class="form-field" id="field-validto">
+                                <label asp-for="ValidTo" class="field-label">
+                                    Expiration Date
+                                    <span class="field-required">*</span>
+                                </label>
+                                <div class="field-input-wrap">
+                                    <i class='bx bx-calendar-x field-icon'></i>
+                                    <input asp-for="ValidTo"
+                                           type="datetime-local"
+                                           class="field-input"
+                                           id="validtoInput"
+                                           value="@DateTime.Now.AddDays(7).ToString("yyyy-MM-ddTHH:mm")">
+                                </div>
+                                <span asp-validation-for="ValidTo" class="field-error"></span>
+                                <div class="field-hint">When the promotion expires and is no longer valid.</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Preview Card -->
+                <div class="create-card preview-card">
+                    <div class="create-card-header">
+                        <i class='bx bx-show-alt'></i>
+                        <span>Live Promotion Coupon Preview</span>
+                    </div>
+                    <div class="create-card-body" style="display: flex; justify-content: center; padding: 2rem 1rem;">
+                        <!-- Stylized Coupon Card -->
+                        <div style="width: 100%; max-width: 400px; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); border-radius: 16px; padding: 1.5rem; color: #fff; position: relative; box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3); overflow: hidden;">
+                            <div style="position: absolute; right: -20px; bottom: -20px; font-size: 8rem; color: rgba(255,255,255,0.07); pointer-events: none;"><i class='bx bxs-offer'></i></div>
+                            <!-- Left scallop cut -->
+                            <div style="position: absolute; left: -10px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; background-color: var(--body-bg, #f3f4f6); border-radius: 50%; z-index: 2;"></div>
+                            <!-- Right scallop cut -->
+                            <div style="position: absolute; right: -10px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; background-color: var(--body-bg, #f3f4f6); border-radius: 50%; z-index: 2;"></div>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                                <div>
+                                    <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.8);">Promotion Scope</span>
+                                    <div id="previewProduct" style="font-weight: 700; font-size: 1.1rem; margin-top: 0.2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">Product Name</div>
+                                </div>
+                                <span class="preview-badge" id="previewBadge" style="background: rgba(255,255,255,0.2); color: #fff; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">
+                                    <i class='bx bxs-circle'></i> Valid
+                                </span>
+                            </div>
+
+                            <div style="border-top: 1px dashed rgba(255,255,255,0.3); margin: 1rem 0;"></div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.8); display: block;">PROMO CODE</span>
+                                    <span id="previewCode" style="font-family: monospace; font-size: 1.5rem; font-weight: 700; letter-spacing: 1px;">CODE20</span>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.8); display: block;">DISCOUNT</span>
+                                    <span id="previewDiscount" style="font-size: 1.8rem; font-weight: 800; line-height: 1;">20% OFF</span>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 1rem; font-size: 0.7rem; color: rgba(255,255,255,0.7); display: flex; justify-content: space-between;">
+                                <span>Starts: <span id="previewStart">Immediately</span></span>
+                                <span>Expires: <span id="previewExpiry">In 7 Days</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT: Publish Panel ──────────── -->
+            <div class="create-sidebar">
+
+                <!-- Publish Card -->
+                <div class="create-card">
+                    <div class="create-card-header">
+                        <i class='bx bx-send'></i>
+                        <span>Publish</span>
+                    </div>
+                    <div class="create-card-body">
+
+                        <!-- IsValid Toggle -->
+                        <div class="form-field">
+                            <label class="field-label">Validation Status</label>
+                            <div class="status-toggle-group" id="statusToggle">
+                                <label class="status-option status-active-opt selected" id="statusActiveLabel">
+                                    <input type="radio" asp-for="IsValid" value="true"
+                                           name="IsValid" id="statusActive" checked>
+                                    <i class='bx bx-check-circle'></i>
+                                    <div>
+                                        <span class="st-title">Valid</span>
+                                        <span class="st-desc">Available for use</span>
+                                    </div>
+                                </label>
+                                <label class="status-option status-inactive-opt" id="statusInactiveLabel">
+                                    <input type="radio" asp-for="IsValid" value="false"
+                                           name="IsValid" id="statusInactive">
+                                    <i class='bx bx-x-circle'></i>
+                                    <div>
+                                        <span class="st-title">Invalid</span>
+                                        <span class="st-desc">Disabled manually</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="publish-divider"></div>
+
+                        <!-- Info Row -->
+                        <div class="publish-info">
+                            <div class="pub-info-row">
+                                <i class='bx bx-user'></i>
+                                <span>Created by <strong>Admin</strong></span>
+                            </div>
+                            <div class="pub-info-row">
+                                <i class='bx bx-calendar'></i>
+                                <span>@DateTime.Now.ToString("MMM dd, yyyy")</span>
+                            </div>
+                        </div>
+
+                        <div class="publish-divider"></div>
+
+                        <!-- Actions -->
+                        <div class="publish-actions">
+                            <a asp-area="Admin" asp-controller="Promotion" asp-action="Index" class="pub-cancel-btn">
+                                <i class='bx bx-x'></i> Cancel
+                            </a>
+                            <button type="submit" class="pub-submit-btn" id="submitBtn">
+                                <i class='bx bx-check'></i>
+                                <span>Create Promo</span>
+                                <div class="btn-loader" id="btnLoader"></div>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Tips Card -->
+                <div class="create-card tips-card">
+                    <div class="create-card-header">
+                        <i class='bx bx-bulb'></i>
+                        <span>Tips</span>
+                    </div>
+                    <div class="create-card-body">
+                        <ul class="tips-list">
+                            <li><i class='bx bx-check'></i> Choose target scope correctly.</li>
+                            <li><i class='bx bx-check'></i> General applies to all cart items.</li>
+                            <li><i class='bx bx-check'></i> Discount must be between 0 and 100%.</li>
+                            <li><i class='bx bx-check'></i> Set invalid status to pause the promotion.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+<script>
+(function () {
+    /* ── Elements ──────────────────────────── */
+    const targetScopeSelect = document.getElementById('targetScopeSelect');
+    const productSelect     = document.getElementById('productSelect');
+    const categorySelect    = document.getElementById('categorySelect');
+    const brandSelect       = document.getElementById('brandSelect');
+
+    const codeInput     = document.getElementById('codeInput');
+    const discountInput = document.getElementById('discountInput');
+    const publishInput  = document.getElementById('publishInput');
+    const validtoInput  = document.getElementById('validtoInput');
+
+    const previewProduct  = document.getElementById('previewProduct');
+    const previewCode     = document.getElementById('previewCode');
+    const previewDiscount = document.getElementById('previewDiscount');
+    const previewStart    = document.getElementById('previewStart');
+    const previewExpiry   = document.getElementById('previewExpiry');
+
+    /* ── Scope Dropdown Toggle ─────────────── */
+    targetScopeSelect?.addEventListener('change', function () {
+        const scope = this.value;
+        // Hide all target select fields
+        document.querySelectorAll('.target-select-field').forEach(el => el.style.display = 'none');
+
+        // Show appropriate target select field
+        if (scope === 'product') {
+            document.getElementById('field-product').style.display = '';
+        } else if (scope === 'category') {
+            document.getElementById('field-category').style.display = '';
+        } else if (scope === 'brand') {
+            document.getElementById('field-brand').style.display = '';
+        }
+        updatePreview();
+    });
+
+    /* ── Live Preview Sync ─────────────────── */
+    function updatePreview() {
+        const scope = targetScopeSelect?.value || 'product';
+        let targetName = 'General Store Coupon';
+
+        if (scope === 'product') {
+            const selectedOpt = productSelect?.options[productSelect.selectedIndex];
+            targetName = selectedOpt?.value ? 'Product: ' + selectedOpt.dataset.name : 'Product Name';
+        } else if (scope === 'category') {
+            const selectedOpt = categorySelect?.options[categorySelect.selectedIndex];
+            targetName = selectedOpt?.value ? 'Category: ' + selectedOpt.dataset.name : 'Category Name';
+        } else if (scope === 'brand') {
+            const selectedOpt = brandSelect?.options[brandSelect.selectedIndex];
+            targetName = selectedOpt?.value ? 'Brand: ' + selectedOpt.dataset.name : 'Brand Name';
+        } else {
+            targetName = 'All Store Products';
+        }
+
+        if (previewProduct) previewProduct.textContent = targetName;
+
+        // Code
+        const code = codeInput?.value.trim().toUpperCase() || 'CODE';
+        if (previewCode) previewCode.textContent = code;
+        if (codeInput) codeInput.value = code; // Force uppercase in input field too
+
+        // Discount
+        const discVal = parseFloat(discountInput?.value) || 0;
+        if (previewDiscount) previewDiscount.textContent = discVal.toFixed(0) + '% OFF';
+
+        // Dates
+        if (previewStart && publishInput?.value) {
+            const startDate = new Date(publishInput.value);
+            previewStart.textContent = startDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        }
+        if (previewExpiry && validtoInput?.value) {
+            const endDate = new Date(validtoInput.value);
+            previewExpiry.textContent = endDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        }
+    }
+
+    productSelect?.addEventListener('change', updatePreview);
+    categorySelect?.addEventListener('change', updatePreview);
+    brandSelect?.addEventListener('change', updatePreview);
+    codeInput?.addEventListener('input', updatePreview);
+    discountInput?.addEventListener('input', updatePreview);
+    publishInput?.addEventListener('input', updatePreview);
+    validtoInput?.addEventListener('input', updatePreview);
+
+    // Initial run
+    updatePreview();
+
+    /* ── Status Toggle ─────────────────────────── */
+    const previewBadge      = document.getElementById('previewBadge');
+    const statusActive      = document.getElementById('statusActive');
+    const statusInactive    = document.getElementById('statusInactive');
+    const statusActiveLabel = document.getElementById('statusActiveLabel');
+    const statusInactLabel  = document.getElementById('statusInactiveLabel');
+
+    function syncStatus() {
+        const isActive = statusActive?.checked;
+        statusActiveLabel?.classList.toggle('selected', !!isActive);
+        statusInactLabel?.classList.toggle('selected', !isActive);
+        if (previewBadge) {
+            previewBadge.style.background = isActive ? 'rgba(255,255,255,0.2)' : 'rgba(239, 68, 68, 0.4)';
+            previewBadge.innerHTML = `<i class='bx bxs-circle'></i> ${isActive ? 'Valid' : 'Disabled'}`;
+        }
+    }
+    statusActive?.addEventListener('change', syncStatus);
+    statusInactive?.addEventListener('change', syncStatus);
+
+    /* ── Form Submission Feedback ──────────────── */
+    const form      = document.getElementById('createPromoForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnLoader = document.getElementById('btnLoader');
+
+    form?.addEventListener('submit', function (e) {
+        const scope = targetScopeSelect?.value || 'product';
+        let hasErrors = false;
+
+        // Reset errors
+        document.querySelectorAll('.form-field').forEach(el => el.classList.remove('error'));
+
+        // Clear values of hidden dropdown fields before submit so they bind as null
+        if (scope === 'product') {
+            if (categorySelect) categorySelect.value = '';
+            if (brandSelect) brandSelect.value = '';
+            if (!productSelect?.value) {
+                document.getElementById('field-product')?.classList.add('error');
+                hasErrors = true;
+            }
+        } else if (scope === 'category') {
+            if (productSelect) productSelect.value = '';
+            if (brandSelect) brandSelect.value = '';
+            if (!categorySelect?.value) {
+                document.getElementById('field-category')?.classList.add('error');
+                hasErrors = true;
+            }
+        } else if (scope === 'brand') {
+            if (productSelect) productSelect.value = '';
+            if (categorySelect) categorySelect.value = '';
+            if (!brandSelect?.value) {
+                document.getElementById('field-brand')?.classList.add('error');
+                hasErrors = true;
+            }
+        } else if (scope === 'general') {
+            if (productSelect) productSelect.value = '';
+            if (categorySelect) categorySelect.value = '';
+            if (brandSelect) brandSelect.value = '';
+        }
+
+        if (!codeInput?.value.trim()) {
+            document.getElementById('field-code')?.classList.add('error');
+            hasErrors = true;
+        }
+
+        if (!discountInput?.value || parseFloat(discountInput.value) <= 0 || parseFloat(discountInput.value) > 100) {
+            document.getElementById('field-discount')?.classList.add('error');
+            hasErrors = true;
+        }
+
+        if (hasErrors) {
+            e.preventDefault();
+            return false;
+        }
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.querySelector('span').textContent = 'Creating…';
+            if (btnLoader) btnLoader.style.display = 'block';
+        }
+    });
+
+    /* ── Input focus styling ───────────────────── */
+    document.querySelectorAll('.field-input, .field-textarea').forEach(el => {
+        el.addEventListener('focus', () => el.closest('.form-field')?.classList.add('focused'));
+        el.addEventListener('blur',  () => el.closest('.form-field')?.classList.remove('focused'));
+    });
+
+    /* ── Entrance animation ────────────────────── */
+    document.querySelectorAll('.create-card').forEach((card, i) => {
+        card.style.opacity   = '0';
+        card.style.transform = 'translateY(16px)';
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            card.style.opacity    = '1';
+            card.style.transform  = 'translateY(0)';
+        }, 80 + i * 80);
+    });
+})();
+</script>
+}

@@ -40,7 +40,7 @@
             <li class="nav-header">PAGES</li>
 
             <!-- Pages Submenu -->
-            <li class="has-submenu @(new[]{"Category", "Brand", "Product", "Order", "Banner"}.Contains(ViewContext.RouteData.Values["controller"]?.ToString()) ? "showMenu" : "")">
+            <li class="has-submenu @(new[]{"Category", "Brand", "Product", "Order", "Banner", "Promotion"}.Contains(ViewContext.RouteData.Values["controller"]?.ToString()) ? "showMenu" : "")">
                 <a href="javascript:void(0)" class="submenu-toggle">
                     <i class='bx bx-file'></i>
                     <span class="links_name">Pages</span>
@@ -63,6 +63,12 @@
                         <a href="@Url.Action("Index", "Product", new { area = "Admin" })"
                            class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "active" : "")">
                             <i class='bx bx-box'></i> Products
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index", "Promotion", new { area = "Admin" })"
+                           class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Promotion" ? "active" : "")">
+                            <i class='bx bxs-offer'></i> Promotions
                         </a>
                     </li>
                     <li>

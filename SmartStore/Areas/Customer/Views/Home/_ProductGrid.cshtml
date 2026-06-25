@@ -42,7 +42,7 @@
             }
             @if (filter.MinPrice.HasValue || filter.MaxPrice.HasValue)
             {
-                <span class="filter-chip" data-remove="price">$@(filter.MinPrice ?? 0)–$@(filter.MaxPrice ?? 9999) <i class="fa fa-times"></i></span>
+                <span class="filter-chip" data-remove="price">@(filter.MinPrice ?? 0)–@(filter.MaxPrice ?? 9999) <i class="fa fa-times"></i></span>
             }
             @if (filter.MinRating.HasValue)
             {

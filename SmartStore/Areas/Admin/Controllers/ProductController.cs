@@ -55,7 +55,7 @@ namespace SmartStore.Areas.Admin.Controllers
 
             if (Img != null && Img.Length > 0)
             {
-                var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\ProductImg");
+                var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img");
                 Directory.CreateDirectory(folder);
                 var fileName = Guid.NewGuid() + Path.GetExtension(Img.FileName);
                 var filePath = Path.Combine(folder, fileName);
@@ -133,7 +133,7 @@ namespace SmartStore.Areas.Admin.Controllers
 
             if (Img != null && Img.Length > 0)
             {
-                var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\ProductImg");
+                var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img");
                 Directory.CreateDirectory(folder);
                 var fileName = Guid.NewGuid() + Path.GetExtension(Img.FileName);
                 var filePath = Path.Combine(folder, fileName);

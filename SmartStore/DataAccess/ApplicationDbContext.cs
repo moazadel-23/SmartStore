@@ -12,6 +12,7 @@ namespace SmartStore.DataAccess
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
+        public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<BannerModel> Banners { get; set; }
 

@@ -71,8 +71,6 @@ namespace SmartStore.Areas.Admin.Controllers
             var brand = await _brandRepository.GetOneAsync(e => e.Id == id);
             if (brand is null) return NotFound();
             
-            _brandRepository.Delete(brand);
-            await _brandRepository.Commit();
             return RedirectToAction(nameof(Index));
         }
 

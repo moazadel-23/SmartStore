@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SmartStore.Models;
 using SmartStore.Repositories;
 
 namespace SmartStore.Areas.Customer.Controllers
@@ -10,15 +11,18 @@ namespace SmartStore.Areas.Customer.Controllers
     {
         private readonly IRepository<Cart> _cartRepository;
         private readonly IRepository<Product> _productRepository;
+        private readonly IRepository<Promotion> _promotionRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public CartController(
             IRepository<Cart> cartRepository,
             IRepository<Product> productRepository,
+            IRepository<Promotion> promotionRepository,
             UserManager<ApplicationUser> userManager)
         {
             _cartRepository = cartRepository;
             _productRepository = productRepository;
+            _promotionRepository = promotionRepository;
             _userManager = userManager;
         }
 
@@ -96,7 +100,7 @@ namespace SmartStore.Areas.Customer.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
-            {6
+            {
                 return Json(new { success = false, message = "User not logged in" });
             }
 
@@ -157,8 +161,6 @@ namespace SmartStore.Areas.Customer.Controllers
             return Json(new { success = true, count = totalCount, subtotal = subtotal });
         }
 
-      
-
         [HttpPost]
         [Route("SyncCart")]
         public async Task<IActionResult> SyncCart([FromBody] List<Cart> items)
@@ -202,7 +204,87 @@ namespace SmartStore.Areas.Customer.Controllers
 
             return Json(new { success = true, count = totalCount });
         }
+
+        [HttpPost]
+        [Route("ApplyCoupon")]
+        public async Task<IActionResult> ApplyCoupon([FromBody] CouponRequest request, CancellationToken cancellationToken)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.Code))
+            {
+                return Json(new { success = false, message = "يرجى إدخال كود كوبون صالح" });
+            }
+
+            var promotion = await _promotionRepository.GetOneAsync(
+                expression: p => p.Code.ToLower() == request.Code.ToLower() && p.IsValid && p.ValidTo > DateTime.Now,
+                cancellationToken: cancellationToken
+            );
+
+            if (promotion == null)
+            {
+                return Json(new { success = false, message = "كود الخصم غير صالح أو منتهي الصلاحية" });
+            }
+
+            decimal totalDiscount = 0;
+            bool couponApplied = false;
+
+            if (request.Items != null && request.Items.Any())
+            {
+                foreach (var item in request.Items)
+                {
+                    var product = await _productRepository.GetOneAsync(p => p.Id == item.ProductId, tracked: false, cancellationToken: cancellationToken);
+                    if (product == null) continue;
+
+                    bool applies = false;
+                    if (promotion.ProductId.HasValue)
+                    {
+                        applies = (product.Id == promotion.ProductId.Value);
+                    }
+                    else if (promotion.CategoryId.HasValue)
+                    {
+                        applies = (product.CategoryId == promotion.CategoryId.Value);
+                    }
+                    else if (promotion.BrandId.HasValue)
+                    {
+                        applies = (product.BrandId == promotion.BrandId.Value);
+                    }
+                    else
+                    {
+                        // General promotion applies to everything
+                        applies = true;
+                    }
+
+                    if (applies)
+                    {
+                        // Calculate item discount based on discount percentage
+                        decimal itemDiscount = (product.Price * (promotion.Discount / 100)) * item.Count;
+                        totalDiscount += itemDiscount;
+                        couponApplied = true;
+                    }
+                }
+            }
+
+            if (!couponApplied)
+            {
+                return Json(new { success = false, message = "هذا الكوبون لا ينطبق على أي من المنتجات الموجودة في السلة" });
+            }
+
+            return Json(new { 
+                success = true, 
+                discount = totalDiscount, 
+                message = $"تم تطبيق كوبون خصم {promotion.Discount.ToString("G29")}% بنجاح!" 
+            });
+        }
     }
 
-    
+    public class CouponRequest
+    {
+        public string Code { get; set; } = string.Empty;
+        public List<CartItemDto> Items { get; set; } = new();
+    }
+
+    public class CartItemDto
+    {
+        public int ProductId { get; set; }
+        public int Count { get; set; }
+    }
 }

@@ -367,6 +367,9 @@
     }
 
     // Function to calculate and update totals
+    let appliedCouponCode = "";
+    let appliedDiscount = 0;
+
     function updateSummaryUI() {
         let subtotal = 0;
         let totalQty = 0;
@@ -396,13 +399,15 @@
             $('#shipping-progress-bar').css('width', `${pct}%`);
         }
 
-        const total = subtotal + shipping;
+        let finalTotal = subtotal + shipping - appliedDiscount;
+        if (finalTotal < 0) finalTotal = 0;
 
         // Update UI
         $('#cart-badge-count').text(`${totalQty} ${totalQty === 1 ? 'منتج' : totalQty > 10 ? 'منتج' : 'منتجات'}`);
         $('#summary-subtotal').text(`${subtotal.toFixed(2)} ج.م`);
         $('#summary-shipping').text(shipping === 0 ? 'مجاني' : `${shipping.toFixed(2)} ج.م`);
-        $('#summary-total').text(`${total.toFixed(2)} ج.م`);
+        $('#summary-discount').text(`${appliedDiscount.toFixed(2)} - ج.م`);
+        $('#summary-total').text(`${finalTotal.toFixed(2)} ج.م`);
         
         // Update header cart count
         const headerBadge = document.getElementById('cartCount');
@@ -424,6 +429,9 @@
         card.find('input[type=number]').val(newCount);
         card.find('.item-subtotal').text(`${(item.price * newCount).toFixed(2)} ج.م`);
         updateSummaryUI();
+        if (appliedCouponCode) {
+            applyCoupon(true);
+        }
 
         if (IsAuthenticated) {
             // DB Sync
@@ -461,6 +469,9 @@
         const card = $(`.cart-item-card[data-product-id=${productId}]`);
         card.find('.item-subtotal').text(`${(item.price * val).toFixed(2)} ج.m`);
         updateSummaryUI();
+        if (appliedCouponCode) {
+            applyCoupon(true);
+        }
 
         if (IsAuthenticated) {
             fetch(`/Cart/UpdateQuantity?productId=${productId}&qty=${val}`, { method: 'POST' })
@@ -484,6 +495,9 @@
             card.remove();
             
             updateSummaryUI();
+            if (appliedCouponCode) {
+                applyCoupon(true);
+            }
 
             if (cartItemsList.length === 0) {
                 toggleViews(true);
@@ -524,29 +538,57 @@
         sessionStorage.setItem('store_cart', JSON.stringify(formatData));
     }
 
-    function applyCoupon() {
-        const code = $('#coupon-code').val().trim();
+    async function applyCoupon(silent = false) {
+        const code = silent ? appliedCouponCode : $('#coupon-code').val().trim();
         const msg = $('#coupon-message');
-        msg.addClass('hidden');
+        if (!silent) msg.addClass('hidden');
 
         if (!code) {
-            msg.text('يرجى إدخال كود كوبون صالح').removeClass('hidden');
+            if (!silent) msg.text('يرجى إدخال كود كوبون صالح').removeClass('hidden');
             return;
         }
 
-        // Simulating simple coupons
-        if (code.toLowerCase() === 'btech10') {
-            msg.text('تم تطبيق كوبون خصم 10% بنجاح!').removeClass('hidden').removeClass('text-red-500').addClass('text-green-600');
-            // We can deduct from the summary total
-            let subtotal = cartItemsList.reduce((sum, i) => sum + (i.price * i.count), 0);
-            let shipping = subtotal >= 300 ? 0 : 50;
-            let discount = subtotal * 0.10;
-            let finalTotal = subtotal + shipping - discount;
+        const payload = {
+            code: code,
+            items: cartItemsList.map(i => ({ productId: i.productId, count: i.count }))
+        };
 
-            $('#summary-discount').text(`${discount.toFixed(2)} - ج.م`);
-            $('#summary-total').text(`${finalTotal.toFixed(2)} ج.م`);
-        } else {
-            msg.text('كود الخصم غير صالح أو منتهي الصلاحية').removeClass('hidden').removeClass('text-green-600').addClass('text-red-500');
+        try {
+            const response = await fetch('/Cart/ApplyCoupon', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+
+            if (result.success) {
+                appliedCouponCode = code;
+                appliedDiscount = result.discount;
+                if (!silent) {
+                    msg.text(result.message)
+                       .removeClass('hidden')
+                       .removeClass('text-red-500')
+                       .addClass('text-green-600');
+                }
+                
+                updateSummaryUI();
+            } else {
+                if (!silent) {
+                    msg.text(result.message)
+                       .removeClass('hidden')
+                       .removeClass('text-green-600')
+                       .addClass('text-red-500');
+                }
+                // Reset coupon values
+                appliedCouponCode = "";
+                appliedDiscount = 0;
+                updateSummaryUI(); // Recalculate without discount
+            }
+        } catch (error) {
+            console.error('Error applying coupon:', error);
+            if (!silent) {
+                msg.text('حدث خطأ أثناء تطبيق كوبون الخصم').removeClass('hidden').addClass('text-red-500');
+            }
         }
     }
 </script>
