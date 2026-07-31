@@ -80,29 +80,6 @@ SmartStore/
 ├── Resources/          # Locale files (resx) for Arabic and English translations
 └── wwwroot/            # Static assets (custom CSS, JS, vendor libraries, uploaded images)
 ```
-
----
-
-## 📸 Screenshots
-
-### Home Page
-![Home](images/home.png)
-
-### Dashboard
-![Dashboard](images/dashboard.png)
-
-### Login
-![Login](images/login.png)
-
-### Details
-![Details](images/details.png)
-
-### Shopping Cart
-![Shopping Cart](images/cart.png)
-
-### Smart Chatbot Widget
-![Smart Chatbot Widget](images/chatbot.png)
-
 ---
 
 ## 🎥 Demo
