@@ -171,15 +171,7 @@ https://localhost:xxxx/swagger
 
 ---
 
-## 🔐 Sample Login Credentials
-The application automatically seeds standard administrative credentials during the database initialization on the first run:
 
-* **Admin Email:** `moazaboefadle@gmail.com`
-* **Admin Username:** `MoazAdmin23`
-* **Password:** `Moaz12345@`
-* **Assigned Role:** `SuperAdmin`
-
----
 
 ## 🔮 Future Improvements
 - [ ] **Payment Integration:** Implement Stripe and PayPal checkout flows.
