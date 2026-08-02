@@ -1,7 +1,8 @@
 @model IEnumerable<SmartStore.Models.Cart>
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "سلة المشتريات";
+    ViewData["Title"] = Localizer["CartTitle"];
+    bool isArabic = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar", StringComparison.OrdinalIgnoreCase);
 }
 
 <link rel="stylesheet" href="~/css/store.css" asp-append-version="true" />
@@ -14,10 +15,10 @@
 
 <style>
     /* Styling elements for smooth interaction */
-    .cart-item-card {
-        transition: all 0.3s ease;
+    .cart-item-row {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .cart-item-card.removing {
+    .cart-item-row.removing {
         opacity: 0;
         transform: translateY(20px);
     }
@@ -35,21 +36,49 @@
     }
 </style>
 
-<div class="bg-gray-50 min-h-screen pb-16 font-cairo" dir="rtl" text-right>
-    <div class="max-w-8xl mx-auto px-4 pt-6">
-        
-        <!-- Breadcrumb -->
-        <nav class="flex text-xs text-gray-500 mb-6 gap-2">
-            <a href="/" class="hover:text-btech-orange transition-colors">الرئيسية</a>
-            <span>/</span>
-            <span class="text-gray-900 font-bold">سلة المشتريات</span>
-        </nav>
+<div class="bg-gray-50/50 min-h-screen pb-16 font-cairo @(isArabic ? "text-right" : "text-left")" dir="@(isArabic ? "rtl" : "ltr")">
+    
+    <script>
+        window.translations = {
+            currency: '@Localizer["EGP"]',
+            free: '@Localizer["Free"]',
+            addProductsToStart: '@Localizer["AddProductsToStart"]',
+            youGetFreeShipping: '@Localizer["YouGetFreeShipping"]',
+            addMoreForFreeShippingPrefix: '@Localizer["AddMoreForFreeShippingPrefix"]',
+            addMoreForFreeShippingSuffix: '@Localizer["AddMoreForFreeShippingSuffix"]',
+            couponDiscount: '@Localizer["CouponDiscount"]',
+            itemsCountLabel: '@Localizer["ItemsCountLabel"]',
+            itemCountLabel: '@Localizer["ItemCountLabel"]',
+            loadingCart: '@Localizer["LoadingCart"]',
+            subtotal: '@Localizer["Subtotal"]',
+            moveToWishlist: '@(isArabic ? "نقل للمفضلة" : "Move to Wishlist")',
+            saveForLater: '@(isArabic ? "حفظ لوقت لاحق" : "Save for Later")',
+            remove: '@(isArabic ? "إزالة" : "Remove")',
+            sku: 'SKU',
+            inStock: '@(isArabic ? "متوفر" : "In Stock")'
+        };
+    </script>
 
-        <h1 class="text-2xl sm:text-3xl font-black text-btech-black mb-8 flex items-center gap-3">
-            <i class="fas fa-shopping-cart text-btech-orange"></i>
-            <span>سلة المشتريات</span>
-            <span id="cart-badge-count" class="text-sm bg-btech-orange-light text-btech-orange px-3 py-1 rounded-full font-bold">0 منتج</span>
-        </h1>
+    <div class="max-w-[1250px] mx-auto px-4 pt-8">
+        <!-- Header Section matching the mock image -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 pb-6 border-b border-gray-100">
+            <div>
+                <a href="/Customer/Home/Store" class="flex items-center gap-2 text-gray-500 hover:text-[#002d72] transition-colors decoration-none mb-2 text-xs font-bold">
+                    <i class="fas @(isArabic ? "fa-arrow-right" : "fa-arrow-left")"></i>
+                    <span>@(isArabic ? "العودة للمتجر" : "Back to Store")</span>
+                </a>
+                <h1 class="text-2xl sm:text-3xl font-black text-gray-900 m-0">@Localizer["CartTitle"]</h1>
+                <!-- Breadcrumbs -->
+                <div class="flex items-center gap-2 text-xs text-gray-400 mt-2">
+                    <a href="/" class="hover:text-[#002d72] transition-colors decoration-none">@Localizer["Home"]</a>
+                    <i class="fas @(isArabic ? "fa-chevron-left" : "fa-chevron-right") text-[8px] text-gray-300"></i>
+                    <span class="font-semibold text-gray-500">@Localizer["CartTitle"]</span>
+                </div>
+            </div>
+            <div class="mt-4 sm:mt-0">
+                <span id="cart-badge-count" class="text-xs font-extrabold text-[#002d72] bg-[#002d72]/5 px-4 py-2.5 rounded-xl border border-blue-100/30">0 @Localizer["ItemsCountLabel"]</span>
+            </div>
+        </div>
 
         <!-- Main Grid Layout -->
         <div id="cart-main-layout" class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start hidden">
@@ -58,119 +87,196 @@
             <div class="lg:col-span-2 space-y-4">
                 
                 <!-- Free Shipping Progress -->
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-2">
-                    <span id="shipping-progress-text" class="text-sm font-bold text-gray-700"></span>
-                    <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
-                        <div id="shipping-progress-bar" class="bg-btech-orange h-full free-shipping-progress" style="width: 0%"></div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100/80 flex flex-col gap-2">
+                    <span id="shipping-progress-text" class="text-xs font-bold text-gray-600"></span>
+                    <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                        <div id="shipping-progress-bar" class="bg-[#002d72] h-full free-shipping-progress" style="width: 0%"></div>
                     </div>
                 </div>
 
-                <!-- Items Container -->
-                <div id="cart-items-list" class="space-y-4">
-                    @if (User.Identity!.IsAuthenticated && Model != null && Model.Any())
-                    {
-                        foreach (var item in Model)
+                <!-- Main Items Sheet (White Box with items separated by dividers) -->
+                <div class="bg-white rounded-2xl border border-gray-100/80 shadow-sm p-6">
+                    <!-- Select All row -->
+                    <div class="flex items-center justify-between pb-4 border-b border-gray-100 mb-2">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" id="select-all-cart" checked class="w-4 h-4 rounded text-[#002d72] focus:ring-[#002d72] border-gray-300 cursor-pointer">
+                            <label for="select-all-cart" class="text-xs font-bold text-gray-500 select-none cursor-pointer">@(isArabic ? "تحديد الكل" : "Select all")</label>
+                        </div>
+                    </div>
+
+                    <!-- Items List Container -->
+                    <div id="cart-items-list" class="divide-y divide-gray-100">
+                        @if (User.Identity!.IsAuthenticated && Model != null && Model.Any())
                         {
-                            var prod = item.Product!;
-                            <div class="cart-item-card bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4" data-product-id="@item.ProductId">
-                                <div class="flex items-center gap-4 w-full sm:w-auto">
-                                    <img src="~/img/@prod.MainImg" alt="@prod.Name" class="w-20 h-20 object-contain rounded-xl border border-gray-100 p-1 bg-white flex-shrink-0" asp-append-version="true" />
-                                    <div class="text-right">
-                                        <span class="text-xs text-gray-400 font-bold">@prod.Brand?.Name</span>
-                                        <h3 class="text-sm font-bold text-btech-black line-clamp-2 mt-0.5 leading-snug">@prod.Name</h3>
-                                        <div class="flex items-center gap-2 mt-1">
-                                            <span class="text-sm font-black text-btech-orange">@prod.Price.ToString("F2") ج.م</span>
-                                            @if (prod.Discount > 0)
-                                            {
-                                                <span class="text-xs text-gray-400 line-through">@((prod.Price + prod.Discount).ToString("F2")) ج.م</span>
-                                            }
+                            foreach (var item in Model)
+                            {
+                                var prod = item.Product!;
+                                <div class="cart-item-row py-5 flex items-start gap-4" data-product-id="@item.ProductId">
+                                    <!-- Checkbox on the left -->
+                                    <div class="pt-2.5 flex-shrink-0">
+                                        <input type="checkbox" checked class="item-checkbox w-4 h-4 rounded text-[#002d72] focus:ring-[#002d72] border-gray-300 cursor-pointer" data-product-id="@item.ProductId" onchange="onItemCheckboxChange()">
+                                    </div>
+                                    
+                                    <!-- Image -->
+                                    <div class="w-20 h-20 bg-white rounded-xl border border-gray-100 p-1 flex-shrink-0 flex items-center justify-center">
+                                        <img src="~/img/@prod.MainImg" alt="@prod.Name" class="w-full h-full object-contain" asp-append-version="true" />
+                                    </div>
+                                    
+                                    <!-- Middle content: Info & Actions -->
+                                    <div class="flex-grow flex flex-col sm:flex-row sm:justify-between gap-4">
+                                        <div class="space-y-1">
+                                            <span class="text-[9px] text-gray-400 font-extrabold uppercase tracking-wider">@prod.Brand?.Name</span>
+                                            <h3 class="text-sm font-bold text-gray-900 line-clamp-2 leading-snug">@prod.Name</h3>
+                                            
+                                            <!-- Specs/Details line -->
+                                            <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-400 font-medium pt-0.5">
+                                                <span>@Localizer["SKU"]: @(prod.SKU ?? "N/A")</span>
+                                                <span class="text-gray-200">•</span>
+                                                <span class="text-green-600 font-semibold flex items-center gap-1"><i class="fas fa-check-circle text-[10px]"></i> @(isArabic ? "متوفر" : "In Stock")</span>
+                                                <span class="text-gray-200">•</span>
+                                                <span class="text-gray-500">@(isArabic ? "توصيل سريع" : "Fast Delivery")</span>
+                                            </div>
+                                            
+                                            <!-- Actions row -->
+                                            <div class="flex items-center gap-2 pt-3 flex-wrap">
+                                                <button type="button" class="text-[11px] font-bold text-gray-500 hover:text-[#002d72] bg-gray-50 hover:bg-gray-100 border border-gray-200/60 px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1" onclick="moveToWishlist(@item.ProductId)">
+                                                    <i class="far fa-heart"></i>
+                                                    <span>@(isArabic ? "نقل للمفضلة" : "Move to Wishlist")</span>
+                                                </button>
+                                                <button type="button" class="text-[11px] font-bold text-gray-500 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 border border-gray-200/60 px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1" onclick="saveForLater(@item.ProductId)">
+                                                    <i class="far fa-bookmark"></i>
+                                                    <span>@(isArabic ? "حفظ لوقت لاحق" : "Save for Later")</span>
+                                                </button>
+                                                <button type="button" class="text-[11px] font-bold text-red-500 hover:text-red-700 bg-red-50/50 hover:bg-red-50 border border-red-100/50 px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1" onclick="deleteItem(@item.ProductId)">
+                                                    <i class="far fa-trash-alt"></i>
+                                                    <span>@Localizer["Remove"]</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Right content: Price & Qty -->
+                                        <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-4 sm:min-w-[130px] pt-1">
+                                            <!-- Price info -->
+                                            <div class="text-right flex flex-col items-end">
+                                                @{
+                                                    decimal originalPrice = prod.Price;
+                                                    if (ViewBag.OriginalProductPrices != null && ((Dictionary<int, decimal>)ViewBag.OriginalProductPrices).ContainsKey(prod.Id))
+                                                    {
+                                                        originalPrice = ((Dictionary<int, decimal>)ViewBag.OriginalProductPrices)[prod.Id];
+                                                    }
+                                                }
+                                                @if (prod.Discount > 0 || originalPrice > prod.Price)
+                                                {
+                                                    <span class="text-xs text-gray-400 line-through">@((originalPrice + (prod.Discount > 0 ? prod.Discount : 0)).ToString("F2")) @Localizer["EGP"]</span>
+                                                }
+                                                <span class="text-base font-black text-gray-900 unit-price" data-original-price="@originalPrice">@prod.Price.ToString("F2") @Localizer["EGP"]</span>
+                                                <span class="item-subtotal hidden" data-price="@prod.Price">@((prod.Price * item.Count).ToString("F2"))</span>
+                                                <div class="coupon-badge text-[10px] text-green-600 font-bold mt-1 hidden"></div>
+                                            </div>
+                                            
+                                            <!-- Quantity Control -->
+                                            <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-gray-50 h-7.5">
+                                                <button type="button" class="px-2 h-full hover:bg-gray-100 text-gray-500 font-bold border-0 bg-transparent transition-colors cursor-pointer" onclick="adjustQty(@item.ProductId, -1)">-</button>
+                                                <input type="number" class="w-8 text-center font-bold text-xs bg-transparent border-0 focus:outline-none" value="@item.Count" min="1" max="99" onchange="onQtyInputChange(@item.ProductId, this)" />
+                                                <button type="button" class="px-2 h-full hover:bg-gray-100 text-gray-500 font-bold border-0 bg-transparent transition-colors cursor-pointer" onclick="adjustQty(@item.ProductId, 1)">+</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-t-0 pt-3 sm:pt-0">
-                                    <!-- Quantity Control -->
-                                    <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden bg-gray-50 h-9">
-                                        <button type="button" class="px-3 h-full hover:bg-gray-100 text-gray-500 font-bold border-0 bg-transparent transition-colors" onclick="adjustQty(@item.ProductId, -1)">-</button>
-                                        <input type="number" class="w-10 text-center font-bold text-sm bg-transparent border-0 focus:outline-none" value="@item.Count" min="1" max="99" onchange="onQtyInputChange(@item.ProductId, this)" />
-                                        <button type="button" class="px-3 h-full hover:bg-gray-100 text-gray-500 font-bold border-0 bg-transparent transition-colors" onclick="adjustQty(@item.ProductId, 1)">+</button>
-                                    </div>
-
-                                    <!-- Total Price & Remove -->
-                                    <div class="flex items-center gap-4 min-w-[120px] justify-end">
-                                        <span class="item-subtotal font-black text-base text-btech-black text-left" data-price="@prod.Price">@((prod.Price * item.Count).ToString("F2")) ج.م</span>
-                                        <button type="button" class="text-gray-300 hover:text-red-500 transition-colors border-0 bg-transparent cursor-pointer p-1" onclick="deleteItem(@item.ProductId)">
-                                            <i class="fas fa-trash-alt text-base"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                            }
                         }
-                    }
+                    </div>
                 </div>
 
-                <!-- Clear Cart button -->
-                <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-                    <a href="/Customer/Home/Store" class="text-sm font-bold text-btech-orange hover:text-btech-orange-dark transition-colors flex items-center gap-1.5 border-0 bg-transparent">
-                        <i class="fas fa-arrow-right text-xs"></i>
-                        <span>مواصلة التسوق</span>
+                <!-- Clear Cart and Continue shopping buttons -->
+                <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-gray-100/80">
+                    <a href="/Customer/Home/Store" class="text-xs font-bold text-gray-600 hover:text-[#002d72] transition-colors flex items-center gap-1.5 border-0 bg-transparent decoration-none">
+                        <i class="fas @(isArabic ? "fa-arrow-right" : "fa-arrow-left") text-[10px]"></i>
+                        <span>@Localizer["ContinueShopping"]</span>
                     </a>
-                    <button type="button" class="text-sm font-bold text-gray-400 hover:text-red-500 transition-colors border-0 bg-transparent cursor-pointer flex items-center gap-1.5" onclick="clearCart()">
-                        <i class="fas fa-trash"></i>
-                        <span>تفريغ السلة</span>
+                    <button type="button" class="text-xs font-bold text-gray-400 hover:text-red-500 transition-colors border-0 bg-transparent cursor-pointer flex items-center gap-1.5" onclick="clearCart()">
+                        <i class="fas fa-trash-alt text-[10px]"></i>
+                        <span>@Localizer["ClearCart"]</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Left Column: Order Summary -->
+            <!-- Left Column: Order Summary (Sidebar) -->
             <div class="space-y-4 sticky top-24">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                    <h2 class="text-lg font-black text-btech-black mb-6 border-b border-gray-100 pb-3">ملخص الطلب</h2>
+                <!-- Subtotal Box -->
+                <div class="bg-white p-6 rounded-2xl border border-gray-100/80 shadow-sm">
+                    <div class="text-xs font-bold text-gray-400 mb-1">@(isArabic ? "إجمالي السلة:" : "Subtotal:")</div>
+                    <div class="text-3xl font-black text-gray-900 mb-5 flex flex-col gap-0.5">
+                        <span id="summary-total">0.00 @Localizer["EGP"]</span>
+                        <span id="summary-subtotal-crossed" class="text-xs text-gray-400 line-through font-medium hidden">0.00 @Localizer["EGP"]</span>
+                    </div>
                     
-                    <div class="space-y-4">
-                        <div class="flex justify-between text-sm text-gray-500">
-                            <span>المجموع الفرعي</span>
-                            <span id="summary-subtotal" class="font-bold text-btech-black">0.00 ج.م</span>
-                        </div>
-                        <div class="flex justify-between text-sm text-gray-500">
-                            <span>تكلفة الشحن</span>
-                            <span id="summary-shipping" class="font-bold text-btech-black">0.00 ج.م</span>
-                        </div>
-                        <div class="flex justify-between text-sm text-green-600 font-bold border-b border-gray-100 pb-4">
-                            <span>الخصم</span>
-                            <span id="summary-discount">0.00 - ج.م</span>
-                        </div>
-                        
-                        <div class="flex justify-between text-lg font-black text-btech-black pt-2">
-                            <span>الإجمالي الكلي</span>
-                            <span id="summary-total" class="text-btech-orange text-xl">0.00 ج.م</span>
-                        </div>
-                    </div>
-
-                    <!-- Promo code input -->
-                    <div class="mt-6">
-                        <div class="flex gap-2">
-                            <input type="text" id="coupon-code" placeholder="كود الخصم (كوبون)" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:border-btech-orange focus:outline-none" />
-                            <button type="button" class="bg-btech-black text-white hover:bg-gray-800 px-4 rounded-xl text-sm font-bold transition-colors border-0" onclick="applyCoupon()">تطبيق</button>
-                        </div>
-                        <div id="coupon-message" class="text-xs mt-1 text-red-500 hidden"></div>
-                    </div>
-
-                    <a href="/Checkout" class="mt-6 w-full bg-btech-orange hover:bg-btech-orange-dark text-white py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all hover:gap-3 shadow-md shadow-orange-100 hover:shadow-orange-200 border-0">
-                        <span>إتمام عملية الشراء</span>
-                        <i class="fas fa-chevron-left text-sm"></i>
+                    <a href="/Checkout" class="w-full bg-[#002d72] hover:bg-[#001f4f] text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5 active:translate-y-0 shadow-md hover:shadow-lg border-0 decoration-none">
+                        <span>@(isArabic ? "الشراء الآن" : "Checkout Now")</span>
+                        <i class="fas @(isArabic ? "fa-chevron-left" : "fa-chevron-right") text-xs"></i>
                     </a>
+
+                    <!-- Detail totals list (Compact) -->
+                    <div class="mt-5 pt-4 border-t border-gray-50 space-y-2.5 text-xs">
+                           <div class="flex justify-between text-gray-500">
+                               <span>@Localizer["Subtotal"]</span>
+                               <span id="summary-subtotal" class="font-bold text-gray-800">0.00 @Localizer["EGP"]</span>
+                           </div>
+                           <div class="flex justify-between text-gray-500">
+                               <span>@Localizer["ShippingCost"]</span>
+                               <span id="summary-shipping" class="font-bold text-gray-800">0.00 @Localizer["EGP"]</span>
+                           </div>
+                           <div class="flex justify-between text-green-600 font-bold">
+                               <span>@Localizer["Discount"]</span>
+                               <span id="summary-discount">0.00 - @Localizer["EGP"]</span>
+                           </div>
+                    </div>
                 </div>
 
-                <!-- Trust Badge Info -->
-                <div class="bg-white p-4 rounded-2xl border border-gray-100 space-y-3">
-                    <div class="flex items-center gap-3 text-xs text-gray-500">
-                        <i class="fas fa-lock text-btech-orange text-sm"></i>
-                        <span>دفع آمن 100% وحماية كاملة لبياناتك</span>
+                <!-- Promotions Box -->
+                <div class="bg-white p-5 rounded-2xl border border-gray-100/80 shadow-sm">
+                    <h3 class="text-xs font-bold text-gray-900 mb-3">@(isArabic ? "العروض والخصومات" : "Promotions")</h3>
+                    
+                    <!-- Applied Coupon Alert -->
+                    <div id="coupon-applied-alert" class="hidden mb-3 p-2.5 bg-green-50 border border-green-100 text-green-700 text-xs font-bold rounded-xl flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i>
+                            <span>@(isArabic ? "تم تطبيق الكوبون" : "Coupon code applied") '<span id="applied-code-text"></span>'</span>
+                        </div>
+                        <button type="button" class="text-green-700 hover:text-green-900 bg-transparent border-0 cursor-pointer text-xs" onclick="removeCoupon()">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
-                    <div class="flex items-center gap-3 text-xs text-gray-500 border-t border-gray-50 pt-2">
-                        <i class="fas fa-undo-alt text-btech-orange text-sm"></i>
-                        <span>إرجاع سهل واستبدال خلال 14 يوماً</span>
+                    
+                    <!-- Input Box -->
+                    <div class="relative flex items-center">
+                        <input type="text" id="coupon-code" placeholder="@Localizer["PromoCodePlaceholder"]" class="w-full px-4 py-2.5 text-xs border border-gray-200 rounded-xl focus:border-[#002d72] focus:outline-none bg-white font-semibold" />
+                        <button type="button" class="absolute end-1.5 top-1.5 bottom-1.5 bg-gray-900 hover:bg-gray-800 text-white px-4 rounded-lg text-xs font-bold transition-colors border-0 cursor-pointer flex items-center justify-center" onclick="applyCoupon()">@Localizer["Apply"]</button>
+                    </div>
+                    <div id="coupon-message" class="text-[11px] mt-1.5 text-red-500 hidden"></div>
+                </div>
+
+                <!-- Payment Installment info & Trust box -->
+                <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm text-xs text-gray-500 space-y-3">
+                    <div class="flex items-start gap-2.5">
+                        <div class="w-6 h-6 rounded-md bg-blue-50 flex items-center justify-center text-[#002d72] flex-shrink-0">
+                            <i class="fas fa-percent text-[10px]"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-800 m-0">@(isArabic ? "قسط مشترياتك مع valU" : "Install with valU")</p>
+                            <p class="text-[11px] text-gray-400 mt-0.5 m-0">@(isArabic ? "اشترِ الآن وادفع لاحقاً لطلبات 500 ج.م وأكثر." : "Buy now, pay later for orders of 500 EGP and over.")</p>
+                        </div>
+                    </div>
+                    <div class="h-px bg-gray-50"></div>
+                    <div class="flex items-center justify-between text-[11px] text-gray-400">
+                        <div class="flex items-center gap-1.5">
+                            <i class="fas fa-shield-alt text-[#002d72] text-[10px]"></i>
+                            <span>@Localizer["SecureCheckoutInfo"]</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <i class="fas fa-undo text-[#002d72] text-[10px]"></i>
+                            <span>@Localizer["ReturnPolicyInfo"]</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -179,24 +285,32 @@
 
         <!-- Loading View -->
         <div id="cart-loading-view" class="text-center py-20">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-btech-orange border-t-transparent mb-4"></div>
-            <p class="text-gray-500 font-bold">جاري تحميل السلة...</p>
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#002d72] border-t-transparent mb-4"></div>
+            <p class="text-gray-500 font-bold">@Localizer["LoadingCart"]</p>
         </div>
 
         <!-- Empty Cart View -->
         <div id="cart-empty-view" class="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm max-w-2xl mx-auto px-6 hidden">
-            <div class="w-24 h-24 bg-btech-orange-light text-btech-orange rounded-full flex items-center justify-center mx-auto mb-6">
+            <div class="w-24 h-24 bg-blue-50/50 text-[#002d72] rounded-full flex items-center justify-center mx-auto mb-6">
                 <i class="fas fa-shopping-bag text-4xl"></i>
             </div>
-            <h2 class="text-xl sm:text-2xl font-black text-btech-black mb-2">سلة المشتريات فارغة</h2>
-            <p class="text-gray-500 text-sm max-w-sm mx-auto mb-8">يبدو أنك لم تقم بإضافة أي منتجات إلى سلتك حتى الآن. استعرض عروضنا المميزة وابدأ التسوق!</p>
-            <a href="/Customer/Home/Store" class="bg-btech-orange hover:bg-btech-orange-dark text-white px-8 py-3 rounded-xl font-bold text-sm transition-colors border-0 inline-flex items-center gap-2">
-                <span>تصفح المنتجات الآن</span>
-                <i class="fas fa-arrow-left"></i>
+            <h2 class="text-xl sm:text-2xl font-black text-gray-900 mb-2">@Localizer["EmptyCartTitle"]</h2>
+            <p class="text-gray-500 text-sm max-w-sm mx-auto mb-8">@Localizer["EmptyCartSubtitle"]</p>
+            <a href="/Customer/Home/Store" class="bg-[#002d72] hover:bg-[#001f4f] text-white px-8 py-3 rounded-xl font-bold text-sm transition-colors border-0 inline-flex items-center gap-2 decoration-none">
+                <span>@Localizer["BrowseProductsNow"]</span>
+                <i class="fas @(isArabic ? "fa-arrow-left" : "fa-arrow-right")"></i>
             </a>
         </div>
 
     </div>
+</div>
+
+<!-- Floating Toast Notification -->
+<div id="cartToast" class="fixed bottom-5 @(isArabic ? "left-5" : "right-5") bg-gray-900 text-white px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 transform translate-y-10 opacity-0 pointer-events-none transition-all duration-300 z-50 text-xs font-bold border border-gray-800">
+    <div class="w-5 h-5 rounded-full bg-[#002d72]/20 flex items-center justify-center text-blue-400">
+        <i class="fas fa-info-circle text-[10px]"></i>
+    </div>
+    <span id="cartToastText"></span>
 </div>
 
 <footer class="store-footer">
@@ -294,6 +408,14 @@
                 }
             }
         }
+
+        // Auto-apply coupon from URL parameter or sessionStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        let couponToApply = urlParams.get('code') || sessionStorage.getItem('applied_coupon');
+        if (couponToApply && cartItemsList.length > 0) {
+            appliedCouponCode = couponToApply;
+            await applyCoupon(true); // Apply silently
+        }
     }
 
     function toggleViews(isEmpty) {
@@ -309,7 +431,7 @@
 
     function readServerItems() {
         cartItemsList = [];
-        $('#cart-items-list .cart-item-card').each(function () {
+        $('#cart-items-list .cart-item-row').each(function () {
             const row = $(this);
             const productId = parseInt(row.data('product-id'));
             const price = parseFloat(row.find('.item-subtotal').data('price'));
@@ -326,38 +448,72 @@
         const listContainer = $('#cart-items-list');
         listContainer.empty();
 
+        const currencyStr = (window.translations && window.translations.currency) || 'ج.م';
+
         cartItemsList.forEach(item => {
             const discountBadge = item.discount > 0 
-                ? `<span class="text-xs text-gray-400 line-through">${(item.price + item.discount).toFixed(2)} ج.م</span>`
+                ? `<span class="text-xs text-gray-400 line-through">${(item.price + item.discount).toFixed(2)} ${currencyStr}</span>`
                 : '';
 
             const itemHtml = `
-                <div class="cart-item-card bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4" data-product-id="${item.productId}">
-                    <div class="flex items-center gap-4 w-full sm:w-auto">
-                        <img src="/img/${item.mainImg}" alt="${item.name}" class="w-20 h-20 object-contain rounded-xl border border-gray-100 p-1 bg-white flex-shrink-0" />
-                        <div class="text-right">
-                            <h3 class="text-sm font-bold text-btech-black line-clamp-2 leading-snug">${item.name}</h3>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="text-sm font-black text-btech-orange">${item.price.toFixed(2)} ج.م</span>
-                                ${discountBadge}
+                <div class="cart-item-row py-5 flex items-start gap-4" data-product-id="${item.productId}">
+                    <!-- Checkbox on the left -->
+                    <div class="pt-2.5 flex-shrink-0">
+                        <input type="checkbox" checked class="item-checkbox w-4 h-4 rounded text-[#002d72] focus:ring-[#002d72] border-gray-300 cursor-pointer" data-product-id="${item.productId}" onchange="onItemCheckboxChange()">
+                    </div>
+                    
+                    <!-- Image -->
+                    <div class="w-20 h-20 bg-white rounded-xl border border-gray-100 p-1 flex-shrink-0 flex items-center justify-center">
+                        <img src="/img/${item.mainImg}" alt="${item.name}" class="w-full h-full object-contain" />
+                    </div>
+                    
+                    <!-- Middle content: Info & Actions -->
+                    <div class="flex-grow flex flex-col sm:flex-row sm:justify-between gap-4">
+                        <div class="space-y-1">
+                            <h3 class="text-sm font-bold text-gray-900 line-clamp-2 leading-snug">${item.name}</h3>
+                            
+                            <!-- Specs/Details line -->
+                            <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-400 font-medium pt-0.5">
+                                <span>${translations.sku || 'SKU'}: PR${item.productId}</span>
+                                <span class="text-gray-200">•</span>
+                                <span class="text-green-600 font-semibold flex items-center gap-1"><i class="fas fa-check-circle text-[10px]"></i> ${translations.inStock || 'In Stock'}</span>
+                                <span class="text-gray-200">•</span>
+                                <span class="text-gray-500">${translations.fastDelivery || 'Fast Delivery'}</span>
+                            </div>
+                            
+                            <!-- Actions row -->
+                            <div class="flex items-center gap-2 pt-3 flex-wrap">
+                                <button type="button" class="text-[11px] font-bold text-gray-500 hover:text-[#002d72] bg-gray-50 hover:bg-gray-100 border border-gray-200/60 px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1" onclick="moveToWishlist(${item.productId})">
+                                    <i class="far fa-heart"></i>
+                                    <span>${translations.moveToWishlist || 'Move to Wishlist'}</span>
+                                </button>
+                                <button type="button" class="text-[11px] font-bold text-gray-500 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 border border-gray-200/60 px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1" onclick="saveForLater(${item.productId})">
+                                    <i class="far fa-bookmark"></i>
+                                    <span>${translations.saveForLater || 'Save for Later'}</span>
+                                </button>
+                                <button type="button" class="text-[11px] font-bold text-red-500 hover:text-red-700 bg-red-50/50 hover:bg-red-50 border border-red-100/50 px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1" onclick="deleteItem(${item.productId})">
+                                    <i class="far fa-trash-alt"></i>
+                                    <span>${translations.remove || 'Remove'}</span>
+                                </button>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-t-0 pt-3 sm:pt-0">
-                        <!-- Quantity Control -->
-                        <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden bg-gray-50 h-9">
-                            <button type="button" class="px-3 h-full hover:bg-gray-100 text-gray-500 font-bold border-0 bg-transparent transition-colors" onclick="adjustQty(${item.productId}, -1)">-</button>
-                            <input type="number" class="w-10 text-center font-bold text-sm bg-transparent border-0 focus:outline-none" value="${item.count}" min="1" max="99" onchange="onQtyInputChange(${item.productId}, this)" />
-                            <button type="button" class="px-3 h-full hover:bg-gray-100 text-gray-500 font-bold border-0 bg-transparent transition-colors" onclick="adjustQty(${item.productId}, 1)">+</button>
-                        </div>
-
-                        <!-- Total Price & Remove -->
-                        <div class="flex items-center gap-4 min-w-[120px] justify-end">
-                            <span class="item-subtotal font-black text-base text-btech-black text-left" data-price="${item.price}">${(item.price * item.count).toFixed(2)} ج.م</span>
-                            <button type="button" class="text-gray-300 hover:text-red-500 transition-colors border-0 bg-transparent cursor-pointer p-1" onclick="deleteItem(${item.productId})">
-                                <i class="fas fa-trash-alt text-base"></i>
-                            </button>
+                        
+                        <!-- Right content: Price & Qty -->
+                        <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-4 sm:min-w-[130px] pt-1">
+                            <!-- Price info -->
+                            <div class="text-right flex flex-col items-end">
+                                ${discountBadge}
+                                <span class="text-base font-black text-gray-900 unit-price" data-original-price="${item.price}">${item.price.toFixed(2)} ${currencyStr}</span>
+                                <span class="item-subtotal hidden" data-price="${item.price}">${(item.price * item.count).toFixed(2)}</span>
+                                <div class="coupon-badge text-xs text-green-600 font-bold mt-1 hidden"></div>
+                            </div>
+                            
+                            <!-- Quantity Control -->
+                            <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-gray-50 h-7.5">
+                                <button type="button" class="px-2 h-full hover:bg-gray-100 text-gray-500 font-bold border-0 bg-transparent transition-colors cursor-pointer" onclick="adjustQty(${item.productId}, -1)">-</button>
+                                <input type="number" class="w-8 text-center font-bold text-xs bg-transparent border-0 focus:outline-none" value="${item.count}" min="1" max="99" onchange="onQtyInputChange(${item.productId}, this)" />
+                                <button type="button" class="px-2 h-full hover:bg-gray-100 text-gray-500 font-bold border-0 bg-transparent transition-colors cursor-pointer" onclick="adjustQty(${item.productId}, 1)">+</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -366,52 +522,145 @@
         });
     }
 
+    // Select all checkbox handler
+    $('#select-all-cart').on('change', function () {
+        const isChecked = $(this).is(':checked');
+        $('.item-checkbox').prop('checked', isChecked);
+        updateSummaryUI();
+        if (appliedCouponCode) {
+            applyCoupon(true);
+        }
+    });
+
+    window.onItemCheckboxChange = function() {
+        const totalItemsCount = $('.item-checkbox').length;
+        const checkedItemsCount = $('.item-checkbox:checked').length;
+        $('#select-all-cart').prop('checked', totalItemsCount === checkedItemsCount);
+        updateSummaryUI();
+        if (appliedCouponCode) {
+            applyCoupon(true);
+        }
+    };
+
+    // Toast Notification Helper
+    function showToast(message) {
+        const toast = document.getElementById('cartToast');
+        const text  = document.getElementById('cartToastText');
+        if (!toast || !text) return;
+
+        text.textContent = message;
+        toast.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none');
+        toast.classList.add('translate-y-0', 'opacity-100');
+
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none');
+        }, 3000);
+    }
+
+    window.moveToWishlist = async function (productId) {
+        if (!IsAuthenticated) {
+            window.location.href = `/Identity/Account/Login?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+            return;
+        }
+
+        try {
+            const response = await fetch(`/Customer/Wishlist/AddToFavorites?productId=${productId}`, { method: 'POST' });
+            const result = await response.json();
+            if (result.success) {
+                // Remove from cart
+                deleteItem(productId);
+                showToast(translations.moveToWishlistSuccess || (IsArabic() ? 'تم نقل المنتج للمفضلة بنجاح' : 'Product moved to wishlist successfully'));
+            } else {
+                showToast(result.message || 'Error moving item to wishlist');
+            }
+        } catch (error) {
+            console.error('Error moving to wishlist:', error);
+            showToast('Error moving item to wishlist');
+        }
+    };
+
+    window.saveForLater = function (productId) {
+        showToast(IsArabic() ? 'تم حفظ المنتج لوقت لاحق' : 'Product saved for later');
+    };
+
+    function IsArabic() {
+        return window.translations && window.translations.moveToWishlist.includes('نقل');
+    }
+
     // Function to calculate and update totals
     let appliedCouponCode = "";
     let appliedDiscount = 0;
+    let appliedDiscountItems = [];
 
     function updateSummaryUI() {
-        let subtotal = 0;
-        let totalQty = 0;
+        let selectedSubtotal = 0;
+        let selectedTotalQty = 0;
+        let originalSubtotal = 0;
 
         cartItemsList.forEach(item => {
-            subtotal += item.price * item.count;
-            totalQty += item.count;
+            const checkbox = $(`.item-checkbox[data-product-id=${item.productId}]`);
+            if (checkbox.length === 0 || checkbox.is(':checked')) {
+                selectedSubtotal += item.price * item.count;
+                selectedTotalQty += item.count;
+                
+                // Get original price for this product
+                const card = $(`.cart-item-row[data-product-id=${item.productId}]`);
+                const unitPriceSpan = card.find('.unit-price');
+                const origPrice = parseFloat(unitPriceSpan.data('original-price')) || item.price;
+                originalSubtotal += origPrice * item.count;
+            }
         });
+
+        const currencyStr = (window.translations && window.translations.currency) || 'ج.م';
 
         // Free shipping progress calculation (Free if > 300 EGP)
         const freeShippingThreshold = 300;
         let shipping = 0;
         
-        if (subtotal === 0) {
+        if (selectedSubtotal === 0) {
             shipping = 0;
-            $('#shipping-progress-text').text('أضف منتجات للبدء');
+            $('#shipping-progress-text').text((window.translations && window.translations.addProductsToStart) || 'أضف منتجات للبدء');
             $('#shipping-progress-bar').css('width', '0%');
-        } else if (subtotal >= freeShippingThreshold) {
+        } else if (selectedSubtotal >= freeShippingThreshold) {
             shipping = 0;
-            $('#shipping-progress-text').html('<i class="fas fa-check text-green-500 ml-1"></i> مبروك! لقد حصلت على شحن مجاني');
+            const msg = (window.translations && window.translations.youGetFreeShipping) || 'تهانينا! لقد حصلت على شحن مجاني';
+            $('#shipping-progress-text').html(`<i class="fas fa-check text-green-500 ml-1"></i> ${msg}`);
             $('#shipping-progress-bar').css('width', '100%');
         } else {
             shipping = 50;
-            const remaining = freeShippingThreshold - subtotal;
-            const pct = (subtotal / freeShippingThreshold) * 100;
-            $('#shipping-progress-text').html(`أضف <span class="text-btech-orange font-bold">${remaining.toFixed(2)} ج.م</span> إضافية للحصول على شحن مجاني!`);
+            const remaining = freeShippingThreshold - selectedSubtotal;
+            const pct = (selectedSubtotal / freeShippingThreshold) * 100;
+            const prefix = (window.translations && window.translations.addMoreForFreeShippingPrefix) || 'أضف';
+            const suffix = (window.translations && window.translations.addMoreForFreeShippingSuffix) || 'إضافية للحصول على شحن مجاني!';
+            $('#shipping-progress-text').html(`${prefix} <span class="text-btech-orange font-bold">${remaining.toFixed(2)} ${currencyStr}</span> ${suffix}`);
             $('#shipping-progress-bar').css('width', `${pct}%`);
         }
 
-        let finalTotal = subtotal + shipping - appliedDiscount;
+        let finalTotal = selectedSubtotal + shipping - appliedDiscount;
         if (finalTotal < 0) finalTotal = 0;
 
         // Update UI
-        $('#cart-badge-count').text(`${totalQty} ${totalQty === 1 ? 'منتج' : totalQty > 10 ? 'منتج' : 'منتجات'}`);
-        $('#summary-subtotal').text(`${subtotal.toFixed(2)} ج.م`);
-        $('#summary-shipping').text(shipping === 0 ? 'مجاني' : `${shipping.toFixed(2)} ج.م`);
-        $('#summary-discount').text(`${appliedDiscount.toFixed(2)} - ج.م`);
-        $('#summary-total').text(`${finalTotal.toFixed(2)} ج.م`);
+        const itemLabel = selectedTotalQty === 1 
+            ? ((window.translations && window.translations.itemCountLabel) || 'منتج') 
+            : ((window.translations && window.translations.itemsCountLabel) || 'منتجات');
+        $('#cart-badge-count').text(`${selectedTotalQty} ${itemLabel}`);
+        $('#summary-subtotal').text(`${selectedSubtotal.toFixed(2)} ${currencyStr}`);
+        $('#summary-shipping').text(shipping === 0 ? ((window.translations && window.translations.free) || 'مجاني') : `${shipping.toFixed(2)} ${currencyStr}`);
+        $('#summary-discount').text(`${appliedDiscount.toFixed(2)} - ${currencyStr}`);
+        $('#summary-total').text(`${finalTotal.toFixed(2)} ${currencyStr}`);
+
+        // Show crossed out subtotal if coupon is applied or there is an original discount
+        let displayOriginalSubtotal = originalSubtotal + shipping;
+        if (displayOriginalSubtotal > finalTotal) {
+            $('#summary-subtotal-crossed').text(`${displayOriginalSubtotal.toFixed(2)} ${currencyStr}`).removeClass('hidden');
+        } else {
+            $('#summary-subtotal-crossed').addClass('hidden');
+        }
         
         // Update header cart count
         const headerBadge = document.getElementById('cartCount');
-        if (headerBadge) headerBadge.textContent = totalQty;
+        if (headerBadge) headerBadge.textContent = selectedTotalQty;
     }
 
     // Handle AJAX updates for quantity
@@ -425,9 +674,10 @@
         item.count = newCount;
 
         // Update UI immediately for responsiveness
-        const card = $(`.cart-item-card[data-product-id=${productId}]`);
+        const currencyStr = (window.translations && window.translations.currency) || 'ج.م';
+        const card = $(`.cart-item-row[data-product-id=${productId}]`);
         card.find('input[type=number]').val(newCount);
-        card.find('.item-subtotal').text(`${(item.price * newCount).toFixed(2)} ج.م`);
+        card.find('.item-subtotal').text(`${(item.price * newCount).toFixed(2)} ${currencyStr}`);
         updateSummaryUI();
         if (appliedCouponCode) {
             applyCoupon(true);
@@ -466,8 +716,8 @@
 
         item.count = val;
 
-        const card = $(`.cart-item-card[data-product-id=${productId}]`);
-        card.find('.item-subtotal').text(`${(item.price * val).toFixed(2)} ج.m`);
+        const card = $(`.cart-item-row[data-product-id=${productId}]`);
+        card.find('.item-subtotal').text(`${(item.price * val).toFixed(2)} ج.م`);
         updateSummaryUI();
         if (appliedCouponCode) {
             applyCoupon(true);
@@ -486,7 +736,7 @@
 
     // Handle AJAX Deletion
     async function deleteItem(productId) {
-        const card = $(`.cart-item-card[data-product-id=${productId}]`);
+        const card = $(`.cart-item-row[data-product-id=${productId}]`);
         card.addClass('removing');
 
         // Wait for CSS animation
@@ -500,6 +750,10 @@
             }
 
             if (cartItemsList.length === 0) {
+                sessionStorage.removeItem('applied_coupon');
+                appliedCouponCode = "";
+                appliedDiscount = 0;
+                appliedDiscountItems = [];
                 toggleViews(true);
             }
 
@@ -517,7 +771,7 @@
 
     // Clear cart completely
     async function clearCart() {
-        if (!confirm('هل أنت متأكد من رغبتك في تفريغ سلة المشتريات بالكامل؟')) return;
+        if (!confirm(IsArabic() ? 'هل أنت متأكد من رغبتك في تفريغ سلة المشتريات بالكامل؟' : 'Are you sure you want to empty the shopping cart completely?')) return;
 
         if (IsAuthenticated) {
             // Remove all items in DB
@@ -529,7 +783,15 @@
         cartItemsList = [];
         $('#cart-items-list').empty();
         syncGuestSessionStorage();
+        
+        // Clear coupon
+        sessionStorage.removeItem('applied_coupon');
+        appliedCouponCode = "";
+        appliedDiscount = 0;
+        appliedDiscountItems = [];
+        
         updateSummaryUI();
+        updateItemsDiscountUI();
         toggleViews(true);
     }
 
@@ -544,13 +806,19 @@
         if (!silent) msg.addClass('hidden');
 
         if (!code) {
-            if (!silent) msg.text('يرجى إدخال كود كوبون صالح').removeClass('hidden');
+            if (!silent) msg.text(IsArabic() ? 'يرجى إدخال كود كوبون صالح' : 'Please enter a valid coupon code').removeClass('hidden');
             return;
         }
 
+        // Only send checked items for discount calculation
         const payload = {
             code: code,
-            items: cartItemsList.map(i => ({ productId: i.productId, count: i.count }))
+            items: cartItemsList
+                .filter(i => {
+                    const cb = $(`.item-checkbox[data-product-id=${i.productId}]`);
+                    return cb.length === 0 || cb.is(':checked');
+                })
+                .map(i => ({ productId: i.productId, count: i.count }))
         };
 
         try {
@@ -564,6 +832,16 @@
             if (result.success) {
                 appliedCouponCode = code;
                 appliedDiscount = result.discount;
+                appliedDiscountItems = result.items || [];
+                sessionStorage.setItem('applied_coupon', code);
+
+                // Show applied coupon alert
+                $('#applied-code-text').text(code);
+                $('#coupon-applied-alert').removeClass('hidden');
+                if (!silent) {
+                    $('#coupon-code').val(''); // clear input box
+                }
+
                 if (!silent) {
                     msg.text(result.message)
                        .removeClass('hidden')
@@ -572,6 +850,7 @@
                 }
                 
                 updateSummaryUI();
+                updateItemsDiscountUI();
             } else {
                 if (!silent) {
                     msg.text(result.message)
@@ -582,13 +861,84 @@
                 // Reset coupon values
                 appliedCouponCode = "";
                 appliedDiscount = 0;
+                appliedDiscountItems = [];
+                sessionStorage.removeItem('applied_coupon');
+                $('#coupon-applied-alert').addClass('hidden');
+                
                 updateSummaryUI(); // Recalculate without discount
+                updateItemsDiscountUI();
             }
         } catch (error) {
             console.error('Error applying coupon:', error);
             if (!silent) {
-                msg.text('حدث خطأ أثناء تطبيق كوبون الخصم').removeClass('hidden').addClass('text-red-500');
+                msg.text(IsArabic() ? 'حدث خطأ أثناء تطبيق كوبون الخصم' : 'Error applying coupon code').removeClass('hidden').addClass('text-red-500');
             }
         }
+    }
+
+    window.removeCoupon = function() {
+        $('#coupon-code').val('');
+        appliedCouponCode = "";
+        appliedDiscount = 0;
+        appliedDiscountItems = [];
+        sessionStorage.removeItem('applied_coupon');
+        $('#coupon-applied-alert').addClass('hidden');
+        $('#coupon-message').addClass('hidden').text('');
+        updateSummaryUI();
+        updateItemsDiscountUI();
+    };
+
+    function updateItemsDiscountUI() {
+        // Reset all item displays first
+        const currencyStr = (window.translations && window.translations.currency) || 'ج.م';
+
+        $('#cart-items-list .cart-item-row').each(function () {
+            const card = $(this);
+            
+            // Find unit price element
+            const unitPriceSpan = card.find('.unit-price');
+            const originalPrice = parseFloat(unitPriceSpan.data('original-price'));
+            
+            if (!isNaN(originalPrice)) {
+                // Restore unit price text
+                unitPriceSpan.text(`${originalPrice.toFixed(2)} ${currencyStr}`);
+                
+                // Restore subtotal text
+                const count = parseInt(card.find('input[type=number]').val()) || 1;
+                const subtotalSpan = card.find('.item-subtotal');
+                subtotalSpan.text(`${(originalPrice * count).toFixed(2)} ${currencyStr}`);
+            }
+            
+            // Hide coupon badge
+            const badge = card.find('.coupon-badge');
+            if (badge.length) {
+                badge.addClass('hidden').text('');
+            }
+        });
+
+        // Apply coupon discounts
+        appliedDiscountItems.forEach(item => {
+            const card = $(`.cart-item-row[data-product-id=${item.productId}]`);
+            if (card.length) {
+                const unitPriceSpan = card.find('.unit-price');
+                const originalPrice = parseFloat(unitPriceSpan.data('original-price'));
+                
+                if (!isNaN(originalPrice)) {
+                    const discountedUnitPrice = originalPrice - item.unitDiscount;
+                    unitPriceSpan.text(`${discountedUnitPrice.toFixed(2)} ${currencyStr}`);
+                    
+                    const count = parseInt(card.find('input[type=number]').val()) || 1;
+                    const subtotalSpan = card.find('.item-subtotal');
+                    subtotalSpan.text(`${(discountedUnitPrice * count).toFixed(2)} ${currencyStr}`);
+                    
+                    // Show coupon badge
+                    let badge = card.find('.coupon-badge');
+                    if (badge.length) {
+                        const couponText = (window.translations && window.translations.couponDiscount) || 'خصم الكوبون:';
+                        badge.text(`${couponText} -${(item.unitDiscount * count).toFixed(2)} ${currencyStr}`).removeClass('hidden');
+                    }
+                }
+            }
+        });
     }
 </script>

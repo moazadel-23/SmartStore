@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using SmartStore.Models;
 using SmartStore.Repositories;
 using System.Linq.Expressions;
@@ -11,15 +12,18 @@ namespace SmartStore.Areas.Admin.Controllers
         private readonly IRepository<Product> _productRepository;
         private readonly IRepository<Category> _categoryRepository;
         private readonly IRepository<Brand> _brandRepository;
+        private readonly IStringLocalizer<LocalizationController> _localizer;
 
         public ProductController(
             IRepository<Product> productRepository,
             IRepository<Category> categoryRepository,
-            IRepository<Brand> brandRepository)
+            IRepository<Brand> brandRepository,
+            IStringLocalizer<LocalizationController> localizer)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
             _brandRepository = brandRepository;
+            _localizer = localizer;
         }
 
         [HttpGet]
@@ -40,6 +44,8 @@ namespace SmartStore.Areas.Admin.Controllers
             Product product,
             IFormFile Img,
             List<IFormFile> SubImgFiles,
+            IFormFile? OverviewImgFile,
+            List<ProductSpecification>? Specifications,
             int CategoryId,
             int BrandId,
             CancellationToken cancellationToken)
@@ -62,6 +68,22 @@ namespace SmartStore.Areas.Admin.Controllers
                 using var stream = System.IO.File.Create(filePath);
                 await Img.CopyToAsync(stream);
                 product.MainImg = fileName;
+            }
+
+            if (OverviewImgFile != null && OverviewImgFile.Length > 0)
+            {
+                var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img");
+                Directory.CreateDirectory(folder);
+                var fileName = Guid.NewGuid() + Path.GetExtension(OverviewImgFile.FileName);
+                var filePath = Path.Combine(folder, fileName);
+                using var stream = System.IO.File.Create(filePath);
+                await OverviewImgFile.CopyToAsync(stream);
+                product.OverviewImageUrl = "/img/" + fileName;
+            }
+
+            if (Specifications != null)
+            {
+                product.Specifications = Specifications.Where(s => !string.IsNullOrWhiteSpace(s.Key)).ToList();
             }
 
             if (SubImgFiles != null && SubImgFiles.Count > 0)
@@ -91,7 +113,7 @@ namespace SmartStore.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Update(int id, CancellationToken cancellationToken)
         {
-            var product = await _productRepository.GetOneAsync(e => e.Id == id, include: [e => e.Category!, e => e.Brand!, e => e.ProductSubImgs!], tracked: true);
+            var product = await _productRepository.GetOneAsync(e => e.Id == id, include: [e => e.Category!, e => e.Brand!, e => e.ProductSubImgs!, e => e.Specifications!], tracked: true);
             if (product == null) return NotFound();
 
             ViewBag.category = await _categoryRepository.GetAsync(cancellationToken: cancellationToken) ?? new List<Category>();
@@ -106,18 +128,20 @@ namespace SmartStore.Areas.Admin.Controllers
             Product model,
             IFormFile? Img,
             List<IFormFile>? SubImgFiles,
+            IFormFile? OverviewImgFile,
+            List<ProductSpecification>? Specifications,
             List<int>? DeletedSubImgIds,
             int CategoryId,
             int BrandId,
             CancellationToken cancellationToken)
         {
-            var existingProduct = await _productRepository.GetOneAsync(e => e.Id == model.Id, include: [e => e.ProductSubImgs!], tracked: true);
+            var existingProduct = await _productRepository.GetOneAsync(e => e.Id == model.Id, include: [e => e.ProductSubImgs!, e => e.Specifications!], tracked: true);
             if (existingProduct == null) return NotFound();
 
             if (!ModelState.IsValid)
             {
-                ViewBag.category = await _categoryRepository.GetAsync(cancellationToken: cancellationToken) ?? new List<Category>();
-                ViewBag.brand = await _brandRepository.GetAsync(cancellationToken: cancellationToken) ?? new List<Brand>();
+                ViewBag.category = await _categoryRepository.GetAsync(cancellationToken: cancellationToken);
+                ViewBag.brand = await _brandRepository.GetAsync(cancellationToken: cancellationToken);
                 return View(model);
             }
 
@@ -131,6 +155,16 @@ namespace SmartStore.Areas.Admin.Controllers
             existingProduct.CategoryId = CategoryId;
             existingProduct.BrandId = BrandId;
 
+            // Update new columns
+            existingProduct.SKU = model.SKU;
+            existingProduct.Warranty = model.Warranty;
+            existingProduct.ReturnPolicy = model.ReturnPolicy;
+            existingProduct.DeliveryTimeCairoGiza = model.DeliveryTimeCairoGiza;
+            existingProduct.DeliveryTimeOutside = model.DeliveryTimeOutside;
+            existingProduct.PackageContents = model.PackageContents;
+            existingProduct.OverviewTitle = model.OverviewTitle;
+            existingProduct.OverviewDescription = model.OverviewDescription;
+
             if (Img != null && Img.Length > 0)
             {
                 var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img");
@@ -140,6 +174,40 @@ namespace SmartStore.Areas.Admin.Controllers
                 using var stream = System.IO.File.Create(filePath);
                 await Img.CopyToAsync(stream);
                 existingProduct.MainImg = fileName;
+            }
+
+            if (OverviewImgFile != null && OverviewImgFile.Length > 0)
+            {
+                var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img");
+                Directory.CreateDirectory(folder);
+                var fileName = Guid.NewGuid() + Path.GetExtension(OverviewImgFile.FileName);
+                var filePath = Path.Combine(folder, fileName);
+                using var stream = System.IO.File.Create(filePath);
+                await OverviewImgFile.CopyToAsync(stream);
+                existingProduct.OverviewImageUrl = "/img/" + fileName;
+            }
+
+            // Update specifications
+            if (existingProduct.Specifications != null)
+            {
+                existingProduct.Specifications.Clear();
+            }
+            else
+            {
+                existingProduct.Specifications = new List<ProductSpecification>();
+            }
+
+            if (Specifications != null)
+            {
+                foreach (var spec in Specifications.Where(s => !string.IsNullOrWhiteSpace(s.Key)))
+                {
+                    existingProduct.Specifications.Add(new ProductSpecification
+                    {
+                        Key = spec.Key,
+                        Value = spec.Value,
+                        IsHighlight = spec.IsHighlight
+                    });
+                }
             }
 
             if (SubImgFiles != null && SubImgFiles.Count > 0)
@@ -181,8 +249,16 @@ namespace SmartStore.Areas.Admin.Controllers
             var product = await _productRepository.GetOneAsync(e => e.Id == id);
             if (product is null) return NotFound();
             
-            _productRepository.Delete(product);
-            await _productRepository.Commit();
+            try
+            {
+                _productRepository.Delete(product);
+                await _productRepository.Commit();
+                TempData["SuccessMessage"] = _localizer["ProductDeletedSuccessfully"].Value;
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = _localizer["ProductDeleteFailed"].Value;
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -190,11 +266,19 @@ namespace SmartStore.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id, CancellationToken cancellationToken)
         {
-            var product = await _productRepository.GetOneAsync(e => e.Id == id);
+            var product = await _productRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
             if (product is null) return NotFound(); 
             
-            _productRepository.Delete(product);
-            await _productRepository.Commit(cancellationToken);
+            try
+            {
+                _productRepository.Delete(product);
+                await _productRepository.Commit(cancellationToken);
+                TempData["SuccessMessage"] = _localizer["ProductDeletedSuccessfully"].Value;
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = _localizer["ProductDeleteFailed"].Value;
+            }
             return RedirectToAction(nameof(Index));
         }
     }

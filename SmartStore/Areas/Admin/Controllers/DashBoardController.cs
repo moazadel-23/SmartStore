@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using SmartStore.Models;
 using SmartStore.Repositories;
 using SmartStore.ViewModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SmartStore.Areas.Admin.Controllers
 {
@@ -23,25 +25,33 @@ namespace SmartStore.Areas.Admin.Controllers
             _userManager = userManager;
             _productRepository = productRepository;
         }
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             var totalUsers = await _userManager.Users.CountAsync();
-
-            var totalOrder = await _orderRepository.CountAsync();
-
-           // var recentOrders = allOrders.OrderByDescending(o => o.OrderDate).Take(5).ToList();
-
             var totalProducts = await _productRepository.CountAsync();
+
+            var allOrders = await _orderRepository.GetAsync();
+            var totalOrder = allOrders.Count();
+            var totalRevenue = allOrders.Sum(o => o.TotalAmount);
+            var recentOrders = allOrders.OrderByDescending(o => o.OrderDate).Take(5).ToList();
 
             var viewModel = new DashboardViewModel
             {
-                totalOrder = totalOrder,
+                TotalOrdersCount = totalOrder,
                 TotalProduct = totalProducts,
                 TotalUsersCount = totalUsers,
-               // RecentOrders = recentOrders
+                RecentOrders = recentOrders,
+                TotalRevenue = totalRevenue
             };
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public IActionResult Profile()
+        {
+            return View();
         }
     }
 }

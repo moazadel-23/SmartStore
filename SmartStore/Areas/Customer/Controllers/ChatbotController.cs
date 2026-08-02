@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using SmartStore.Models;
 using SmartStore.Repositories;
 
 namespace SmartStore.Areas.Customer.Controllers
@@ -105,7 +104,16 @@ namespace SmartStore.Areas.Customer.Controllers
             {
                 return Json(new ChatbotResponse
                 {
-                    Message = "فريق خدمة العملاء جاهز لمساعدتك! يمكنك الاتصال بنا على الرقم 19999 أو مراسلتنا عبر الواتساب على 01000000000 طوال أيام الأسبوع.",
+                    Message = "فريق خدمة العملاء جاهز لمساعدتك! يمكنك الاتصال بنا على الرقم 19999 أو مراسلتنا مباشرة عبر الواتساب طوال أيام الأسبوع.<br><br><a href='https://wa.me/201019519390' target='_blank' class='chatbot-whatsapp-link' style='display:inline-flex;align-items:center;gap:8px;background-color:#25D366;color:white;padding:10px 18px;border-radius:25px;font-weight:bold;text-decoration:none;box-shadow:0 4px 12px rgba(37,211,102,0.3);'><i class=\"fab fa-whatsapp\" style=\"font-size:16px;\"></i> تواصل عبر واتساب</a>",
+                    NextState = "",
+                    Options = GetDefaultOptions()
+                });
+            }
+            else if (text == "🟢 تواصل عبر واتساب" || text == "whatsapp")
+            {
+                return Json(new ChatbotResponse
+                {
+                    Message = "يسعدنا تواصلك معنا مباشرة عبر واتساب! اضغط على الزر أدناه لبدء المحادثة:<br><br><a href='https://wa.me/201019519390' target='_blank' class='chatbot-whatsapp-link' style='display:inline-flex;align-items:center;gap:8px;background-color:#25D366;color:white;padding:10px 18px;border-radius:25px;font-weight:bold;text-decoration:none;box-shadow:0 4px 12px rgba(37,211,102,0.3);'><i class=\"fab fa-whatsapp\" style=\"font-size:16px;\"></i> تواصل عبر واتساب</a>",
                     NextState = "",
                     Options = GetDefaultOptions()
                 });
@@ -137,30 +145,9 @@ namespace SmartStore.Areas.Customer.Controllers
                 "📦 تتبع الطلبات",
                 "💳 طرق الدفع",
                 "🔄 سياسة الاسترجاع",
+                "🟢 تواصل عبر واتساب",
                 "📞 خدمة العملاء"
             };
         }
-    }
-
-    public class ChatMessageRequest
-    {
-        public string? Message { get; set; }
-        public string? State { get; set; }
-    }
-
-    public class ChatbotResponse
-    {
-        public string Message { get; set; } = string.Empty;
-        public string NextState { get; set; } = string.Empty;
-        public List<ProductDto>? Products { get; set; }
-        public List<string>? Options { get; set; }
-    }
-
-    public class ProductDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public decimal Price { get; set; }
-        public string MainImg { get; set; } = string.Empty;
     }
 }

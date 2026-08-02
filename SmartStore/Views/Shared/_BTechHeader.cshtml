@@ -1,3 +1,4 @@
+@using SmartStore.Utilities
 @inject SmartStore.Repositories.IRepository<SmartStore.Models.Cart> CartRepo
 @inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> UserManager
 @{
@@ -39,9 +40,9 @@
         theme: {
             extend: {
                 colors: {
-                    'btech-orange': '#ff6a00',
-                    'btech-orange-dark': '#e05d00',
-                    'btech-orange-light': '#fff0e6',
+                    'btech-orange': '#2563eb',
+                    'btech-orange-dark': '#1d4ed8',
+                    'btech-orange-light': '#eff6ff',
                     'btech-black': '#111111',
                     'btech-gray': '#f4f4f5',
                     'whatsapp': '#25D366',
@@ -78,27 +79,37 @@
     }
 </style>
 
-<div dir="rtl" class="font-cairo btech-header-container text-right">
+<div dir="@(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "rtl" : "ltr")" class="font-cairo btech-header-container @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "text-right" : "text-left")">
     <!-- ═══ TOP ANNOUNCEMENT BAR ═══ -->
     <div class="bg-btech-black text-white text-[11px] sm:text-xs py-2">
         <div class="max-w-8xl mx-auto px-4 flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <span class="flex items-center gap-1.5">
                     <i class="fas fa-truck text-btech-orange"></i>
-                    <span>شحن مجاني وسريع للطلبات فوق 300 ج.م</span>
+                    <span>@Localizer["FreeShippingText"]</span>
                 </span>
-                <span class="hidden sm:flex items-center gap-1.5 border-r border-gray-700 pr-4">
+                <span class="hidden sm:flex items-center gap-1.5 @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "border-r pr-4" : "border-l pl-4") border-gray-700">
                     <i class="fas fa-phone text-btech-orange"></i>
-                    <span>اتصل بنا: 19966</span>
+                    <span>@Localizer["CallUs"]</span>
                 </span>
             </div>
             <div class="flex items-center gap-4">
-                <a href="#" class="hover:text-btech-orange transition-colors">الفروع</a>
+                <a href="#" class="hover:text-btech-orange transition-colors text-white text-decoration-none">@Localizer["Branches"]</a>
                 <span class="text-gray-700">|</span>
-                <div class="flex items-center gap-1 cursor-pointer hover:text-btech-orange">
-                    <i class="fas fa-globe text-[11px]"></i>
-                    <span>English</span>
-                </div>
+                @if (System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar"))
+                {
+                    <a href="/Localization/SetLanguage?culture=en-us&returnUrl=@Context.Request.Path@Context.Request.QueryString" class="flex items-center gap-1 cursor-pointer hover:text-btech-orange text-white text-decoration-none">
+                        <i class="fas fa-globe text-[11px]"></i>
+                        <span>English</span>
+                    </a>
+                }
+                else
+                {
+                    <a href="/Localization/SetLanguage?culture=ar&returnUrl=@Context.Request.Path@Context.Request.QueryString" class="flex items-center gap-1 cursor-pointer hover:text-btech-orange text-white text-decoration-none">
+                        <i class="fas fa-globe text-[11px]"></i>
+                        <span>العربية</span>
+                    </a>
+                }
             </div>
         </div>
     </div>
@@ -123,10 +134,10 @@
                 {
                     <div class="flex-1 max-w-xl relative">
                         <form id="searchForm" action="@searchAction" method="get" class="flex w-full m-0">
-                            <input type="text" id="searchInput" name="SearchQuery" placeholder="ابحث عن موبايل، شاشة، غسالة أو تكييف..."
+                            <input type="text" id="searchInput" name="SearchQuery" placeholder="@Localizer["SearchPlaceholder"]"
                                    value="@searchQuery"
-                                   class="w-full h-10 px-4 rounded-r-xl border border-gray-200 text-sm focus:border-btech-orange focus:outline-none focus:ring-1 focus:ring-btech-orange" />
-                            <button type="submit" class="bg-btech-orange hover:bg-btech-orange-dark text-white px-5 rounded-l-xl flex items-center justify-center transition-colors border-0">
+                                   class="w-full h-10 px-4 @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "rounded-r-xl" : "rounded-l-xl") border border-gray-200 text-sm focus:border-btech-orange focus:outline-none focus:ring-1 focus:ring-btech-orange" />
+                            <button type="submit" class="bg-btech-orange hover:bg-btech-orange-dark text-white px-5 @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "rounded-l-xl" : "rounded-r-xl") flex items-center justify-center transition-colors border-0">
                                 <i class="fas fa-search text-sm"></i>
                             </button>
                         </form>
@@ -136,43 +147,48 @@
 
                 <!-- User & Cart Actions (Desktop only) -->
                 <div class="hidden md:flex items-center gap-6">
-                    <a href="/Admin/DashBoard" class="flex flex-col items-center text-gray-600 hover:text-btech-orange transition-colors">
-                        <i class="fas fa-user-shield text-lg"></i>
-                        <span class="text-[11px] font-bold mt-1">الادمن</span>
-                    </a>
+                    @if (User.IsInRole(SD.ROLE_SUPERADMIN))
+                    {
+                        <a href="/Admin/DashBoard" class="flex flex-col items-center text-gray-600 hover:text-btech-orange transition-colors decoration-none">
+                            <i class="fas fa-user-shield text-lg"></i>
+                            <span class="text-[11px] font-bold mt-1">@Localizer["AdminPanel"]</span>
+                        </a>
+                    }
+                    
 
                     @if (User.Identity.IsAuthenticated)
                     {
                         <div class="relative group">
                             <button type="button" class="flex flex-col items-center text-gray-600 hover:text-btech-orange transition-colors border-0 bg-transparent cursor-pointer">
                                 <i class="fas fa-user text-lg"></i>
-                                <span class="text-[11px] font-bold mt-1">أهلاً، @userDisplayName</span>
+                                <span class="text-[11px] font-bold mt-1">@Localizer["Welcome"] @userDisplayName</span>
                             </button>
                             <!-- Dropdown menu on hover -->
-                            <div class="absolute right-0 mt-0 w-40 bg-white rounded-xl shadow-lg border border-gray-100 py-2 hidden group-hover:block z-50 text-right">
-                                <a href="/Identity/Account/Logout" class="block px-4 py-2 text-xs font-bold text-red-500 hover:bg-red-50 transition-colors">تسجيل الخروج</a>
+                            <div class="absolute @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "right-0 text-right" : "left-0 text-left") mt-0 w-40 bg-white rounded-xl shadow-lg border border-gray-100 py-2 hidden group-hover:block z-50">
+                                <a href="/Customer/Home/Profile" class="block px-4 py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors decoration-none">@Localizer["Profile"]</a>
+                                <a href="/Identity/Account/Logout" class="block px-4 py-2 text-xs font-bold text-red-500 hover:bg-red-50 transition-colors decoration-none">@Localizer["Logout"]</a>
                             </div>
                         </div>
                     }
                     else
                     {
-                        <a href="/Identity/Account/Login" class="flex flex-col items-center text-gray-600 hover:text-btech-orange transition-colors">
+                        <a href="/Identity/Account/Login" class="flex flex-col items-center text-gray-600 hover:text-btech-orange transition-colors decoration-none">
                             <i class="fas fa-user text-lg"></i>
-                            <span class="text-[11px] font-bold mt-1">تسجيل الدخول</span>
+                            <span class="text-[11px] font-bold mt-1">@Localizer["Login"]</span>
                         </a>
                     }
                     @if (!hideWishlist)
                     {
-                        <a href="/Customer/Wishlist/Index" class="flex flex-col items-center text-gray-600 hover:text-btech-orange transition-colors relative">
+                        <a href="/Customer/Wishlist/Index" class="flex flex-col items-center text-gray-600 hover:text-btech-orange transition-colors relative decoration-none">
                             <i class="fas fa-heart text-lg"></i>
                             <span id="wishlistCount" class="absolute -top-1.5 -left-1.5 w-4 h-4 bg-btech-orange text-white text-[9px] font-bold rounded-full flex items-center justify-center">0</span>
-                            <span class="text-[11px] font-bold mt-1">المفضلة</span>
+                            <span class="text-[11px] font-bold mt-1">@Localizer["Wishlist"]</span>
                         </a>
                     }
-                    <a href="/Cart" class="flex flex-col items-center text-gray-600 hover:text-btech-orange transition-colors relative">
+                    <a href="/Cart" class="flex flex-col items-center text-gray-600 hover:text-btech-orange transition-colors relative decoration-none">
                         <i class="fas fa-shopping-cart text-lg"></i>
                         <span id="cartCount" class="absolute -top-1.5 -left-1.5 w-4 h-4 bg-btech-orange text-white text-[9px] font-bold rounded-full flex items-center justify-center">@dbCartCount</span>
-                        <span class="text-[11px] font-bold mt-1">السلة</span>
+                        <span class="text-[11px] font-bold mt-1">@Localizer["Cart"]</span>
                     </a>
                 </div>
             </div>
@@ -183,20 +199,20 @@
             <!-- Category Sub-Nav bar -->
             <div class="hidden md:block bg-white border-t border-gray-50 py-2.5 overflow-x-auto hide-scrollbar">
                 <div class="max-w-8xl mx-auto px-4 flex items-center gap-6 text-sm font-bold text-gray-600 whitespace-nowrap">
-                    <a href="/Customer/Home/Store" class="text-btech-orange flex items-center gap-1.5">
+                    <a href="/Customer/Home/Store" class="text-btech-orange flex items-center gap-1.5 decoration-none">
                         <i class="fas fa-bars"></i>
-                        <span>كل الأقسام</span>
+                        <span>@Localizer["AllCategories"]</span>
                     </a>
                     <span class="text-gray-200">|</span>
-                    <a href="/Customer/Home/Store?Filter.CategoryIds=1" class="hover:text-btech-orange transition-colors">موبايلات</a>
-                    <a href="/Customer/Home/Store?Filter.CategoryIds=2" class="hover:text-btech-orange transition-colors">لابتوبات</a>
-                    <a href="/Customer/Home/Store?Filter.CategoryIds=3" class="hover:text-btech-orange transition-colors">شاشات وتلفزيونات</a>
-                    <a href="/Customer/Home/Store?Filter.CategoryIds=4" class="hover:text-btech-orange transition-colors">أجهزة منزلية</a>
-                    <a href="/Customer/Home/Store?Filter.CategoryIds=5" class="hover:text-btech-orange transition-colors">ساعات ذكية</a>
-                    <a href="/Customer/Home/Store?Filter.CategoryIds=6" class="hover:text-btech-orange transition-colors">صوتيات وملحقات</a>
-                    <a href="#" class="hover:text-btech-orange transition-colors text-red-500 flex items-center gap-1">
+                    <a href="/Customer/Home/Store?Filter.CategoryIds=1" class="hover:text-btech-orange transition-colors decoration-none">@Localizer["Mobiles"]</a>
+                    <a href="/Customer/Home/Store?Filter.CategoryIds=2" class="hover:text-btech-orange transition-colors decoration-none">@Localizer["Laptops"]</a>
+                    <a href="/Customer/Home/Store?Filter.CategoryIds=3" class="hover:text-btech-orange transition-colors decoration-none">@Localizer["ScreensTVs"]</a>
+                    <a href="/Customer/Home/Store?Filter.CategoryIds=4" class="hover:text-btech-orange transition-colors decoration-none">@Localizer["HomeAppliances"]</a>
+                    <a href="/Customer/Home/Store?Filter.CategoryIds=5" class="hover:text-btech-orange transition-colors decoration-none">@Localizer["SmartWatches"]</a>
+                    <a href="/Customer/Home/Store?Filter.CategoryIds=6" class="hover:text-btech-orange transition-colors decoration-none">@Localizer["AudioAccessories"]</a>
+                    <a href="#" class="hover:text-btech-orange transition-colors text-red-500 flex items-center gap-1 decoration-none">
                         <i class="fas fa-fire"></i>
-                        <span>عروض وتنزيلات</span>
+                        <span>@Localizer["OffersDiscounts"]</span>
                     </a>
                 </div>
             </div>
@@ -209,7 +225,7 @@
         <div id="mobileSidebarOverlay" class="absolute inset-0 bg-black/50 transition-opacity duration-300 opacity-0"></div>
         
         <!-- Drawer container (slides from left/right) -->
-        <div id="mobileSidebarContent" class="absolute top-0 right-0 max-w-[280px] w-full h-full bg-white shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out text-right font-cairo">
+        <div id="mobileSidebarContent" class="absolute top-0 @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "right-0 translate-x-full" : "left-0 -translate-x-full") max-w-[280px] w-full h-full bg-white shadow-2xl flex flex-col transition-transform duration-300 ease-in-out @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "text-right" : "text-left") font-cairo">
             <!-- Header -->
             <div class="flex items-center justify-between px-4 py-4 border-b border-gray-100 bg-gray-50">
                 <span class="text-btech-black text-2xl font-black tracking-tight flex items-center gap-1">
@@ -226,24 +242,24 @@
                 <div class="border-b border-gray-100 pb-4">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <div class="flex items-center gap-3">
+                        <a href="/Customer/Home/Profile" class="flex items-center gap-3 decoration-none">
                             <div class="w-10 h-10 rounded-full bg-btech-orange-light text-btech-orange flex items-center justify-center font-bold text-lg border border-btech-orange/20">
                                 @(string.IsNullOrEmpty(userDisplayName) ? "U" : userDisplayName.Substring(0, 1).ToUpper())
                             </div>
                             <div>
-                                <p class="text-sm font-bold text-gray-800">أهلاً، @userDisplayName</p>
-                                <p class="text-xs text-gray-500">سعيد بعودتك</p>
+                                <p class="text-sm font-bold text-gray-800">@Localizer["Welcome"] @userDisplayName</p>
+                                <p class="text-xs text-gray-500">@Localizer["Profile"]</p>
                             </div>
-                        </div>
+                        </a>
                     }
                     else
                     {
-                        <a href="/Identity/Account/Login" class="flex items-center gap-3 text-gray-700 hover:text-btech-orange transition-colors">
+                        <a href="/Identity/Account/Login" class="flex items-center gap-3 text-gray-700 hover:text-btech-orange transition-colors decoration-none">
                             <div class="w-10 h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-lg">
                                 <i class="fas fa-user"></i>
                             </div>
                             <div>
-                                <p class="text-sm font-bold">تسجيل الدخول</p>
+                                <p class="text-sm font-bold">@Localizer["Login"]</p>
                                 <p class="text-xs text-gray-500">أو إنشاء حساب جديد</p>
                             </div>
                         </a>
@@ -254,24 +270,27 @@
                 <div class="space-y-4">
                     <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">روابط سريعة</p>
                     <div class="flex flex-col gap-1">
-                        <a href="/Admin/DashBoard" class="flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-btech-orange transition-colors">
-                            <i class="fas fa-user-shield text-base text-gray-400 w-5"></i>
-                            <span class="text-sm font-bold">الادمن</span>
-                        </a>
+                        @if (User.IsInRole(SD.ROLE_SUPERADMIN))
+                        {
+                            <a href="/Admin/DashBoard" class="flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-btech-orange transition-colors decoration-none">
+                                <i class="fas fa-user-shield text-base text-gray-400 w-5"></i>
+                                <span class="text-sm font-bold">@Localizer["AdminPanel"]</span>
+                            </a>
+                        }
                         @if (!hideWishlist)
                         {
-                            <a href="/Customer/Wishlist/Index" class="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-btech-orange transition-colors">
+                            <a href="/Customer/Wishlist/Index" class="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-btech-orange transition-colors decoration-none">
                                 <div class="flex items-center gap-3">
                                     <i class="fas fa-heart text-base text-gray-400 w-5"></i>
-                                    <span class="text-sm font-bold">المفضلة</span>
+                                    <span class="text-sm font-bold">@Localizer["Wishlist"]</span>
                                 </div>
                                 <span id="mobileWishlistCount" class="bg-btech-orange text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
                             </a>
                         }
-                        <a href="/Cart" class="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-btech-orange transition-colors">
+                        <a href="/Cart" class="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-btech-orange transition-colors decoration-none">
                             <div class="flex items-center gap-3">
                                 <i class="fas fa-shopping-cart text-base text-gray-400 w-5"></i>
-                                <span class="text-sm font-bold">السلة</span>
+                                <span class="text-sm font-bold">@Localizer["Cart"]</span>
                             </div>
                             <span id="mobileCartCount" class="bg-btech-orange text-white text-[10px] font-bold px-2 py-0.5 rounded-full">@dbCartCount</span>
                         </a>
@@ -284,16 +303,16 @@
                     <div class="space-y-4 border-t border-gray-100 pt-4">
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">تصفح الأقسام</p>
                         <div class="flex flex-col gap-1">
-                            <a href="/Customer/Home/Store" class="flex items-center gap-3 py-2.5 px-3 rounded-xl text-btech-orange bg-btech-orange-light/50 hover:bg-btech-orange-light transition-colors font-bold text-sm">
+                            <a href="/Customer/Home/Store" class="flex items-center gap-3 py-2.5 px-3 rounded-xl text-btech-orange bg-btech-orange-light/50 hover:bg-btech-orange-light transition-colors font-bold text-sm decoration-none">
                                 <i class="fas fa-bars w-5"></i>
-                                <span>كل الأقسام</span>
+                                <span>@Localizer["AllCategories"]</span>
                             </a>
-                            <a href="/Customer/Home/Store?Filter.CategoryIds=1" class="block py-2 px-3 text-sm font-bold text-gray-600 hover:text-btech-orange hover:bg-gray-50 rounded-xl transition-colors">موبايلات</a>
-                            <a href="/Customer/Home/Store?Filter.CategoryIds=2" class="block py-2 px-3 text-sm font-bold text-gray-600 hover:text-btech-orange hover:bg-gray-50 rounded-xl transition-colors">لابتوبات</a>
-                            <a href="/Customer/Home/Store?Filter.CategoryIds=3" class="block py-2 px-3 text-sm font-bold text-gray-600 hover:text-btech-orange hover:bg-gray-50 rounded-xl transition-colors">شاشات وتلفزيونات</a>
-                            <a href="/Customer/Home/Store?Filter.CategoryIds=4" class="block py-2 px-3 text-sm font-bold text-gray-600 hover:text-btech-orange hover:bg-gray-50 rounded-xl transition-colors">أجهزة منزلية</a>
-                            <a href="/Customer/Home/Store?Filter.CategoryIds=5" class="block py-2 px-3 text-sm font-bold text-gray-600 hover:text-btech-orange hover:bg-gray-50 rounded-xl transition-colors">ساعات ذكية</a>
-                            <a href="/Customer/Home/Store?Filter.CategoryIds=6" class="block py-2 px-3 text-sm font-bold text-gray-600 hover:text-btech-orange hover:bg-gray-50 rounded-xl transition-colors">صوتيات وملحقات</a>
+                            <a href="/Customer/Home/Store?Filter.CategoryIds=1" class="block py-2 px-3 text-sm font-bold text-gray-600 hover:text-btech-orange hover:bg-gray-50 rounded-xl transition-colors decoration-none">@Localizer["Mobiles"]</a>
+                            <a href="/Customer/Home/Store?Filter.CategoryIds=2" class="block py-2 px-3 text-sm font-bold text-gray-600 hover:text-btech-orange hover:bg-gray-50 rounded-xl transition-colors decoration-none">@Localizer["Laptops"]</a>
+                            <a href="/Customer/Home/Store?Filter.CategoryIds=3" class="block py-2 px-3 text-sm font-bold text-gray-600 hover:text-btech-orange hover:bg-gray-50 rounded-xl transition-colors decoration-none">@Localizer["ScreensTVs"]</a>
+                            <a href="/Customer/Home/Store?Filter.CategoryIds=4" class="block py-2 px-3 text-sm font-bold text-gray-600 hover:text-btech-orange hover:bg-gray-50 rounded-xl transition-colors decoration-none">@Localizer["HomeAppliances"]</a>
+                            <a href="/Customer/Home/Store?Filter.CategoryIds=5" class="block py-2 px-3 text-sm font-bold text-gray-600 hover:text-btech-orange hover:bg-gray-50 rounded-xl transition-colors decoration-none">@Localizer["SmartWatches"]</a>
+                            <a href="/Customer/Home/Store?Filter.CategoryIds=6" class="block py-2 px-3 text-sm font-bold text-gray-600 hover:text-btech-orange hover:bg-gray-50 rounded-xl transition-colors decoration-none">@Localizer["AudioAccessories"]</a>
                         </div>
                     </div>
                 }
@@ -305,7 +324,7 @@
                 <div class="p-4 border-t border-gray-100 bg-gray-50">
                     <a href="/Identity/Account/Logout" class="flex items-center justify-center gap-2 w-full py-2.5 bg-red-50 hover:bg-red-100 text-red-500 rounded-xl font-bold text-sm transition-colors decoration-none">
                         <i class="fas fa-sign-out-alt"></i>
-                        <span>تسجيل الخروج</span>
+                        <span>@Localizer["Logout"]</span>
                     </a>
                 </div>
             }
@@ -320,13 +339,16 @@
             const mobileSidebarOverlay = document.getElementById("mobileSidebarOverlay");
             const mobileSidebarContent = document.getElementById("mobileSidebarContent");
 
+            const isRtl = document.documentElement.getAttribute("dir") === "rtl" || @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft.ToString().ToLower());
+            const translateClass = isRtl ? "translate-x-full" : "-translate-x-full";
+
             function openDrawer() {
                 if (!mobileSidebar) return;
                 mobileSidebar.classList.remove("hidden");
                 setTimeout(() => {
                     mobileSidebarOverlay?.classList.remove("opacity-0");
                     mobileSidebarOverlay?.classList.add("opacity-100");
-                    mobileSidebarContent?.classList.remove("translate-x-full");
+                    mobileSidebarContent?.classList.remove(translateClass);
                     mobileSidebarContent?.classList.add("translate-x-0");
                 }, 10);
                 document.body.style.overflow = 'hidden';
@@ -337,7 +359,7 @@
                 mobileSidebarOverlay?.classList.remove("opacity-100");
                 mobileSidebarOverlay?.classList.add("opacity-0");
                 mobileSidebarContent?.classList.remove("translate-x-0");
-                mobileSidebarContent?.classList.add("translate-x-full");
+                mobileSidebarContent?.classList.add(translateClass);
                 setTimeout(() => {
                     mobileSidebar.classList.add("hidden");
                 }, 300);

@@ -42,7 +42,7 @@ namespace SmartStore.Areas.Identity.Controllers
                 }
                 return View(register);
             }
-            return RedirectToAction(nameof(Login));
+            return RedirectToAction(nameof(Login), new { success = "register" });
         }
         [HttpGet]
         public IActionResult Login()
@@ -181,7 +181,7 @@ namespace SmartStore.Areas.Identity.Controllers
             var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
             if (result.Succeeded)
             {
-                return RedirectToAction(nameof(Login));
+                return RedirectToAction(nameof(Login), new { success = "reset" });
             }
 
             foreach (var error in result.Errors)

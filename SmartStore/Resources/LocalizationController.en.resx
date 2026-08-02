@@ -1,0 +1,1857 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DeliveryTo" xml:space="preserve">
+    <value>Delivery to Egypt</value>
+  </data>
+  <data name="HeaderInstallmentLink" xml:space="preserve">
+    <value>Installment Offers</value>
+  </data>
+  <data name="HeaderDealsLink" xml:space="preserve">
+    <value>Deals of the Day</value>
+  </data>
+  <data name="HeaderHelpLink" xml:space="preserve">
+    <value>Help &amp; Support</value>
+  </data>
+  <data name="HeaderBranchLink" xml:space="preserve">
+    <value>Store Locator</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>What are you looking for?</value>
+  </data>
+  <data name="LoginRegister" xml:space="preserve">
+    <value>Login / Register</value>
+  </data>
+  <data name="MyOrders" xml:space="preserve">
+    <value>My Orders</value>
+  </data>
+  <data name="Wishlist" xml:space="preserve">
+    <value>Wishlist</value>
+  </data>
+  <data name="Cart" xml:space="preserve">
+    <value>Cart</value>
+  </data>
+  <data name="AllCategoriesMenu" xml:space="preserve">
+    <value>All Categories</value>
+  </data>
+  <data name="Mobiles" xml:space="preserve">
+    <value>Mobiles</value>
+  </data>
+  <data name="Laptops" xml:space="preserve">
+    <value>Laptops</value>
+  </data>
+  <data name="ScreensTVs" xml:space="preserve">
+    <value>Screens &amp; TVs</value>
+  </data>
+  <data name="HomeAppliances" xml:space="preserve">
+    <value>Home Appliances</value>
+  </data>
+  <data name="Speakers" xml:space="preserve">
+    <value>Speakers &amp; Buds</value>
+  </data>
+  <data name="SmartWatches" xml:space="preserve">
+    <value>Smartwatches</value>
+  </data>
+  <data name="AirConditioners" xml:space="preserve">
+    <value>Air Conditioners</value>
+  </data>
+  <data name="Gaming" xml:space="preserve">
+    <value>Gaming</value>
+  </data>
+  <data name="Audio" xml:space="preserve">
+    <value>Audio</value>
+  </data>
+  <data name="ShopNow" xml:space="preserve">
+    <value>Shop Now</value>
+  </data>
+  <data name="InstallmentOfferTitle" xml:space="preserve">
+    <value>Installment Offers</value>
+  </data>
+  <data name="Installment12Months" xml:space="preserve">
+    <value>12 Months</value>
+  </data>
+  <data name="Installment3Months" xml:space="preserve">
+    <value>3 Months</value>
+  </data>
+  <data name="InstallmentTitleDefault" xml:space="preserve">
+    <value>Installment on Cash Price</value>
+  </data>
+  <data name="InstallmentSubtitleDefault1" xml:space="preserve">
+    <value>0% Interest | 0% Downpayment | 0% Admin Fees</value>
+  </data>
+  <data name="InstallmentSubtitleDefault2" xml:space="preserve">
+    <value>0% Interest | 0% Downpayment | 0% Admin Fees</value>
+  </data>
+  <data name="HuaweiFestival" xml:space="preserve">
+    <value>Huawei Festival</value>
+  </data>
+  <data name="HuaweiTitle" xml:space="preserve">
+    <value>Huawei Festival HUAWEI</value>
+  </data>
+  <data name="HuaweiSubtitle" xml:space="preserve">
+    <value>Get instant discount coupons and free gifts when buying any Huawei Laptop or Smartwatch.</value>
+  </data>
+  <data name="AnkerBrand" xml:space="preserve">
+    <value>Anker ANKER</value>
+  </data>
+  <data name="AnkerTitle" xml:space="preserve">
+    <value>Anker ANKER for Phone Chargers and Accessories</value>
+  </data>
+  <data name="AnkerSubtitle" xml:space="preserve">
+    <value>Strongest protection and fastest charging for your smartphones, discount offers up to 25% exclusively.</value>
+  </data>
+  <data name="ReadyToSave" xml:space="preserve">
+    <value>Ready to Save</value>
+  </data>
+  <data name="SaveMore" xml:space="preserve">
+    <value>Save More</value>
+  </data>
+  <data name="PriceStartingFrom" xml:space="preserve">
+    <value>Starting from</value>
+  </data>
+  <data name="EGP" xml:space="preserve">
+    <value>EGP</value>
+  </data>
+  <data name="RecommendedForYou" xml:space="preserve">
+    <value>Recommended For You</value>
+  </data>
+  <data name="BestSellers" xml:space="preserve">
+    <value>Best Sellers</value>
+  </data>
+  <data name="NewArrivals" xml:space="preserve">
+    <value>Explore New Arrivals</value>
+  </data>
+  <data name="ShowAll" xml:space="preserve">
+    <value>Show All</value>
+  </data>
+  <data name="MyWishlistTitle" xml:space="preserve">
+    <value>My Wishlist</value>
+  </data>
+  <data name="AboutUs" xml:space="preserve">
+    <value>About Us</value>
+  </data>
+  <data name="AboutUsText" xml:space="preserve">
+    <value>Your ideal destination for premium home appliances, electronics, and smartphones at unbeatable prices with the best installment systems in Egypt.</value>
+  </data>
+  <data name="MainCategories" xml:space="preserve">
+    <value>Main Categories</value>
+  </data>
+  <data name="CustomerService" xml:space="preserve">
+    <value>Customer Service</value>
+  </data>
+  <data name="ContactUs" xml:space="preserve">
+    <value>Contact Us</value>
+  </data>
+  <data name="ReturnsPolicy" xml:space="preserve">
+    <value>Returns &amp; Exchange Policy</value>
+  </data>
+  <data name="FAQ" xml:space="preserve">
+    <value>FAQ</value>
+  </data>
+  <data name="WarrantyTerms" xml:space="preserve">
+    <value>Warranty Terms</value>
+  </data>
+  <data name="MyAccount" xml:space="preserve">
+    <value>My Account</value>
+  </data>
+  <data name="AccountSettings" xml:space="preserve">
+    <value>Account Settings</value>
+  </data>
+  <data name="FooterRightsText" xml:space="preserve">
+    <value>B.TECH — All rights reserved to SmartStore.</value>
+  </data>
+  <data name="StoreTitle" xml:space="preserve">
+    <value>SmartStore - Store</value>
+  </data>
+  <data name="AllProducts" xml:space="preserve">
+    <value>All Products</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filters</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="Brand" xml:space="preserve">
+    <value>Brand</value>
+  </data>
+  <data name="PriceRange" xml:space="preserve">
+    <value>Price Range</value>
+  </data>
+  <data name="Min" xml:space="preserve">
+    <value>Min</value>
+  </data>
+  <data name="Max" xml:space="preserve">
+    <value>Max</value>
+  </data>
+  <data name="Rating" xml:space="preserve">
+    <value>Rating</value>
+  </data>
+  <data name="AndUp" xml:space="preserve">
+    <value>&amp; up</value>
+  </data>
+  <data name="InStockOnly" xml:space="preserve">
+    <value>In Stock Only</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>All Categories</value>
+  </data>
+  <data name="Review" xml:space="preserve">
+    <value>Review(s)</value>
+  </data>
+  <data name="AddYourReview" xml:space="preserve">
+    <value>Add your review</value>
+  </data>
+  <data name="InStock" xml:space="preserve">
+    <value>In Stock</value>
+  </data>
+  <data name="OutOfStock" xml:space="preserve">
+    <value>Out of Stock</value>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="Qty" xml:space="preserve">
+    <value>Qty</value>
+  </data>
+  <data name="AddToCart" xml:space="preserve">
+    <value>Add to Cart</value>
+  </data>
+  <data name="AddToWishlist" xml:space="preserve">
+    <value>Add to Wishlist</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>Share</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="Reviews" xml:space="preserve">
+    <value>Reviews</value>
+  </data>
+  <data name="Discount" xml:space="preserve">
+    <value>Discount</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="Stock" xml:space="preserve">
+    <value>Stock</value>
+  </data>
+  <data name="NoReviewsYet" xml:space="preserve">
+    <value>No reviews yet. Be the first to review this product!</value>
+  </data>
+  <data name="RelatedProducts" xml:space="preserve">
+    <value>Related Products</value>
+  </data>
+  <data name="NewsletterSignUp" xml:space="preserve">
+    <value>Sign Up for the Newsletter</value>
+  </data>
+  <data name="EnterYourEmail" xml:space="preserve">
+    <value>Enter Your Email</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Subscribe</value>
+  </data>
+  <data name="CartTitle" xml:space="preserve">
+    <value>Shopping Cart</value>
+  </data>
+  <data name="ItemsCountLabel" xml:space="preserve">
+    <value>items</value>
+  </data>
+  <data name="ItemCountLabel" xml:space="preserve">
+    <value>item</value>
+  </data>
+  <data name="ContinueShopping" xml:space="preserve">
+    <value>Continue Shopping</value>
+  </data>
+  <data name="ClearCart" xml:space="preserve">
+    <value>Clear Cart</value>
+  </data>
+  <data name="OrderSummary" xml:space="preserve">
+    <value>Order Summary</value>
+  </data>
+  <data name="Subtotal" xml:space="preserve">
+    <value>Subtotal</value>
+  </data>
+  <data name="ShippingCost" xml:space="preserve">
+    <value>Shipping Cost</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="PromoCodePlaceholder" xml:space="preserve">
+    <value>Promo code (coupon)</value>
+  </data>
+  <data name="Checkout" xml:space="preserve">
+    <value>Proceed to Checkout</value>
+  </data>
+  <data name="SecureCheckoutInfo" xml:space="preserve">
+    <value>100% secure payment and full data protection</value>
+  </data>
+  <data name="ReturnPolicyInfo" xml:space="preserve">
+    <value>Easy returns and replacement within 14 days</value>
+  </data>
+  <data name="LoadingCart" xml:space="preserve">
+    <value>Loading cart...</value>
+  </data>
+  <data name="EmptyCartTitle" xml:space="preserve">
+    <value>Your cart is empty</value>
+  </data>
+  <data name="EmptyCartSubtitle" xml:space="preserve">
+    <value>Looks like you haven't added any products to your cart yet. Browse our premium deals and start shopping!</value>
+  </data>
+  <data name="BrowseProductsNow" xml:space="preserve">
+    <value>Browse products now</value>
+  </data>
+  <data name="Free" xml:space="preserve">
+    <value>Free</value>
+  </data>
+  <data name="AddProductsToStart" xml:space="preserve">
+    <value>Add products to start</value>
+  </data>
+  <data name="AddMoreForFreeShippingPrefix" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="AddMoreForFreeShippingSuffix" xml:space="preserve">
+    <value>more to get free shipping!</value>
+  </data>
+  <data name="CouponDiscount" xml:space="preserve">
+    <value>Coupon Discount:</value>
+  </data>
+  <data name="NoProductsFoundMatching" xml:space="preserve">
+    <value>No products found matching</value>
+  </data>
+  <data name="TryCheckingSpelling" xml:space="preserve">
+    <value>Try checking your spelling or search for another item.</value>
+  </data>
+  <data name="ClearSearch" xml:space="preserve">
+    <value>Clear Search</value>
+  </data>
+  <data name="WishlistEmptyTitle" xml:space="preserve">
+    <value>Your wishlist is empty</value>
+  </data>
+  <data name="WishlistEmptySubtitle" xml:space="preserve">
+    <value>Start adding products you love!</value>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="EmailAddress" xml:space="preserve">
+    <value>Email Address</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>Forgot Password?</value>
+  </data>
+  <data name="KeepMeSignedIn" xml:space="preserve">
+    <value>Keep me signed in</value>
+  </data>
+  <data name="OrDivider" xml:space="preserve">
+    <value>OR</value>
+  </data>
+  <data name="SignInWithGoogle" xml:space="preserve">
+    <value>Sign in with Google</value>
+  </data>
+  <data name="DontHaveAccount" xml:space="preserve">
+    <value>Don't have an account?</value>
+  </data>
+  <data name="RegisterAction" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
+  <data name="IQueryAgree" xml:space="preserve">
+    <value>I agree to the</value>
+  </data>
+  <data name="TermsOfService" xml:space="preserve">
+    <value>Terms</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>and</value>
+  </data>
+  <data name="PrivacyPolicy" xml:space="preserve">
+    <value>Privacy Policy</value>
+  </data>
+  <data name="CreateAccount" xml:space="preserve">
+    <value>Create account</value>
+  </data>
+  <data name="RegisterWithGoogle" xml:space="preserve">
+    <value>Register with Google</value>
+  </data>
+  <data name="AlreadyRegistered" xml:space="preserve">
+    <value>Already Registered?</value>
+  </data>
+  <data name="LogInAction" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="WelcomeDashboardPrefix" xml:space="preserve">
+    <value>Hello</value>
+  </data>
+  <data name="WelcomeDashboardSubtitle" xml:space="preserve">
+    <value>Welcome to your E-commerce Dashboard! Monitor your sales, orders, and gain valuable insights.</value>
+  </data>
+  <data name="AdminNavEcommerce" xml:space="preserve">
+    <value>Ecommerce </value>
+  </data>
+  <data name="AdminNavHeaderPages" xml:space="preserve">
+    <value>PAGES</value>
+  </data>
+  <data name="AdminNavPages" xml:space="preserve">
+    <value>Pages</value>
+  </data>
+  <data name="AdminNavCategories" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="AdminNavBrands" xml:space="preserve">
+    <value>Brands</value>
+  </data>
+  <data name="AdminNavProducts" xml:space="preserve">
+    <value>Products</value>
+  </data>
+  <data name="AdminNavPromotions" xml:space="preserve">
+    <value>Promotions</value>
+  </data>
+  <data name="AdminNavOrders" xml:space="preserve">
+    <value>Orders</value>
+  </data>
+  <data name="AdminNavBanners" xml:space="preserve">
+    <value>Banners</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="Light" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Dark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="MarkAllRead" xml:space="preserve">
+    <value>Mark all as read</value>
+  </data>
+  <data name="NotificationSettings" xml:space="preserve">
+    <value>Notification Settings</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="Following" xml:space="preserve">
+    <value>Following</value>
+  </data>
+  <data name="Archive" xml:space="preserve">
+    <value>Archive</value>
+  </data>
+  <data name="Inbox" xml:space="preserve">
+    <value>Inbox</value>
+  </data>
+  <data name="Activity" xml:space="preserve">
+    <value>Activity</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="ChangeLanguage" xml:space="preserve">
+    <value>Change language</value>
+  </data>
+  <data name="Authentication" xml:space="preserve">
+    <value>Authentication</value>
+  </data>
+  <data name="OtpVerification" xml:space="preserve">
+    <value>OTP Verification</value>
+  </data>
+  <data name="MenuLevel" xml:space="preserve">
+    <value>Menu Level</value>
+  </data>
+  <data name="Level1" xml:space="preserve">
+    <value>Level 1</value>
+  </data>
+  <data name="Level2" xml:space="preserve">
+    <value>Level 2</value>
+  </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="Label" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="ExternalLink" xml:space="preserve">
+    <value>External Link</value>
+  </data>
+  <data name="Blank" xml:space="preserve">
+    <value>Blank</value>
+  </data>
+  <data name="IdeasForYou" xml:space="preserve">
+    <value>Ideas for you</value>
+  </data>
+  <data name="CreateBlogPost" xml:space="preserve">
+    <value>Create a blog post</value>
+  </data>
+  <data name="CreateBlogPostSubtitle" xml:space="preserve">
+    <value>Share your stories, news or product announcements with your visitors.</value>
+  </data>
+  <data name="ReadNow" xml:space="preserve">
+    <value>Read Now</value>
+  </data>
+  <data name="TotalProducts" xml:space="preserve">
+    <value>Total Products</value>
+  </data>
+  <data name="Orders" xml:space="preserve">
+    <value>Orders</value>
+  </data>
+  <data name="Revenue" xml:space="preserve">
+    <value>Revenue</value>
+  </data>
+  <data name="TotalUsers" xml:space="preserve">
+    <value>Total Users</value>
+  </data>
+  <data name="TotalIncome" xml:space="preserve">
+    <value>Total Income</value>
+  </data>
+  <data name="TotalExpenses" xml:space="preserve">
+    <value>Total Expenses</value>
+  </data>
+  <data name="ProductSales" xml:space="preserve">
+    <value>Product Sales</value>
+  </data>
+  <data name="RecentOrders" xml:space="preserve">
+    <value>Recent Orders</value>
+  </data>
+  <data name="OrderID" xml:space="preserve">
+    <value>Order ID</value>
+  </data>
+  <data name="Customer" xml:space="preserve">
+    <value>Customer</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="NoRecentOrders" xml:space="preserve">
+    <value>No recent orders found.</value>
+  </data>
+  <data name="RecentActivity" xml:space="preserve">
+    <value>Recent Activity</value>
+  </data>
+  <data name="TodaySales" xml:space="preserve">
+    <value>Today's Sales</value>
+  </data>
+  <data name="NewCustomers" xml:space="preserve">
+    <value>New Customers</value>
+  </data>
+  <data name="PendingOrders" xml:space="preserve">
+    <value>Pending Orders</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="Inactive" xml:space="preserve">
+    <value>Inactive</value>
+  </data>
+  <data name="ActiveRate" xml:space="preserve">
+    <value>Active Rate</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="AllStatus" xml:space="preserve">
+    <value>All Status</value>
+  </data>
+  <data name="ActiveOnly" xml:space="preserve">
+    <value>Active Only</value>
+  </data>
+  <data name="InactiveOnly" xml:space="preserve">
+    <value>Inactive Only</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SaveChange" xml:space="preserve">
+    <value>Save Changes</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="BackToList" xml:space="preserve">
+    <value>Back to List</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="Image" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="Browse" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="UploadImage" xml:space="preserve">
+    <value>Upload Image</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="CategoryManagement" xml:space="preserve">
+    <value>Category Management</value>
+  </data>
+  <data name="TotalCategories" xml:space="preserve">
+    <value>Total Categories</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>All Categories</value>
+  </data>
+  <data name="ManageOrganiseCategories" xml:space="preserve">
+    <value>Manage and organise your store categories</value>
+  </data>
+  <data name="AddCategory" xml:space="preserve">
+    <value>Add Category</value>
+  </data>
+  <data name="SearchByNameOrDesc" xml:space="preserve">
+    <value>Search by name or description…</value>
+  </data>
+  <data name="ShowingNCategories" xml:space="preserve">
+    <value>Showing &lt;strong&gt;{0}&lt;/strong&gt; categories</value>
+  </data>
+  <data name="NoCategoriesYet" xml:space="preserve">
+    <value>No Categories Yet</value>
+  </data>
+  <data name="GetStartedCategory" xml:space="preserve">
+    <value>Get started by adding your first product category.</value>
+  </data>
+  <data name="CreateFirstCategory" xml:space="preserve">
+    <value>Create First Category</value>
+  </data>
+  <data name="DeleteCategoryQuestion" xml:space="preserve">
+    <value>Delete Category?</value>
+  </data>
+  <data name="AboutToDeleteCategory" xml:space="preserve">
+    <value>You are about to delete this category. This action cannot be undone.</value>
+  </data>
+  <data name="CategoryDetails" xml:space="preserve">
+    <value>Category Details</value>
+  </data>
+  <data name="CategoryName" xml:space="preserve">
+    <value>Category Name</value>
+  </data>
+  <data name="LivePreview" xml:space="preserve">
+    <value>Live Preview</value>
+  </data>
+  <data name="EditCategory" xml:space="preserve">
+    <value>Edit Category</value>
+  </data>
+  <data name="UpdateCategory" xml:space="preserve">
+    <value>Update Category</value>
+  </data>
+  <data name="CreateNewCategory" xml:space="preserve">
+    <value>Create New Category</value>
+  </data>
+  <data name="FillDetailsToAddNewCategory" xml:space="preserve">
+    <value>Fill in the details below to add a new product category to your store</value>
+  </data>
+  <data name="UseClearConciseName" xml:space="preserve">
+    <value>Use a clear, concise name that customers can recognise.</value>
+  </data>
+  <data name="DescribeProductsBelong" xml:space="preserve">
+    <value>Describe what products belong in this category…</value>
+  </data>
+  <data name="StatusDescription" xml:space="preserve">
+    <value>Visible on store front-end</value>
+  </data>
+  <data name="BrandManagement" xml:space="preserve">
+    <value>Brand Management</value>
+  </data>
+  <data name="TotalBrands" xml:space="preserve">
+    <value>Total Brands</value>
+  </data>
+  <data name="AllBrands" xml:space="preserve">
+    <value>All Brands</value>
+  </data>
+  <data name="ManageOrganiseBrands" xml:space="preserve">
+    <value>Manage and organise your store brands</value>
+  </data>
+  <data name="AddBrand" xml:space="preserve">
+    <value>Add Brand</value>
+  </data>
+  <data name="ShowingNBrands" xml:space="preserve">
+    <value>Showing &lt;strong&gt;{0}&lt;/strong&gt; brands</value>
+  </data>
+  <data name="NoBrandsYet" xml:space="preserve">
+    <value>No Brands Yet</value>
+  </data>
+  <data name="GetStartedBrand" xml:space="preserve">
+    <value>Get started by adding your first product brand.</value>
+  </data>
+  <data name="CreateFirstBrand" xml:space="preserve">
+    <value>Create First Brand</value>
+  </data>
+  <data name="DeleteBrandQuestion" xml:space="preserve">
+    <value>Delete Brand?</value>
+  </data>
+  <data name="AboutToDeleteBrand" xml:space="preserve">
+    <value>You are about to delete this brand. This action cannot be undone.</value>
+  </data>
+  <data name="BrandDetails" xml:space="preserve">
+    <value>Brand Details</value>
+  </data>
+  <data name="BrandName" xml:space="preserve">
+    <value>Brand Name</value>
+  </data>
+  <data name="EditBrand" xml:space="preserve">
+    <value>Edit Brand</value>
+  </data>
+  <data name="UpdateBrand" xml:space="preserve">
+    <value>Update Brand</value>
+  </data>
+  <data name="CreateNewBrand" xml:space="preserve">
+    <value>Create New Brand</value>
+  </data>
+  <data name="FillDetailsToAddNewBrand" xml:space="preserve">
+    <value>Fill in the details below to add a new product brand to your store</value>
+  </data>
+  <data name="DescribeBrand" xml:space="preserve">
+    <value>Describe this brand's philosophy or focus…</value>
+  </data>
+  <data name="ProductManagement" xml:space="preserve">
+    <value>Product Management</value>
+  </data>
+  <data name="AllProducts" xml:space="preserve">
+    <value>All Products</value>
+  </data>
+  <data name="ManageOrganiseProducts" xml:space="preserve">
+    <value>Manage and organise your store products</value>
+  </data>
+  <data name="AddProduct" xml:space="preserve">
+    <value>Add Product</value>
+  </data>
+  <data name="ShowingNProducts" xml:space="preserve">
+    <value>Showing &lt;strong&gt;{0}&lt;/strong&gt; products</value>
+  </data>
+  <data name="NoProductsYet" xml:space="preserve">
+    <value>No Products Yet</value>
+  </data>
+  <data name="GetStartedProduct" xml:space="preserve">
+    <value>Get started by adding your first product.</value>
+  </data>
+  <data name="CreateFirstProduct" xml:space="preserve">
+    <value>Create First Product</value>
+  </data>
+  <data name="DeleteProductQuestion" xml:space="preserve">
+    <value>Delete Product?</value>
+  </data>
+  <data name="AboutToDeleteProduct" xml:space="preserve">
+    <value>You are about to delete this product. This action cannot be undone.</value>
+  </data>
+  <data name="ProductDetails" xml:space="preserve">
+    <value>Product Details</value>
+  </data>
+  <data name="ProductName" xml:space="preserve">
+    <value>Product Name</value>
+  </data>
+  <data name="EditProduct" xml:space="preserve">
+    <value>Edit Product</value>
+  </data>
+  <data name="UpdateProduct" xml:space="preserve">
+    <value>Update Product</value>
+  </data>
+  <data name="CreateNewProduct" xml:space="preserve">
+    <value>Create New Product</value>
+  </data>
+  <data name="FillDetailsToAddNewProduct" xml:space="preserve">
+    <value>Fill in the details below to add a new product to your store</value>
+  </data>
+  <data name="SearchProducts" xml:space="preserve">
+    <value>Search products…</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="Discount" xml:space="preserve">
+    <value>Discount (%)</value>
+  </data>
+  <data name="Rating" xml:space="preserve">
+    <value>Rating</value>
+  </data>
+  <data name="SelectCategory" xml:space="preserve">
+    <value>-- Select Category --</value>
+  </data>
+  <data name="SelectBrand" xml:space="preserve">
+    <value>-- Select Brand --</value>
+  </data>
+  <data name="ProductCategory" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="ProductBrand" xml:space="preserve">
+    <value>Brand</value>
+  </data>
+  <data name="MainImage" xml:space="preserve">
+    <value>Main Image</value>
+  </data>
+  <data name="SubImages" xml:space="preserve">
+    <value>Sub Images (Up to 3)</value>
+  </data>
+  <data name="UploadMainImage" xml:space="preserve">
+    <value>Upload Main Image</value>
+  </data>
+  <data name="UploadSubImage" xml:space="preserve">
+    <value>Upload Sub Image</value>
+  </data>
+  <data name="StockStatus" xml:space="preserve">
+    <value>Stock &amp; Status</value>
+  </data>
+  <data name="PromoCode" xml:space="preserve">
+    <value>Promo Code</value>
+  </data>
+  <data name="DiscountPercentage" xml:space="preserve">
+    <value>Discount Percentage</value>
+  </data>
+  <data name="ValidFrom" xml:space="preserve">
+    <value>Valid From</value>
+  </data>
+  <data name="ValidTo" xml:space="preserve">
+    <value>Valid To</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="ShowingNPromotions" xml:space="preserve">
+    <value>Showing &lt;strong&gt;{0}&lt;/strong&gt; promotions</value>
+  </data>
+  <data name="NoPromotionsYet" xml:space="preserve">
+    <value>No Promotions Yet</value>
+  </data>
+  <data name="DeletePromotionQuestion" xml:space="preserve">
+    <value>Delete Promotion?</value>
+  </data>
+  <data name="AboutToDeletePromotion" xml:space="preserve">
+    <value>You are about to delete this promotion. This action cannot be undone.</value>
+  </data>
+  <data name="PromotionTargetScope" xml:space="preserve">
+    <value>Promotion Target Scope</value>
+  </data>
+  <data name="ApplySpecificProduct" xml:space="preserve">
+    <value>Apply to Specific Product</value>
+  </data>
+  <data name="ApplySpecificCategory" xml:space="preserve">
+    <value>Apply to Specific Category</value>
+  </data>
+  <data name="ApplySpecificBrand" xml:space="preserve">
+    <value>Apply to Specific Brand</value>
+  </data>
+  <data name="GeneralApplyAll" xml:space="preserve">
+    <value>General (Apply to All Products)</value>
+  </data>
+  <data name="SelectAProduct" xml:space="preserve">
+    <value>-- Select a Product --</value>
+  </data>
+  <data name="SelectACategory" xml:space="preserve">
+    <value>-- Select a Category --</value>
+  </data>
+  <data name="SelectABrand" xml:space="preserve">
+    <value>-- Select a Brand --</value>
+  </data>
+  <data name="PublishStartDate" xml:space="preserve">
+    <value>Publish / Start Date</value>
+  </data>
+  <data name="ExpirationDate" xml:space="preserve">
+    <value>Expiration Date</value>
+  </data>
+  <data name="LivePromoPreview" xml:space="preserve">
+    <value>Live Promotion Coupon Preview</value>
+  </data>
+  <data name="Valid" xml:space="preserve">
+    <value>Valid</value>
+  </data>
+  <data name="Expired" xml:space="preserve">
+    <value>Expired</value>
+  </data>
+  <data name="CreateNewPromotion" xml:space="preserve">
+    <value>Create New Promotion</value>
+  </data>
+  <data name="DefineNewDiscount" xml:space="preserve">
+    <value>Define a new discount promotion applied to a specific product, category, brand, or store-wide</value>
+  </data>
+  <data name="EditPromotion" xml:space="preserve">
+    <value>Edit Promotion</value>
+  </data>
+  <data name="UpdatePromotion" xml:space="preserve">
+    <value>Update Promotion</value>
+  </data>
+  <data name="OrderManagement" xml:space="preserve">
+    <value>Order Management</value>
+  </data>
+  <data name="TotalOrders" xml:space="preserve">
+    <value>Total Orders</value>
+  </data>
+  <data name="AllOrders" xml:space="preserve">
+    <value>All Orders</value>
+  </data>
+  <data name="ManageTrackOrders" xml:space="preserve">
+    <value>Manage and track customer orders</value>
+  </data>
+  <data name="SearchByCustomer" xml:space="preserve">
+    <value>Search by customer...</value>
+  </data>
+  <data name="OrderDetails" xml:space="preserve">
+    <value>Order Details</value>
+  </data>
+  <data name="BackToOrders" xml:space="preserve">
+    <value>Back to Orders</value>
+  </data>
+  <data name="ViewTrackOrderDetails" xml:space="preserve">
+    <value>View and track detailed information for this order</value>
+  </data>
+  <data name="OrderDate" xml:space="preserve">
+    <value>Order Date</value>
+  </data>
+  <data name="PaymentStatus" xml:space="preserve">
+    <value>Payment Status</value>
+  </data>
+  <data name="TotalAmount" xml:space="preserve">
+    <value>Total Amount</value>
+  </data>
+  <data name="CustomerInfo" xml:space="preserve">
+    <value>Customer Info</value>
+  </data>
+  <data name="ShippingAddress" xml:space="preserve">
+    <value>Shipping Address</value>
+  </data>
+  <data name="OrderItems" xml:space="preserve">
+    <value>Order Items</value>
+  </data>
+  <data name="Shipping" xml:space="preserve">
+    <value>Shipping</value>
+  </data>
+  <data name="UpdateStatus" xml:space="preserve">
+    <value>Update Status</value>
+  </data>
+  <data name="SaveStatus" xml:space="preserve">
+    <value>Save Status</value>
+  </data>
+  <data name="EditBanners" xml:space="preserve">
+    <value>Edit Banners</value>
+  </data>
+  <data name="BannerManagement" xml:space="preserve">
+    <value>Banner Management</value>
+  </data>
+  <data name="ManageBannersPosters" xml:space="preserve">
+    <value>Manage and update banner slideshows and offers</value>
+  </data>
+  <data name="SliderBanners" xml:space="preserve">
+    <value>Main Slide Banners</value>
+  </data>
+  <data name="OffersHuaweiAnker" xml:space="preserve">
+    <value>Huawei &amp; Anker Offers</value>
+  </data>
+  <data name="InstallmentCashBanners" xml:space="preserve">
+    <value>Installment &amp; Cash Banners</value>
+  </data>
+  <data name="Slide1" xml:space="preserve">
+    <value>Slide 1</value>
+  </data>
+  <data name="Slide2" xml:space="preserve">
+    <value>Slide 2</value>
+  </data>
+  <data name="Slide3" xml:space="preserve">
+    <value>Slide 3</value>
+  </data>
+  <data name="UploadNewImage" xml:space="preserve">
+    <value>Upload New Image</value>
+  </data>
+  <data name="SupportedFormats" xml:space="preserve">
+    <value>Supported: PNG, JPG, JPEG, WebP. Max size: 5MB.</value>
+  </data>
+  <data name="SlideLinkUrl" xml:space="preserve">
+    <value>Redirect URL for "Shop Now" button</value>
+  </data>
+  <data name="SaveBanners" xml:space="preserve">
+    <value>Save Banners</value>
+  </data>
+  <data name="BannerDetails" xml:space="preserve">
+    <value>Banner Details</value>
+  </data>
+  <data name="Publish" xml:space="preserve">
+    <value>Publish</value>
+  </data>
+  <data name="Tips" xml:space="preserve">
+    <value>Tips</value>
+  </data>
+  <data name="CreatedBy" xml:space="preserve">
+    <value>Created by</value>
+  </data>
+  <data name="VisibleToCustomers" xml:space="preserve">
+    <value>Visible to customers</value>
+  </data>
+  <data name="HiddenFromStore" xml:space="preserve">
+    <value>Hidden from store</value>
+  </data>
+  <data name="UseShortNamesTip" xml:space="preserve">
+    <value>Use short, recognisable names</value>
+  </data>
+  <data name="AddDescriptionSeoTip" xml:space="preserve">
+    <value>Add a description for SEO</value>
+  </data>
+  <data name="HideFromStoreTip" xml:space="preserve">
+    <value>Set inactive to hide from store</value>
+  </data>
+  <data name="EditAnytimeTip" xml:space="preserve">
+    <value>You can edit items anytime</value>
+  </data>
+  <data name="Selected" xml:space="preserve">
+    <value>items selected</value>
+  </data>
+  <data name="EnsureChangesAccurateTip" xml:space="preserve">
+    <value>Ensure changes are accurate</value>
+  </data>
+  <data name="ModifyingCategoryAffectsTip" xml:space="preserve">
+    <value>Modifying category affects its products</value>
+  </data>
+  <data name="StatusChangesApplyTip" xml:space="preserve">
+    <value>Status changes apply immediately</value>
+  </data>
+  <data name="ModifyingBrandAffectsTip" xml:space="preserve">
+    <value>Modifying brand affects its products</value>
+  </data>
+  <data name="PricingInventory" xml:space="preserve">
+    <value>Pricing &amp; Inventory</value>
+  </data>
+  <data name="ProductMedia" xml:space="preserve">
+    <value>Product Media</value>
+  </data>
+  <data name="MainImage" xml:space="preserve">
+    <value>Main Image</value>
+  </data>
+  <data name="GalleryImages" xml:space="preserve">
+    <value>Gallery Images</value>
+  </data>
+  <data name="Organization" xml:space="preserve">
+    <value>Organization</value>
+  </data>
+  <data name="SelectCategory" xml:space="preserve">
+    <value>Select Category...</value>
+  </data>
+  <data name="SelectBrand" xml:space="preserve">
+    <value>Select Brand...</value>
+  </data>
+  <data name="ProductName" xml:space="preserve">
+    <value>Product Name</value>
+  </data>
+  <data name="BasicInformation" xml:space="preserve">
+    <value>Basic Information</value>
+  </data>
+  <data name="EditBanners" xml:space="preserve">
+    <value>Edit Banners</value>
+  </data>
+  <data name="BannersManagement" xml:space="preserve">
+    <value>Banners Management</value>
+  </data>
+  <data name="BannersAndAdsManagement" xml:space="preserve">
+    <value>Banners &amp; Ads Management</value>
+  </data>
+  <data name="BannersAndAdsSubtitle" xml:space="preserve">
+    <value>Update and change the content and design of all ads and banners displayed on the home page</value>
+  </data>
+  <data name="MainSliderBanners" xml:space="preserve">
+    <value>Main Slider Banners</value>
+  </data>
+  <data name="HuaweiAnkerOffers" xml:space="preserve">
+    <value>Huawei &amp; Anker Offers</value>
+  </data>
+  <data name="CashInstallmentBanners" xml:space="preserve">
+    <value>Cash Installment Banners</value>
+  </data>
+  <data name="FirstBannerSlide1" xml:space="preserve">
+    <value>First Banner (Slide 1)</value>
+  </data>
+  <data name="UploadNewImage" xml:space="preserve">
+    <value>Upload New Image</value>
+  </data>
+  <data name="SupportedImageFormatsHint" xml:space="preserve">
+    <value>Supported image formats: PNG, JPG, JPEG, WebP. Max size: 5MB.</value>
+  </data>
+  <data name="RedirectLinkShopNow" xml:space="preserve">
+    <value>Redirect link for "Shop Now" button</value>
+  </data>
+  <data name="RedirectLinkExample" xml:space="preserve">
+    <value>e.g. /Customer/Home/Store</value>
+  </data>
+  <data name="SecondBannerSlide2" xml:space="preserve">
+    <value>Second Banner (Slide 2)</value>
+  </data>
+  <data name="ThirdBannerSlide3" xml:space="preserve">
+    <value>Third Banner (Slide 3)</value>
+  </data>
+  <data name="HuaweiFestivalBanner" xml:space="preserve">
+    <value>Huawei Festival Banner</value>
+  </data>
+  <data name="BannerMainTitle" xml:space="preserve">
+    <value>Banner Main Title</value>
+  </data>
+  <data name="HuaweiTitleExample" xml:space="preserve">
+    <value>e.g. Huawei Festival HUAWEI</value>
+  </data>
+  <data name="BannerSubtitle" xml:space="preserve">
+    <value>Banner Subtitle / Description</value>
+  </data>
+  <data name="HuaweiSubtitleExample" xml:space="preserve">
+    <value>e.g. Get instant discount coupons and free gifts when buying any Huawei laptop or smart watch.</value>
+  </data>
+  <data name="BannerClickRedirectLink" xml:space="preserve">
+    <value>Redirect link when clicking the banner</value>
+  </data>
+  <data name="HuaweiLinkExample" xml:space="preserve">
+    <value>e.g. /Customer/Home/Store?SearchQuery=Huawei</value>
+  </data>
+  <data name="AnkerOffersBanner" xml:space="preserve">
+    <value>Anker Offers Banner</value>
+  </data>
+  <data name="AnkerTitleExample" xml:space="preserve">
+    <value>e.g. Anker ANKER for phone chargers and accessories</value>
+  </data>
+  <data name="AnkerSubtitleExample" xml:space="preserve">
+    <value>e.g. Strongest protection and fastest charge for your smartphones, discount offers up to 25% exclusively.</value>
+  </data>
+  <data name="AnkerLinkExample" xml:space="preserve">
+    <value>e.g. /Customer/Home/Store?SearchQuery=Anker</value>
+  </data>
+  <data name="FirstInstallmentBannerOrange" xml:space="preserve">
+    <value>First Installment Banner (Orange - 12 Months Cash)</value>
+  </data>
+  <data name="BannerTitle" xml:space="preserve">
+    <value>Banner Title</value>
+  </data>
+  <data name="OfferDetailsSubtitle" xml:space="preserve">
+    <value>Offer Details (Subtitle)</value>
+  </data>
+  <data name="InstallmentDurationBadge" xml:space="preserve">
+    <value>Installment Duration (Badge)</value>
+  </data>
+  <data name="Installment12MonthsExample" xml:space="preserve">
+    <value>e.g. 12 Months</value>
+  </data>
+  <data name="SecondInstallmentBannerBlack" xml:space="preserve">
+    <value>Second Installment Banner (Black - 3 Months Cash)</value>
+  </data>
+  <data name="Installment3MonthsExample" xml:space="preserve">
+    <value>e.g. 3 Months</value>
+  </data>
+  <data name="SaveSettings" xml:space="preserve">
+    <value>Save Settings</value>
+  </data>
+  <data name="SaveNow" xml:space="preserve">
+    <value>Save Now</value>
+  </data>
+  <data name="ImportantTips" xml:space="preserve">
+    <value>Important Tips</value>
+  </data>
+  <data name="TipHighQualityImages" xml:space="preserve">
+    <value>It is preferred to use high-quality images so that the banners look attractive and grab customers' attention.</value>
+  </data>
+  <data name="TipBannersRotation" xml:space="preserve">
+    <value>Banners appear on the home page with automatic rotation every 5 seconds.</value>
+  </data>
+  <data name="TipUpdatesInstant" xml:space="preserve">
+    <value>Updates appear immediately on the home page once you click save.</value>
+  </data>
+  <data name="BannersSavedSuccessfully" xml:space="preserve">
+    <value>Banners settings saved successfully!</value>
+  </data>
+  <data name="ErrorSavingChanges" xml:space="preserve">
+    <value>An error occurred while saving changes</value>
+  </data>
+  <data name="ManageCustomerOrders" xml:space="preserve">
+    <value>Manage and track customer orders</value>
+  </data>
+  <data name="SearchByCustomer" xml:space="preserve">
+    <value>Search by customer...</value>
+  </data>
+  <data name="OrderID" xml:space="preserve">
+    <value>Order ID</value>
+  </data>
+  <data name="Customer" xml:space="preserve">
+    <value>Customer</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="ViewDetails" xml:space="preserve">
+    <value>View Details</value>
+  </data>
+  <data name="DeleteOrder" xml:space="preserve">
+    <value>Delete Order</value>
+  </data>
+  <data name="NoOrdersFound" xml:space="preserve">
+    <value>No orders found</value>
+  </data>
+  <data name="NoOrdersPlacedYet" xml:space="preserve">
+    <value>There are no orders placed yet.</value>
+  </data>
+  <data name="GenerateTestOrders" xml:space="preserve">
+    <value>Generate Test Orders</value>
+  </data>
+  <data name="DeleteOrderQuestion" xml:space="preserve">
+    <value>Delete Order?</value>
+  </data>
+  <data name="AboutToDeleteOrder" xml:space="preserve">
+    <value>You are about to delete</value>
+  </data>
+  <data name="ActionCannotBeUndone" xml:space="preserve">
+    <value>This action cannot be undone.</value>
+  </data>
+  <data name="Order" xml:space="preserve">
+    <value>Order</value>
+  </data>
+  <data name="OrderDetails" xml:space="preserve">
+    <value>Order Details</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="OrderItems" xml:space="preserve">
+    <value>Order Items</value>
+  </data>
+  <data name="ProductID" xml:space="preserve">
+    <value>Product ID</value>
+  </data>
+  <data name="UnitPrice" xml:space="preserve">
+    <value>Unit Price</value>
+  </data>
+  <data name="NoItemsInOrder" xml:space="preserve">
+    <value>No items in this order.</value>
+  </data>
+  <data name="GrandTotal" xml:space="preserve">
+    <value>Grand Total</value>
+  </data>
+  <data name="UpdateStatus" xml:space="preserve">
+    <value>Update Status</value>
+  </data>
+  <data name="OrderInfo" xml:space="preserve">
+    <value>Order Info</value>
+  </data>
+  <data name="OrderDate" xml:space="preserve">
+    <value>Order Date</value>
+  </data>
+  <data name="Payment" xml:space="preserve">
+    <value>Payment</value>
+  </data>
+  <data name="CreditCard" xml:space="preserve">
+    <value>Credit Card</value>
+  </data>
+  <data name="CustomerInfo" xml:space="preserve">
+    <value>Customer Info</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>Processing</value>
+  </data>
+  <data name="Shipped" xml:space="preserve">
+    <value>Shipped</value>
+  </data>
+  <data name="Delivered" xml:space="preserve">
+    <value>Delivered</value>
+  </data>
+  <data name="Returned" xml:space="preserve">
+    <value>Returned</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="UpdateProductDetailsBelow" xml:space="preserve">
+    <value>Update the product details below</value>
+  </data>
+  <data name="ProductNamePlaceholder" xml:space="preserve">
+    <value>e.g. Samsung Galaxy S23</value>
+  </data>
+  <data name="InitialRate" xml:space="preserve">
+    <value>Initial Rate</value>
+  </data>
+  <data name="ClickToChangeMainImage" xml:space="preserve">
+    <value>Click to change main image</value>
+  </data>
+  <data name="ClickToSelectMainImage" xml:space="preserve">
+    <value>Click to select main image</value>
+  </data>
+  <data name="ClickToAddSubImages" xml:space="preserve">
+    <value>Click here to add sub-images</value>
+  </data>
+  <data name="Updating" xml:space="preserve">
+    <value>Updating</value>
+  </data>
+  <data name="DefinePromotionSubtitle" xml:space="preserve">
+    <value>Define a new discount promotion applied to a specific product, category, brand, or store-wide</value>
+  </data>
+  <data name="PromotionDetails" xml:space="preserve">
+    <value>Promotion Details</value>
+  </data>
+  <data name="PromotionTargetScope" xml:space="preserve">
+    <value>Promotion Target Scope</value>
+  </data>
+  <data name="ApplyToSpecificProduct" xml:space="preserve">
+    <value>Apply to Specific Product</value>
+  </data>
+  <data name="ApplyToSpecificCategory" xml:space="preserve">
+    <value>Apply to Specific Category</value>
+  </data>
+  <data name="ApplyToSpecificBrand" xml:space="preserve">
+    <value>Apply to Specific Brand</value>
+  </data>
+  <data name="GeneralAllProducts" xml:space="preserve">
+    <value>General (Apply to All Products)</value>
+  </data>
+  <data name="TargetScopeHint" xml:space="preserve">
+    <value>Choose whether this promotion applies to a product, category, brand, or the entire store.</value>
+  </data>
+  <data name="TargetProduct" xml:space="preserve">
+    <value>Target Product</value>
+  </data>
+  <data name="SelectProduct" xml:space="preserve">
+    <value>Select a Product</value>
+  </data>
+  <data name="TargetCategory" xml:space="preserve">
+    <value>Target Category</value>
+  </data>
+  <data name="TargetBrand" xml:space="preserve">
+    <value>Target Brand</value>
+  </data>
+  <data name="PromoCode" xml:space="preserve">
+    <value>Promo Code</value>
+  </data>
+  <data name="PromoCodeHint" xml:space="preserve">
+    <value>Unique coupon code (e.g. UPPERCASE letters &amp; numbers).</value>
+  </data>
+  <data name="DiscountPercentage" xml:space="preserve">
+    <value>Discount Percentage</value>
+  </data>
+  <data name="DiscountPercentageHint" xml:space="preserve">
+    <value>Enter discount value from 0 to 100%.</value>
+  </data>
+  <data name="PublishStartDate" xml:space="preserve">
+    <value>Publish / Start Date</value>
+  </data>
+  <data name="StartDateHint" xml:space="preserve">
+    <value>When the promotion starts becoming active.</value>
+  </data>
+  <data name="ExpirationDate" xml:space="preserve">
+    <value>Expiration Date</value>
+  </data>
+  <data name="ExpirationDateHint" xml:space="preserve">
+    <value>When the promotion expires and is no longer valid.</value>
+  </data>
+  <data name="LivePromotionPreview" xml:space="preserve">
+    <value>Live Promotion Coupon Preview</value>
+  </data>
+  <data name="PromotionScope" xml:space="preserve">
+    <value>Promotion Scope</value>
+  </data>
+  <data name="Valid" xml:space="preserve">
+    <value>Valid</value>
+  </data>
+  <data name="Starts" xml:space="preserve">
+    <value>Starts</value>
+  </data>
+  <data name="Expires" xml:space="preserve">
+    <value>Expires</value>
+  </data>
+  <data name="Immediately" xml:space="preserve">
+    <value>Immediately</value>
+  </data>
+  <data name="In7Days" xml:space="preserve">
+    <value>In 7 Days</value>
+  </data>
+  <data name="ValidationStatus" xml:space="preserve">
+    <value>Validation Status</value>
+  </data>
+  <data name="AvailableForUse" xml:space="preserve">
+    <value>Available for use</value>
+  </data>
+  <data name="DisabledManually" xml:space="preserve">
+    <value>Disabled manually</value>
+  </data>
+  <data name="CreatedBy" xml:space="preserve">
+    <value>Created by</value>
+  </data>
+  <data name="CreatePromo" xml:space="preserve">
+    <value>Create Promo</value>
+  </data>
+  <data name="TipTargetScope" xml:space="preserve">
+    <value>Choose target scope correctly.</value>
+  </data>
+  <data name="TipGeneralScope" xml:space="preserve">
+    <value>General applies to all cart items.</value>
+  </data>
+  <data name="TipDiscountRange" xml:space="preserve">
+    <value>Discount must be between 0 and 100%.</value>
+  </data>
+  <data name="TipPausePromo" xml:space="preserve">
+    <value>Set invalid status to pause the promotion.</value>
+  </data>
+  <data name="GeneralStoreCoupon" xml:space="preserve">
+    <value>General Store Coupon</value>
+  </data>
+  <data name="AllStoreProducts" xml:space="preserve">
+    <value>All Store Products</value>
+  </data>
+  <data name="Disabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="Creating" xml:space="preserve">
+    <value>Creating</value>
+  </data>
+  <data name="PromotionAddedSuccessfully" xml:space="preserve">
+    <value>Promotion added successfully!</value>
+  </data>
+  <data name="PromotionUpdatedSuccessfully" xml:space="preserve">
+    <value>Promotion updated successfully!</value>
+  </data>
+  <data name="PromotionDeletedSuccessfully" xml:space="preserve">
+    <value>Promotion deleted successfully!</value>
+  </data>
+  <data name="ModifyPromotionSubtitle" xml:space="preserve">
+    <value>Modify the details of promotion code</value>
+  </data>
+  <data name="UpdatePromo" xml:space="preserve">
+    <value>Update Promo</value>
+  </data>
+  <data name="SearchByCodeOrProduct" xml:space="preserve">
+    <value>Search by code or product...</value>
+  </data>
+  <data name="AllPromotions" xml:space="preserve">
+    <value>All Promotions</value>
+  </data>
+  <data name="ManagePromotions" xml:space="preserve">
+    <value>Manage and organize store discount coupons and offers</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="GetStartedPromotion" xml:space="preserve">
+    <value>Get started by adding your first product promotion or coupon code.</value>
+  </data>
+  <data name="CreateFirstPromotion" xml:space="preserve">
+    <value>Create First Promotion</value>
+  </data>
+  <data name="Expiration" xml:space="preserve">
+    <value>Expiration</value>
+  </data>
+  <data name="TargetScope" xml:space="preserve">
+    <value>Target Scope</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="Administrator" xml:space="preserve">
+    <value>Administrator</value>
+  </data>
+  <data name="AccountDetails" xml:space="preserve">
+    <value>Account Details</value>
+  </data>
+  <data name="PersonalSettingsSubtitle" xml:space="preserve">
+    <value>Update your name, email address, phone number, and location.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="CurrentPassword" xml:space="preserve">
+    <value>Current Password</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>New Password</value>
+  </data>
+  <data name="PasswordSettingsSubtitle" xml:space="preserve">
+    <value>Update your account password and manage vital security preferences.</value>
+  </data>
+  <data name="TwoFactorAuthentication" xml:space="preserve">
+    <value>Two-Factor Authentication</value>
+  </data>
+  <data name="TwoStepVerification" xml:space="preserve">
+    <value>Two-step Verification</value>
+  </data>
+  <data name="TwoStepVerificationDesc" xml:space="preserve">
+    <value>Secure your account with an extra verification code sent to your phone.</value>
+  </data>
+  <data name="ActiveSessions" xml:space="preserve">
+    <value>Active Sessions</value>
+  </data>
+  <data name="ActiveSessionsDesc" xml:space="preserve">
+    <value>Manage and monitor the devices currently logged into your account.</value>
+  </data>
+  <data name="Manage" xml:space="preserve">
+    <value>Manage</value>
+  </data>
+  <data name="SystemSettingsSubtitle" xml:space="preserve">
+    <value>Customize default system language, timezone, and mail notifications.</value>
+  </data>
+  <data name="Timezone" xml:space="preserve">
+    <value>Timezone</value>
+  </data>
+  <data name="EmailNotifications" xml:space="preserve">
+    <value>Email Notifications</value>
+  </data>
+  <data name="NewOrderNotification" xml:space="preserve">
+    <value>New Order Notification</value>
+  </data>
+  <data name="NewOrderNotificationDesc" xml:space="preserve">
+    <value>Receive an email alert whenever a customer places a new order.</value>
+  </data>
+  <data name="DailyPerformanceReport" xml:space="preserve">
+    <value>Daily Performance Report</value>
+  </data>
+  <data name="DailyPerformanceReportDesc" xml:space="preserve">
+    <value>Receive a daily email summary of sales and key performance metrics.</value>
+  </data>
+  <data name="AvatarUpdatedSuccess" xml:space="preserve">
+    <value>Profile picture updated successfully!</value>
+  </data>
+  <data name="Saving" xml:space="preserve">
+    <value>Saving</value>
+  </data>
+  <data name="ProfileSettingsSaved" xml:space="preserve">
+    <value>Profile settings saved successfully!</value>
+  </data>
+  <data name="MemberSince" xml:space="preserve">
+    <value>Member since</value>
+  </data>
+  <data name="PersonalInfo" xml:space="preserve">
+    <value>Personal Info</value>
+  </data>
+  <data name="MyOrders" xml:space="preserve">
+    <value>My Orders</value>
+  </data>
+  <data name="Wishlist" xml:space="preserve">
+    <value>Wishlist</value>
+  </data>
+  <data name="ShippingAddress" xml:space="preserve">
+    <value>Shipping Address</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="StreetAddress" xml:space="preserve">
+    <value>Street Address</value>
+  </data>
+  <data name="SaveSettings" xml:space="preserve">
+    <value>Save Settings</value>
+  </data>
+  <data name="ManageAndTrackOrders" xml:space="preserve">
+    <value>Manage and track your purchase orders.</value>
+  </data>
+  <data name="Delivered" xml:space="preserve">
+    <value>Delivered</value>
+  </data>
+  <data name="OrderedOn" xml:space="preserve">
+    <value>Ordered on</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="OrderDetails" xml:space="preserve">
+    <value>Order Details</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>Processing</value>
+  </data>
+  <data name="WishlistSubtitle" xml:space="preserve">
+    <value>Products you saved in your wishlist.</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="AddToCart" xml:space="preserve">
+    <value>Add to Cart</value>
+  </data>
+  <data name="NoWishlistYet" xml:space="preserve">
+    <value>Your wishlist is currently empty</value>
+  </data>
+  <data name="ShopNow" xml:space="preserve">
+    <value>Shop Now</value>
+  </data>
+  <data name="ItemRemovedWishlist" xml:space="preserve">
+    <value>Product removed from wishlist successfully!</value>
+  </data>
+  <data name="FreeShippingText" xml:space="preserve">
+    <value>Free shipping on all orders above $500</value>
+  </data>
+  <data name="CallUs" xml:space="preserve">
+    <value>Call Us: 19999</value>
+  </data>
+  <data name="Branches" xml:space="preserve">
+    <value>Branches</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Welcome</value>
+  </data>
+  <data name="AdminPanel" xml:space="preserve">
+    <value>Admin Panel</value>
+  </data>
+  <data name="AudioAccessories" xml:space="preserve">
+    <value>Audio Accessories</value>
+  </data>
+  <data name="OffersDiscounts" xml:space="preserve">
+    <value>Offers &amp; Discounts</value>
+  </data>
+  <data name="HomePageTitle" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="HomepageGridBanners" xml:space="preserve">
+    <value>Homepage Grid Banners</value>
+  </data>
+  <data name="GridBanner1" xml:space="preserve">
+    <value>Grid Banner 1</value>
+  </data>
+  <data name="GridBanner2" xml:space="preserve">
+    <value>Grid Banner 2</value>
+  </data>
+  <data name="GridBanner3" xml:space="preserve">
+    <value>Grid Banner 3</value>
+  </data>
+  <data name="GridBanner4" xml:space="preserve">
+    <value>Grid Banner 4</value>
+  </data>
+  <data name="GridBanner5" xml:space="preserve">
+    <value>Grid Banner 5</value>
+  </data>
+  <data name="LargeRightBanner" xml:space="preserve">
+    <value>Large Right Banner</value>
+  </data>
+  <data name="SmallLeftBanner" xml:space="preserve">
+    <value>Small Left Banner</value>
+  </data>
+  <data name="CategoryNameLink" xml:space="preserve">
+    <value>Linked Category Name</value>
+  </data>
+  <data name="CategoryNameExample" xml:space="preserve">
+    <value>Enter Category Name, e.g. Electronics</value>
+  </data>
+  <data name="CategoryImage" xml:space="preserve">
+    <value>Category Image</value>
+  </data>
+  <data name="UploadImageForCategorySlider" xml:space="preserve">
+    <value>Upload an image for the category to be displayed in the circular category slider on the home page.</value>
+  </data>
+  <data name="UploadNewImageToReplaceCategorySlider" xml:space="preserve">
+    <value>Upload a new image to replace the current one in the category slider.</value>
+  </data>
+  <data name="GoToWebsite" xml:space="preserve">
+    <value>Go to Website</value>
+  </data>
+  <data name="CategoryDeletedSuccessfully" xml:space="preserve">
+    <value>Category deleted successfully.</value>
+  </data>
+  <data name="CategoryDeleteFailed" xml:space="preserve">
+    <value>Failed to delete category. It might be linked to other products.</value>
+  </data>
+  <data name="BrandDeletedSuccessfully" xml:space="preserve">
+    <value>Brand deleted successfully.</value>
+  </data>
+  <data name="BrandDeleteFailed" xml:space="preserve">
+    <value>Failed to delete brand. It might be linked to other products.</value>
+  </data>
+  <data name="ProductDeletedSuccessfully" xml:space="preserve">
+    <value>Product deleted successfully.</value>
+  </data>
+  <data name="ProductDeleteFailed" xml:space="preserve">
+    <value>Failed to delete product. It might be linked to orders or user carts.</value>
+  </data>
+</root>

@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using SmartStore.DI_Serice;
 using SmartStore.Repositories;
+using SmartStore.Utilities.DBInitilizer;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,9 +27,35 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Identity/Account/Login";
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization(options => {
+        options.DataAnnotationLocalizerProvider = (type, factory) =>
+            factory.Create(typeof(SmartStore.LocalizationController));
+    });
 builder.Services.AddScopedServices();
+// Localization
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+const string defaultCulture = "en-us";
+var supportedCultures = new[]
+{
+    new CultureInfo(defaultCulture),
+    new CultureInfo("ar"),
+    new CultureInfo("es")
+};
+builder.Services.Configure<RequestLocalizationOptions>(options => {
+    options.DefaultRequestCulture = new RequestCulture(defaultCulture);
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+});
+
 var app = builder.Build();
+
+var scope = app.Services.CreateScope();
+var dbInitializer = scope.ServiceProvider.GetService<IDBInitilizer>();
+await dbInitializer!.Initilize();
+
 
 
 // Configure the HTTP request pipeline.
@@ -43,6 +73,9 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
+
 app.MapStaticAssets();
 
 app.MapControllerRoute(
@@ -52,7 +85,5 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
-
-
 
 app.Run();

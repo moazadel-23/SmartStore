@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Identity\Views\" />
+    <Folder Include="wwwroot\ProfileImg\" />
   </ItemGroup>
 
   <ItemGroup>

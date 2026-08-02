@@ -1,5 +1,7 @@
+@inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> UserManager
+@inject Microsoft.Extensions.Localization.IStringLocalizer<SmartStore.LocalizationController> Localizer
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name" dir="@(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "rtl" : "ltr")">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +17,18 @@
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true">
 </head>
 <body class="dark-mode">
+@{
+    string userDisplayName = "Moa";
+    if (User.Identity?.IsAuthenticated == true) {
+        var currentUser = await UserManager.GetUserAsync(User);
+        if (currentUser != null) {
+            userDisplayName = currentUser.FirstName;
+            if (string.IsNullOrEmpty(userDisplayName)) {
+                userDisplayName = currentUser.UserName ?? "Moa";
+            }
+        }
+    }
+}
 
     <!-- ==================== SIDEBAR ==================== -->
     <aside class="sidebar" id="sidebar">
@@ -27,60 +41,68 @@
         </div>
 
         <ul class="nav-list">
+            <!-- Go to Website -->
+            <li>
+                <a href="/">
+                    <i class='bx bx-home-alt' style="color: #10b981;"></i>
+                    <span class="links_name" style="color: #10b981; font-weight: bold;">@Localizer["GoToWebsite"]</span>
+                </a>
+                <span class="tooltip">@Localizer["GoToWebsite"]</span>
+            </li>
             <!-- Ecommerce (active dashboard) -->
             <li>
                 <a href="@Url.Action("Index", "DashBoard", new { area = "Admin" })"
                    class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "DashBoard" ? "active" : "")">
                     <i class='bx bx-shopping-bag'></i>
-                    <span class="links_name">Ecommerce</span>
+                    <span class="links_name">@Localizer["AdminNavEcommerce"]</span>
                 </a>
-                <span class="tooltip">Ecommerce</span>
+                <span class="tooltip">@Localizer["AdminNavEcommerce"]</span>
             </li>
 
-            <li class="nav-header">PAGES</li>
+            <li class="nav-header">@Localizer["AdminNavHeaderPages"]</li>
 
             <!-- Pages Submenu -->
             <li class="has-submenu @(new[]{"Category", "Brand", "Product", "Order", "Banner", "Promotion"}.Contains(ViewContext.RouteData.Values["controller"]?.ToString()) ? "showMenu" : "")">
                 <a href="javascript:void(0)" class="submenu-toggle">
                     <i class='bx bx-file'></i>
-                    <span class="links_name">Pages</span>
+                    <span class="links_name">@Localizer["AdminNavPages"]</span>
                     <i class='bx bx-chevron-down arrow'></i>
                 </a>
                 <ul class="submenu-list">
                     <li>
                         <a href="@Url.Action("Index", "Category", new { area = "Admin" })"
                            class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Category" ? "active" : "")">
-                            <i class='bx bx-category'></i> Categories
+                            <i class='bx bx-category'></i> @Localizer["AdminNavCategories"]
                         </a>
                     </li>
                     <li>
                         <a href="@Url.Action("Index", "Brand", new { area = "Admin" })"
                            class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Brand" ? "active" : "")">
-                            <i class='bx bx-purchase-tag'></i> Brands
+                            <i class='bx bx-purchase-tag'></i> @Localizer["AdminNavBrands"]
                         </a>
                     </li>
                     <li>
                         <a href="@Url.Action("Index", "Product", new { area = "Admin" })"
                            class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "active" : "")">
-                            <i class='bx bx-box'></i> Products
+                            <i class='bx bx-box'></i> @Localizer["AdminNavProducts"]
                         </a>
                     </li>
                     <li>
                         <a href="@Url.Action("Index", "Promotion", new { area = "Admin" })"
                            class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Promotion" ? "active" : "")">
-                            <i class='bx bxs-offer'></i> Promotions
+                            <i class='bx bxs-offer'></i> @Localizer["AdminNavPromotions"]
                         </a>
                     </li>
                     <li>
                         <a href="@Url.Action("Index", "Order", new { area = "Admin" })"
                            class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Order" ? "active" : "")">
-                            <i class='bx bx-cart-alt'></i> Orders
+                            <i class='bx bx-cart-alt'></i> @Localizer["AdminNavOrders"]
                         </a>
                     </li>
                     <li>
                         <a href="@Url.Action("Index", "Banner", new { area = "Admin" })"
                            class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Banner" ? "active" : "")">
-                            <i class='bx bx-image'></i> Banners
+                            <i class='bx bx-image'></i> @Localizer["AdminNavBanners"]
                         </a>
                     </li>
                 </ul>
@@ -90,15 +112,15 @@
             <li class="has-submenu">
                 <a href="javascript:void(0)" class="submenu-toggle">
                     <i class='bx bx-lock-alt'></i>
-                    <span class="links_name">Authentication</span>
+                    <span class="links_name">@Localizer["Authentication"]</span>
                     <i class='bx bx-chevron-down arrow'></i>
                 </a>
                 <ul class="submenu-list">
-                    <li><a href="/Identity/Account/Login"><i class='bx bx-log-in'></i> Sign In</a></li>
-                    <li><a href="/Identity/Account/Register"><i class='bx bx-user-plus'></i> Sign Up</a></li>
-                    <li><a href="/Identity/Account/ForgotPassword"><i class='bx bx-help-circle'></i> Forget Password</a></li>
-                    <li><a href="/Identity/Account/ResetPassword"><i class='bx bx-key'></i> Reset Password</a></li>
-                    <li><a href="/Identity/Account/LoginWith2fa"><i class='bx bx-shield-quarter'></i> Otp Verification</a></li>
+                    <li><a href="/Identity/Account/Login"><i class='bx bx-log-in'></i> @Localizer["SignIn"]</a></li>
+                    <li><a href="/Identity/Account/Register"><i class='bx bx-user-plus'></i> @Localizer["SignUp"]</a></li>
+                    <li><a href="/Identity/Account/ForgotPassword"><i class='bx bx-help-circle'></i> @Localizer["ForgotPassword"]</a></li>
+                    <li><a href="/Identity/Account/ResetPassword"><i class='bx bx-key'></i> @Localizer["ResetPassword"]</a></li>
+                    <li><a href="/Identity/Account/LoginWith2fa"><i class='bx bx-shield-quarter'></i> @Localizer["OtpVerification"]</a></li>
                 </ul>
             </li>
 
@@ -106,12 +128,12 @@
             <li class="has-submenu">
                 <a href="javascript:void(0)" class="submenu-toggle">
                     <i class='bx bx-menu'></i>
-                    <span class="links_name">Menu Level</span>
+                    <span class="links_name">@Localizer["MenuLevel"]</span>
                     <i class='bx bx-chevron-down arrow'></i>
                 </a>
                 <ul class="submenu-list">
-                    <li><a href="#"><i class='bx bx-chevron-right'></i> Level 1</a></li>
-                    <li><a href="#"><i class='bx bx-chevron-right'></i> Level 2</a></li>
+                    <li><a href="#"><i class='bx bx-chevron-right'></i> @Localizer["Level1"]</a></li>
+                    <li><a href="#"><i class='bx bx-chevron-right'></i> @Localizer["Level2"]</a></li>
                 </ul>
             </li>
 
@@ -119,7 +141,7 @@
             <li class="disabled">
                 <a href="javascript:void(0)" style="opacity: 0.5; pointer-events: none;">
                     <i class='bx bx-minus-circle'></i>
-                    <span class="links_name">Disabled</span>
+                    <span class="links_name">@Localizer["Disabled"]</span>
                 </a>
             </li>
 
@@ -127,8 +149,8 @@
             <li>
                 <a href="#">
                     <i class='bx bx-tag'></i>
-                    <span class="links_name">Label</span>
-                    <span class="badge" style="background: #2563eb; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; margin-left: auto; border: none; position: static; width: auto; height: auto; display: inline-block;">New</span>
+                    <span class="links_name">@Localizer["Label"]</span>
+                    <span class="badge" style="background: #2563eb; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; margin-left: auto; border: none; position: static; width: auto; height: auto; display: inline-block;">@Localizer["New"]</span>
                 </a>
             </li>
 
@@ -136,7 +158,7 @@
             <li>
                 <a href="#" target="_blank">
                     <i class='bx bx-link-external'></i>
-                    <span class="links_name">External Link</span>
+                    <span class="links_name">@Localizer["ExternalLink"]</span>
                 </a>
             </li>
 
@@ -144,17 +166,17 @@
             <li>
                 <a href="#">
                     <i class='bx bx-file'></i>
-                    <span class="links_name">Blank</span>
+                    <span class="links_name">@Localizer["Blank"]</span>
                 </a>
             </li>
         </ul>
 
         <!-- Profile (pinned bottom) -->
         <div class="profile-card-new">
-            <img src="https://ui-avatars.com/api/?name=Jitu+Chauhan&background=10b981&color=fff&bold=true&size=40" alt="Admin">
+            <img src="https://ui-avatars.com/api/?name=@(userDisplayName)&background=10b981&color=fff&bold=true&size=40" alt="Admin">
             <div class="profile-info">
-                <span class="profile-name">Jitu Chauhan</span>
-                <span class="profile-status">Free Version - 1 Month</span>
+                <span class="profile-name">@userDisplayName</span>
+                <span class="profile-status">@Localizer["AdminNavEcommerce"]</span>
             </div>
         </div>
     </aside>
@@ -170,7 +192,7 @@
                 
                 <div class="top-search-wrap">
                     <i class='bx bx-search'></i>
-                    <input type="text" placeholder="Search...">
+                    <input type="text" placeholder="@Localizer["SearchPlaceholder"]...">
                     <div class="top-search-kbd">
                         <span>⌘</span>
                         <span>K</span>
@@ -178,26 +200,59 @@
                 </div>
             </div>
             <div class="nav-right">
+                <!-- Language Selector -->
+                <div class="theme-picker" id="languagePicker">
+                    <button class="theme-picker-btn" id="languagePickerBtn" title="@Localizer["ChangeLanguage"]" aria-haspopup="true" aria-expanded="false">
+                        <i class='bx bx-globe' id="languagePickerIcon"></i>
+                    </button>
+                    <div class="theme-dropdown" id="languageDropdown" role="menu">
+                        <div class="theme-dropdown-header">@Localizer["Language"]</div>
+                        <a href="/Localization/SetLanguage?culture=en-us&returnUrl=@Context.Request.Path@Context.Request.QueryString" class="theme-option" style="text-decoration: none;" role="menuitem">
+                            <span class="theme-option-icon">🇺🇸</span>
+                            <span class="to-title">English</span>
+                            @if (System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <i class='bx bx-check theme-option-check'></i>
+                            }
+                        </a>
+                        <a href="/Localization/SetLanguage?culture=ar&returnUrl=@Context.Request.Path@Context.Request.QueryString" class="theme-option" style="text-decoration: none;" role="menuitem">
+                            <span class="theme-option-icon">🇪🇬</span>
+                            <span class="to-title">العربية</span>
+                            @if (System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <i class='bx bx-check theme-option-check'></i>
+                            }
+                        </a>
+                        <a href="/Localization/SetLanguage?culture=es&returnUrl=@Context.Request.Path@Context.Request.QueryString" class="theme-option" style="text-decoration: none;" role="menuitem">
+                            <span class="theme-option-icon">🇪🇸</span>
+                            <span class="to-title">Español</span>
+                            @if (System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("es", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <i class='bx bx-check theme-option-check'></i>
+                            }
+                        </a>
+                    </div>
+                </div>
                 <!-- Theme Mode Picker -->
                 <div class="theme-picker" id="themePicker">
                     <button class="theme-picker-btn" id="themePickerBtn" title="Change theme" aria-haspopup="true" aria-expanded="false">
                         <i class='bx bx-moon' id="themePickerIcon"></i>
                     </button>
                     <div class="theme-dropdown" id="themeDropdown" role="menu">
-                        <div class="theme-dropdown-header">Appearance</div>
+                        <div class="theme-dropdown-header">@Localizer["Appearance"]</div>
                         <button class="theme-option" data-theme="light" role="menuitem">
                             <span class="theme-option-icon"><i class='bx bx-sun'></i></span>
-                            <span class="to-title">Light</span>
+                            <span class="to-title">@Localizer["Light"]</span>
                             <i class='bx bx-check theme-option-check'></i>
                         </button>
                         <button class="theme-option" data-theme="dark" role="menuitem">
                             <span class="theme-option-icon"><i class='bx bx-moon'></i></span>
-                            <span class="to-title">Dark</span>
+                            <span class="to-title">@Localizer["Dark"]</span>
                             <i class='bx bx-check theme-option-check'></i>
                         </button>
                         <button class="theme-option" data-theme="auto" role="menuitem">
                             <span class="theme-option-icon"><i class='bx bx-laptop'></i></span>
-                            <span class="to-title">Auto</span>
+                            <span class="to-title">@Localizer["Auto"]</span>
                             <i class='bx bx-check theme-option-check'></i>
                         </button>
                     </div>
@@ -210,35 +265,35 @@
                 <!-- Profile Menu -->
                 <div class="profile-menu-wrap" id="profileMenuWrap">
                     <button class="profile-avatar-btn" id="profileAvatarBtn" title="Account menu">
-                        <img src="https://ui-avatars.com/api/?name=Jitu+Chauhan&background=10b981&color=fff&bold=true&size=40" alt="Admin">
+                        <img src="https://ui-avatars.com/api/?name=@(userDisplayName)&background=10b981&color=fff&bold=true&size=40" alt="Admin">
                     </button>
                     <div class="profile-menu" id="profileMenu">
                         <div class="pm-header">
-                            <img src="https://ui-avatars.com/api/?name=Jitu+Chauhan&background=10b981&color=fff&bold=true&size=60" alt="Admin">
+                            <img src="https://ui-avatars.com/api/?name=@(userDisplayName)&background=10b981&color=fff&bold=true&size=60" alt="Admin">
                             <div class="pm-info">
-                                <span class="pm-name">Jitu Chauhan</span>
-                                <span class="pm-role">@@imjituchauhan</span>
+                                <span class="pm-name">@userDisplayName</span>
+                                <span class="pm-role">@(User.Identity?.Name)</span>
                             </div>
                         </div>
                         <div class="pm-divider"></div>
                         <a href="@Url.Action("Index", "DashBoard", new { area = "Admin" })" class="pm-item">
-                            <i class='bx bx-home'></i> Home
+                            <i class='bx bx-home'></i> @Localizer["Home"]
                         </a>
                         <a href="#" class="pm-item">
-                            <i class='bx bx-envelope'></i> Inbox
+                            <i class='bx bx-envelope'></i> @Localizer["Inbox"]
                         </a>
                         <a href="#" class="pm-item">
-                            <i class='bx bx-chat'></i> Chat
+                            <i class='bx bx-chat'></i> @Localizer["Chat"]
                         </a>
                         <a href="#" class="pm-item">
-                            <i class='bx bx-line-chart'></i> Activity
+                            <i class='bx bx-line-chart'></i> @Localizer["Activity"]
                         </a>
-                        <a href="#" class="pm-item">
-                            <i class='bx bx-cog'></i> Account Settings
+                        <a href="@Url.Action("Profile", "DashBoard", new { area = "Admin" })" class="pm-item">
+                            <i class='bx bx-cog'></i> @Localizer["AccountSettings"]
                         </a>
                         <div class="pm-divider"></div>
                         <a href="/Identity/Account/Logout" class="pm-item pm-logout" id="pmLogout">
-                            <i class='bx bx-log-out'></i> Logout
+                            <i class='bx bx-log-out'></i> @Localizer["Logout"]
                         </a>
                     </div>
                 </div>
@@ -253,17 +308,17 @@
     <!-- ==================== NOTIFICATION DRAWER ==================== -->
     <div class="notification-drawer" id="notificationDrawer">
         <div class="nd-header">
-            <h3>Notifications</h3>
+            <h3>@Localizer["Notifications"]</h3>
             <div class="nd-actions">
-                <button class="nd-action-btn" title="Mark all as read"><i class='bx bx-check-double'></i></button>
-                <button class="nd-action-btn" title="Notification Settings"><i class='bx bx-cog'></i></button>
+                <button class="nd-action-btn" title="@Localizer["MarkAllRead"]"><i class='bx bx-check-double'></i></button>
+                <button class="nd-action-btn" title="@Localizer["NotificationSettings"]"><i class='bx bx-cog'></i></button>
                 <button class="nd-action-btn close-btn" id="closeNotificationDrawer"><i class='bx bx-x'></i></button>
             </div>
         </div>
         <div class="nd-tabs">
-            <button class="nd-tab active" data-tab="all">All</button>
-            <button class="nd-tab" data-tab="following">Following</button>
-            <button class="nd-tab" data-tab="archive">Archive</button>
+            <button class="nd-tab active" data-tab="all">@Localizer["All"]</button>
+            <button class="nd-tab" data-tab="following">@Localizer["Following"]</button>
+            <button class="nd-tab" data-tab="archive">@Localizer["Archive"]</button>
         </div>
         <div class="nd-content">
             <!-- Item 1 -->

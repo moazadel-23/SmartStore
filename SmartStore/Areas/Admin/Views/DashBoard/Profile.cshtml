@@ -1,0 +1,640 @@
+@inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> UserManager
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = Localizer["Profile"];
+    ViewData["PageTitle"] = Localizer["Profile"];
+
+    var userDisplayName = "Moa";
+    var userEmail = "admin@smartstore.com";
+    var userPhone = "+20 123 456 7890";
+    var userFirstName = "Moa";
+    var userLastName = "Adel";
+    var username = "Moa";
+
+    if (User.Identity?.IsAuthenticated == true)
+    {
+        var currentUser = await UserManager.GetUserAsync(User);
+        if (currentUser != null)
+        {
+            userFirstName = currentUser.FirstName;
+            userLastName = currentUser.LastName;
+            userDisplayName = currentUser.FullName;
+            if (string.IsNullOrEmpty(userDisplayName.Trim()))
+            {
+                userDisplayName = currentUser.FirstName;
+            }
+            if (string.IsNullOrEmpty(userDisplayName))
+            {
+                userDisplayName = currentUser.UserName ?? "Moa";
+            }
+            username = currentUser.UserName ?? "";
+            userEmail = currentUser.Email ?? "";
+            userPhone = currentUser.PhoneNumber ?? "";
+        }
+    }
+    bool isArabic = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar", StringComparison.OrdinalIgnoreCase);
+}
+
+<link rel="stylesheet" href="~/css/category-admin.css">
+<style>
+    .profile-layout {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 24px;
+        align-items: start;
+        margin-top: 20px;
+    }
+    
+    .profile-sidebar-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 24px;
+        text-align: center;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .profile-avatar-container {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 16px;
+    }
+    
+    .profile-avatar-lg {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--primary-color);
+    }
+    
+    .avatar-upload-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: var(--primary-color);
+        color: white;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: 3px solid var(--card-bg);
+        transition: transform 0.2s;
+    }
+    .avatar-upload-overlay:hover {
+        transform: scale(1.1);
+    }
+    
+    .profile-sidebar-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 4px;
+    }
+    
+    .profile-sidebar-role {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+    }
+    
+    .profile-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .profile-menu-list {
+        margin-top: 24px;
+        text-align: inherit;
+    }
+    
+    .profile-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.25s ease;
+        font-weight: 500;
+        margin-bottom: 6px;
+    }
+    .profile-menu-item:hover {
+        background: var(--bg-color);
+        color: var(--text-dark);
+    }
+    .profile-menu-item.active {
+        background: rgba(79, 70, 229, 0.08);
+        color: var(--primary-color);
+    }
+    .profile-menu-item i {
+        font-size: 1.2rem;
+    }
+    
+    .profile-content-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: var(--shadow-sm);
+        min-height: 480px;
+    }
+    
+    .tab-pane {
+        display: none;
+        animation: fadeIn 0.35s ease;
+    }
+    .tab-pane.active {
+        display: block;
+    }
+    
+    .tab-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+    }
+    .tab-subtitle {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 24px;
+    }
+    
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+    
+    /* RTL adjustments for input icons and padding */
+    html[dir="rtl"] .field-icon {
+        left: auto !important;
+        right: 13px !important;
+    }
+    
+    html[dir="rtl"] .field-input {
+        padding-left: 15px !important;
+        padding-right: 40px !important;
+    }
+    
+    .pub-submit-btn {
+        background: var(--primary-color) !important;
+        transition: all 0.25s ease-in-out !important;
+        border-radius: 10px !important;
+        font-weight: 700 !important;
+        box-shadow: 0 4px 10px rgba(79, 70, 229, 0.1) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+    .pub-submit-btn:hover:not(:disabled) {
+        background: #4338ca !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 18px rgba(79, 70, 229, 0.3) !important;
+    }
+    .pub-submit-btn:active:not(:disabled) {
+        transform: translateY(0) !important;
+    }
+    
+    .form-actions-row {
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        justify-content: flex-end;
+    }
+    
+    .security-options-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 10px;
+    }
+    
+    .security-option-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        background: var(--bg-color);
+    }
+    
+    .sec-opt-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    
+    .sec-opt-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: rgba(79, 70, 229, 0.08);
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+    }
+    
+    .sec-opt-title {
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 0.95rem;
+    }
+    
+    .sec-opt-desc {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-top: 2px;
+    }
+    
+    /* Toggle switch styling */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 46px;
+        height: 24px;
+    }
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #cbd5e1;
+        transition: .3s;
+        border-radius: 34px;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .3s;
+        border-radius: 50%;
+    }
+    input:checked + .slider {
+        background-color: var(--primary-color);
+    }
+    input:checked + .slider:before {
+        transform: translateX(22px);
+    }
+    
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @@media (max-width: 992px) {
+        .profile-layout { grid-template-columns: 1fr; }
+    }
+    @@media (max-width: 768px) {
+        .form-grid { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div class="home-content">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-bar">
+        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> @Localizer["Home"]</span>
+        <i class='bx bx-chevron-right bc-sep'></i>
+        <span class="bc-current">@Localizer["Profile"]</span>
+        <span class="bc-date">
+            <i class='bx bx-calendar'></i>
+            @DateTime.Now.ToString("dddd, MMMM dd yyyy")
+        </span>
+    </div>
+
+    <div class="profile-layout">
+        <!-- LEFT: Sidebar -->
+        <div class="profile-sidebar-card">
+            <!-- Avatar Upload Area -->
+            <div class="profile-avatar-container">
+                <img id="profileAvatar" src="https://ui-avatars.com/api/?name=@(userDisplayName)&background=10b981&color=fff&bold=true&size=120" class="profile-avatar-lg" alt="Avatar">
+                <label for="avatarFileInput" class="avatar-upload-overlay" title="@Localizer["UploadNewImage"]">
+                    <i class='bx bx-camera'></i>
+                </label>
+                <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
+            </div>
+
+            <div class="profile-sidebar-name">@userDisplayName</div>
+            <div class="profile-sidebar-role">@Localizer["Administrator"]</div>
+            <div class="profile-status-badge">
+                <i class='bx bxs-circle' style="font-size: 8px;"></i> @Localizer["Active"]
+            </div>
+
+            <!-- Profile Menu Options -->
+            <div class="profile-menu-list">
+                <div class="profile-menu-item active" data-tab="tab-account">
+                    <i class='bx bx-user-circle'></i>
+                    <span>@Localizer["AccountDetails"]</span>
+                </div>
+                <div class="profile-menu-item" data-tab="tab-security">
+                    <i class='bx bx-shield-quarter'></i>
+                    <span>@Localizer["Security"]</span>
+                </div>
+                <div class="profile-menu-item" data-tab="tab-settings">
+                    <i class='bx bx-cog'></i>
+                    <span>@Localizer["AccountSettings"]</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Content Area -->
+        <div class="profile-content-card">
+            
+            <!-- Pane 1: Account Info -->
+            <div class="tab-pane active" id="tab-account">
+                <div class="tab-title">@Localizer["AccountDetails"]</div>
+                <div class="tab-subtitle">@Localizer["PersonalSettingsSubtitle"]</div>
+                
+                <form id="accountForm" onsubmit="saveProfileChanges(event)">
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label class="field-label">@Localizer["FirstName"]</label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-user field-icon'></i>
+                                <input type="text" class="field-input" value="@userFirstName" required>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label">@Localizer["LastName"]</label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-user field-icon'></i>
+                                <input type="text" class="field-input" value="@userLastName" required>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label">@Localizer["Username"]</label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-at field-icon'></i>
+                                <input type="text" class="field-input" value="@username" required>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label">@Localizer["Email"]</label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-envelope field-icon'></i>
+                                <input type="email" class="field-input" value="@userEmail" required>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label">@Localizer["Phone"]</label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-phone field-icon'></i>
+                                <input type="text" class="field-input" value="@userPhone">
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label">@Localizer["Location"]</label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-map field-icon'></i>
+                                <input type="text" class="field-input" placeholder="e.g. Cairo, Egypt">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions-row">
+                        <button type="submit" class="pub-submit-btn" style="width: auto; padding: 12px 24px;">
+                            <i class='bx bx-check'></i> <span>@Localizer["SaveSettings"]</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Pane 2: Security settings -->
+            <div class="tab-pane" id="tab-security">
+                <div class="tab-title">@Localizer["Security"]</div>
+                <div class="tab-subtitle">@Localizer["PasswordSettingsSubtitle"]</div>
+                
+                <form id="securityForm" onsubmit="saveProfileChanges(event)">
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label class="field-label">@Localizer["CurrentPassword"]</label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-lock-open field-icon'></i>
+                                <input type="password" class="field-input" placeholder="••••••••">
+                            </div>
+                        </div>
+                        <div class="form-field" style="grid-column: span 1; display: none; @(isArabic ? "display: none;" : "")"></div>
+                        <div class="form-field">
+                            <label class="field-label">@Localizer["NewPassword"]</label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-lock-alt field-icon'></i>
+                                <input type="password" class="field-input" placeholder="••••••••">
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label">@Localizer["ConfirmPassword"]</label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-lock-alt field-icon'></i>
+                                <input type="password" class="field-input" placeholder="••••••••">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-title" style="margin-top: 32px; font-size: 1.1rem;">@Localizer["TwoFactorAuthentication"]</div>
+                    <div class="security-options-list">
+                        <div class="security-option-card">
+                            <div class="sec-opt-left">
+                                <div class="sec-opt-icon"><i class='bx bx-shield-quarter'></i></div>
+                                <div>
+                                    <div class="sec-opt-title">@Localizer["TwoStepVerification"]</div>
+                                    <div class="sec-opt-desc">@Localizer["TwoStepVerificationDesc"]</div>
+                                </div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="security-option-card">
+                            <div class="sec-opt-left">
+                                <div class="sec-opt-icon"><i class='bx bx-devices'></i></div>
+                                <div>
+                                    <div class="sec-opt-title">@Localizer["ActiveSessions"]</div>
+                                    <div class="sec-opt-desc">@Localizer["ActiveSessionsDesc"]</div>
+                                </div>
+                            </div>
+                            <a href="#" class="pub-cancel-btn" style="padding: 6px 14px; font-size: 0.85rem; border-radius: 8px; margin: 0; background: var(--bg-color);">@Localizer["Manage"]</a>
+                        </div>
+                    </div>
+
+                    <div class="form-actions-row">
+                        <button type="submit" class="pub-submit-btn" style="width: auto; padding: 12px 24px;">
+                            <i class='bx bx-check'></i> <span>@Localizer["SaveSettings"]</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Pane 3: System / Preferences -->
+            <div class="tab-pane" id="tab-settings">
+                <div class="tab-title">@Localizer["AccountSettings"]</div>
+                <div class="tab-subtitle">@Localizer["SystemSettingsSubtitle"]</div>
+                
+                <form id="settingsForm" onsubmit="saveProfileChanges(event)">
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label class="field-label">@Localizer["Language"]</label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-globe field-icon'></i>
+                                <select class="field-input" onchange="changeProfileLanguage(this)">
+                                    <!option value="ar" @(isArabic ? "selected" : "")>العربية</!option>
+                                    <!option value="en-us" @(!isArabic ? "selected" : "")>English</!option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label">@Localizer["Timezone"]</label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-time-five field-icon'></i>
+                                <select class="field-input">
+                                    <option value="GMT+2" selected>GMT+02:00 Cairo, Egypt</option>
+                                    <option value="GMT+3">GMT+03:00 Mecca, Saudi Arabia</option>
+                                    <option value="GMT+0">GMT+00:00 London, United Kingdom</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-title" style="margin-top: 32px; font-size: 1.1rem;">@Localizer["EmailNotifications"]</div>
+                    <div class="security-options-list">
+                        <div class="security-option-card">
+                            <div class="sec-opt-left">
+                                <div class="sec-opt-icon"><i class='bx bx-cart'></i></div>
+                                <div>
+                                    <div class="sec-opt-title">@Localizer["NewOrderNotification"]</div>
+                                    <div class="sec-opt-desc">@Localizer["NewOrderNotificationDesc"]</div>
+                                </div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="security-option-card">
+                            <div class="sec-opt-left">
+                                <div class="sec-opt-icon"><i class='bx bx-line-chart'></i></div>
+                                <div>
+                                    <div class="sec-opt-title">@Localizer["DailyPerformanceReport"]</div>
+                                    <div class="sec-opt-desc">@Localizer["DailyPerformanceReportDesc"]</div>
+                                </div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-actions-row">
+                        <button type="submit" class="pub-submit-btn" style="width: auto; padding: 12px 24px;">
+                            <i class='bx bx-check'></i> <span>@Localizer["SaveSettings"]</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ── Toast Notification ────────────────────── -->
+<div class="cat-toast" id="catToast"></div>
+
+@section Scripts {
+<script>
+(function () {
+    /* Tab Switching Logic */
+    const menuItems = document.querySelectorAll('.profile-menu-item');
+    const tabPanes  = document.querySelectorAll('.tab-pane');
+
+    menuItems.forEach(item => {
+        item.addEventListener('click', function () {
+            const targetTab = this.dataset.tab;
+            
+            // Remove active classes
+            menuItems.forEach(el => el.classList.remove('active'));
+            tabPanes.forEach(el => el.classList.remove('active'));
+            
+            // Add active class to current
+            this.classList.add('active');
+            document.getElementById(targetTab)?.classList.add('active');
+        });
+    });
+
+    /* Avatar Upload Preview */
+    const avatarInput = document.getElementById('avatarFileInput');
+    const avatarImg   = document.getElementById('profileAvatar');
+    
+    avatarInput?.addEventListener('change', function () {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (avatarImg) avatarImg.src = e.target.result;
+                showToast('@Localizer["AvatarUpdatedSuccess"]');
+            }
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+
+    /* Toast Helper */
+    function showToast(message, duration = 3000) {
+        const toast = document.getElementById('catToast');
+        if (!toast) return;
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), duration);
+    }
+    
+    window.saveProfileChanges = function(event) {
+        event.preventDefault();
+        const btn = event.submitter;
+        const span = btn.querySelector('span');
+        const originalText = span.textContent;
+        
+        btn.disabled = true;
+        span.textContent = '@Localizer["Saving"]...';
+        
+        setTimeout(() => {
+            btn.disabled = false;
+            span.textContent = originalText;
+            showToast('@Localizer["ProfileSettingsSaved"]');
+        }, 1200);
+    };
+    
+    window.changeProfileLanguage = function(select) {
+        const lang = select.value;
+        const currentUrl = encodeURIComponent(window.location.pathname + window.location.search);
+        window.location.href = `/Localization/SetLanguage?culture=${lang}&returnUrl=${currentUrl}`;
+    };
+})();
+</script>
+}

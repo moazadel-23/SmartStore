@@ -133,6 +133,34 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // ── Language Picker Dropdown ──────────────────────────────
+    const langBtn = document.getElementById("languagePickerBtn");
+    const langDropdown = document.getElementById("languageDropdown");
+
+    if (langBtn && langDropdown) {
+        langBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const isOpen = langDropdown.classList.toggle("open");
+            langBtn.setAttribute("aria-expanded", isOpen);
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", (e) => {
+            if (!langDropdown.contains(e.target) && !langBtn.contains(e.target)) {
+                langDropdown.classList.remove("open");
+                langBtn.setAttribute("aria-expanded", "false");
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                langDropdown.classList.remove("open");
+                langBtn.setAttribute("aria-expanded", "false");
+            }
+        });
+    }
+
     // Handle option clicks
     themeOptions.forEach(opt => {
         opt.addEventListener("click", (e) => {

@@ -1,7 +1,8 @@
 @model SmartStore.ViewModel.Store.StoreViewModel
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Store";
+    ViewData["Title"] = Localizer["StoreTitle"];
+    bool isArabic = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar", StringComparison.OrdinalIgnoreCase);
 }
 
 <link rel="stylesheet" href="~/css/store.css" asp-append-version="true" />
@@ -11,154 +12,164 @@
 }
 @await Html.PartialAsync("_BTechHeader")
 
-<div class="container">
-   
-
-    <!-- ─── Main Catalog ─── -->
-    <div style="margin-top:40px;">
-        <div class="section-header">
-            <h2>All Products</h2>
+<div class="bg-gray-50/50 min-h-screen pb-16 font-cairo @(isArabic ? "text-right" : "text-left")" dir="@(isArabic ? "rtl" : "ltr")">
+    
+    <div class="max-w-[1250px] mx-auto px-4 pt-8">
+        <!-- Breadcrumbs -->
+        <div class="flex items-center gap-2 text-sm text-gray-500 mb-6">
+            <a href="/" class="hover:text-[#002d72] transition-colors decoration-none font-bold text-gray-600">@Localizer["Home"]</a>
+            <i class="fas @(isArabic ? "fa-chevron-left" : "fa-chevron-right") text-[10px] text-gray-400"></i>
+            <span class="text-gray-800 font-semibold">@Localizer["StoreTitle"]</span>
         </div>
 
-        <div class="row">
-            <!-- Filter Sidebar -->
-            <div class="col-md-3">
+        <!-- ─── Main Catalog Grid ─── -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+            
+            <!-- Left Sidebar: Filter Panel -->
+            <div class="lg:col-span-1">
                 <div class="filter-overlay" id="filterOverlay"></div>
-                <div class="filter-sidebar" id="filterSidebar">
-                    <div class="mobile-filter-close" style="display:none;">
-                        <strong>Filters</strong>
-                        <button type="button" style="border:none;background:none;font-size:20px;" id="filterCloseBtn"><i class="fa fa-times"></i></button>
+                <div class="filter-sidebar bg-white border border-gray-100 rounded-2xl p-5 shadow-sm space-y-5" id="filterSidebar">
+                    <div class="mobile-filter-close flex items-center justify-between pb-3 border-b border-gray-100 lg:hidden">
+                        <strong class="text-gray-900 text-sm">@Localizer["Filters"]</strong>
+                        <button type="button" class="border-0 bg-transparent text-gray-500 hover:text-gray-800 text-lg cursor-pointer" id="filterCloseBtn"><i class="fas fa-times"></i></button>
                     </div>
 
-                    <form id="filterForm" method="get" action="/Customer/Home/Store">
+                    <div class="hidden lg:flex items-center gap-2 pb-3 border-b border-gray-100/50">
+                        <div class="w-7 h-7 rounded-lg bg-[#002d72]/10 flex items-center justify-center text-[#002d72]">
+                            <i class="fas fa-sliders-h text-xs"></i>
+                        </div>
+                        <h3 class="text-xs font-black text-gray-900 m-0">@Localizer["Filters"]</h3>
+                    </div>
+
+                    <form id="filterForm" method="get" action="/Customer/Home/Store" class="space-y-4">
                         <input type="hidden" name="Pagination.Page" id="pageInput" value="@Model.Pagination.Page" />
                         <input type="hidden" name="SortBy" id="sortInput" value="@Model.Filter.SortBy" />
 
-                        <!-- Category -->
-                        <div class="filter-group">
-                            <div class="filter-group-title">Category <i class="fa fa-chevron-down"></i></div>
-                            <div class="filter-options">
+                        <!-- Category Filter -->
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-gray-900">@Localizer["Category"]</label>
+                            <div class="max-h-48 overflow-y-auto space-y-1.5 pr-1.5 scrollbar-thin">
                                 @foreach (var cat in Model.Categories)
                                 {
                                     var checkedAttr = Model.Filter.CategoryIds.Contains(cat.Id) ? "checked" : "";
-                                    <label class="filter-checkbox">
-                                        <input type="checkbox" name="Filter.CategoryIds" value="@cat.Id" @checkedAttr>
-                                        @cat.Name
-                                        <span class="count">(@Model.BestSellers.Count(p => p.CategoryId == cat.Id))</span>
+                                    <label class="flex items-center justify-between text-xs font-semibold text-gray-600 hover:text-[#002d72] transition-colors cursor-pointer select-none py-0.5">
+                                        <div class="flex items-center gap-2">
+                                            <input type="checkbox" name="Filter.CategoryIds" value="@cat.Id" @checkedAttr class="w-4 h-4 rounded text-[#002d72] focus:ring-[#002d72] border-gray-300">
+                                            <span>@cat.Name</span>
+                                        </div>
+                                        <span class="text-[9px] bg-gray-100 text-gray-400 px-2 py-0.5 rounded-full font-extrabold border border-gray-100">@Model.BestSellers.Count(p => p.CategoryId == cat.Id)</span>
                                     </label>
                                 }
                             </div>
                         </div>
 
-                        <!-- Brand -->
-                        <div class="filter-group">
-                            <div class="filter-group-title">Brand <i class="fa fa-chevron-down"></i></div>
-                            <div class="filter-options">
+                        <!-- Brand Filter -->
+                        <div class="space-y-2 pt-2 border-t border-gray-100/50">
+                            <label class="block text-xs font-bold text-gray-900">@Localizer["Brand"]</label>
+                            <div class="max-h-48 overflow-y-auto space-y-1.5 pr-1.5 scrollbar-thin">
                                 @foreach (var brand in Model.Brands)
                                 {
                                     var checkedAttr = Model.Filter.BrandIds.Contains(brand.Id) ? "checked" : "";
-                                    <label class="filter-checkbox">
-                                        <input type="checkbox" name="Filter.BrandIds" value="@brand.Id" @checkedAttr>
-                                        @brand.Name
+                                    <label class="flex items-center gap-2 text-xs font-semibold text-gray-600 hover:text-[#002d72] transition-colors cursor-pointer select-none py-0.5">
+                                        <input type="checkbox" name="Filter.BrandIds" value="@brand.Id" @checkedAttr class="w-4 h-4 rounded text-[#002d72] focus:ring-[#002d72] border-gray-300">
+                                        <span>@brand.Name</span>
                                     </label>
                                 }
                             </div>
                         </div>
 
-                        <!-- Price -->
-                        <div class="filter-group">
-                            <div class="filter-group-title">Price Range <i class="fa fa-chevron-down"></i></div>
-                            <div class="filter-options">
-                                <div class="price-range-inputs">
-                                    <input type="number" name="Filter.MinPrice" placeholder="Min" value="@Model.Filter.MinPrice" min="0">
-                                    <span>—</span>
-                                    <input type="number" name="Filter.MaxPrice" placeholder="Max" value="@Model.Filter.MaxPrice" min="0">
-                                </div>
+                        <!-- Price Range Filter -->
+                        <div class="space-y-2 pt-2 border-t border-gray-100/50">
+                            <label class="block text-xs font-bold text-gray-900">@Localizer["PriceRange"]</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="number" name="Filter.MinPrice" placeholder="@Localizer["Min"]" value="@Model.Filter.MinPrice" min="0" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl focus:border-[#002d72] focus:outline-none font-bold" />
+                                <input type="number" name="Filter.MaxPrice" placeholder="@Localizer["Max"]" value="@Model.Filter.MaxPrice" min="0" class="w-full px-3 py-2 text-xs border border-gray-200 rounded-xl focus:border-[#002d72] focus:outline-none font-bold" />
                             </div>
                         </div>
 
-                        <!-- Rating -->
-                        <div class="filter-group">
-                            <div class="filter-group-title">Rating <i class="fa fa-chevron-down"></i></div>
-                            <div class="filter-options">
+                        <!-- Rating Filter -->
+                        <div class="space-y-2 pt-2 border-t border-gray-100/50">
+                            <label class="block text-xs font-bold text-gray-900">@Localizer["Rating"]</label>
+                            <div class="space-y-1.5">
                                 @for (int r = 4; r >= 1; r--)
                                 {
                                     var checkedAttr = Model.Filter.MinRating == r ? "checked" : "";
-                                    <label class="rating-filter">
-                                        <input type="radio" name="Filter.MinRating" value="@r" @checkedAttr style="display:none;">
-                                        <span class="stars">
+                                    <label class="flex items-center gap-2 text-xs font-semibold text-gray-500 hover:text-[#002d72] transition-colors cursor-pointer select-none py-0.5">
+                                        <input type="radio" name="Filter.MinRating" value="@r" @checkedAttr class="w-4 h-4 text-[#002d72] focus:ring-[#002d72] border-gray-300">
+                                        <span class="text-amber-400 flex items-center text-[10px]">
                                             @for (int s = 0; s < 5; s++)
                                             {
-                                                if (s < r)
-                                                {
-                                                    <text>★</text>
-                                                }
-                                                else
-                                                {
-                                                    <span class="empty">★</span>
-                                                }
+                                                if (s < r) { <text>★</text> } else { <span class="text-gray-200">★</span> }
                                             }
                                         </span>
-                                        &amp; up
+                                        <span class="text-[10px] text-gray-400 font-bold mt-0.5">@Localizer["AndUp"]</span>
                                     </label>
                                 }
                             </div>
                         </div>
 
-                        <!-- In Stock -->
-                        <div class="filter-group">
-                            <label class="filter-checkbox">
-                                <input type="checkbox" name="Filter.InStockOnly" value="true" @(Model.Filter.InStockOnly == true ? "checked" : "")>
-                                In Stock Only
+                        <!-- In Stock Filter -->
+                        <div class="pt-2 border-t border-gray-100/50">
+                            <label class="flex items-center gap-2 text-xs font-bold text-gray-900 hover:text-[#002d72] transition-colors cursor-pointer select-none">
+                                <input type="checkbox" name="Filter.InStockOnly" value="true" @(Model.Filter.InStockOnly == true ? "checked" : "") class="w-4 h-4 rounded text-[#002d72] focus:ring-[#002d72] border-gray-300">
+                                <span>@Localizer["InStockOnly"]</span>
                             </label>
                         </div>
 
-                        <div class="filter-actions">
-                            <button type="submit" class="btn-apply">Apply</button>
-                            <button type="button" class="btn-reset" id="resetFilters">Reset</button>
+                        <!-- Apply & Reset Actions -->
+                        <div class="flex gap-2 pt-4 border-t border-gray-100/50">
+                            <button type="button" class="w-1/2 bg-white hover:bg-gray-50 text-gray-700 font-bold text-xs py-2.5 rounded-xl border border-gray-200 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm" id="resetFilters">
+                                <i class="fas fa-redo text-[9px] opacity-75"></i>
+                                <span>@Localizer["Reset"]</span>
+                            </button>
+                            <button type="submit" class="w-1/2 bg-[#002d72] hover:bg-[#001f4f] text-white font-bold text-xs py-2.5 rounded-xl border-0 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
+                                <i class="fas fa-check text-[9px]"></i>
+                                <span>@Localizer["Apply"]</span>
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <!-- Product Grid -->
-            @await Html.PartialAsync("_ProductGrid", Model)
+            <!-- Right Column: Product Grid -->
+            <div class="lg:col-span-3">
+                @await Html.PartialAsync("_ProductGrid", Model)
+            </div>
         </div>
     </div>
 </div>
 
-<!-- ─── Footer ─── -->
 <footer class="store-footer">
     <div class="container">
         <div class="row">
-            <div class="col-md-3 col-6">
-                <h5>About Us</h5>
-                <p style="font-size:13px;line-height:1.7;">Your destination for premium electronics at unbeatable prices. Fast shipping, easy returns.</p>
+            <div class="col-md-3 col-6 text-right">
+                <h5>@Localizer["AboutUs"]</h5>
+                <p style="font-size:13px;line-height:1.7;">@Localizer["AboutUsText"]</p>
             </div>
-            <div class="col-md-3 col-6">
-                <h5>Categories</h5>
-                <a href="#">Laptops</a>
-                <a href="#">Smartphones</a>
-                <a href="#">Cameras</a>
-                <a href="#">Accessories</a>
+            <div class="col-md-3 col-6 text-right">
+                <h5>@Localizer["MainCategories"]</h5>
+                <a href="/Customer/Home/Store?Filter.CategoryIds=2">@Localizer["Laptops"]</a>
+                <a href="/Customer/Home/Store?Filter.CategoryIds=1">@Localizer["Mobiles"]</a>
+                <a href="/Customer/Home/Store?Filter.CategoryIds=3">@Localizer["ScreensTVs"]</a>
+                <a href="/Customer/Home/Store?Filter.CategoryIds=4">@Localizer["HomeAppliances"]</a>
             </div>
-            <div class="col-md-3 col-6">
-                <h5>Customer Service</h5>
-                <a href="#">Contact Us</a>
-                <a href="#">Shipping & Returns</a>
-                <a href="#">FAQ</a>
-                <a href="#">Warranty</a>
+            <div class="col-md-3 col-6 text-right">
+                <h5>@Localizer["CustomerService"]</h5>
+                <a href="#">@Localizer["ContactUs"]</a>
+                <a href="#">@Localizer["ReturnsPolicy"]</a>
+                <a href="#">@Localizer["FAQ"]</a>
+                <a href="#">@Localizer["WarrantyTerms"]</a>
             </div>
-            <div class="col-md-3 col-6">
-                <h5>My Account</h5>
-                <a href="#">My Orders</a>
-                <a href="/Customer/Wishlist/Index">My Wishlist</a>
-                <a href="#">My Cart</a>
-                <a href="#">Account Settings</a>
+            <div class="col-md-3 col-6 text-right">
+                <h5>@Localizer["MyAccount"]</h5>
+                <a href="#">@Localizer["MyOrders"]</a>
+                <a href="/Customer/Wishlist/Index">@Localizer["Wishlist"]</a>
+                <a href="/Cart">@Localizer["Cart"]</a>
+                <a href="#">@Localizer["AccountSettings"]</a>
             </div>
         </div>
         <div class="footer-bottom">
-            <span>&copy; @DateTime.Now.Year SmartStore. All rights reserved.</span>
+            <span>&copy; @DateTime.Now.Year @Localizer["FooterRightsText"]</span>
             <span>
                 <i class="fa fa-cc-visa" style="font-size:24px;margin-left:8px;"></i>
                 <i class="fa fa-cc-mastercard" style="font-size:24px;margin-left:8px;"></i>

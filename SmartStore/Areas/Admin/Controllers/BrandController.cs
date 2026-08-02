@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using SmartStore.Models;
 using SmartStore.Repositories;
 
@@ -8,9 +9,11 @@ namespace SmartStore.Areas.Admin.Controllers
     public class BrandController : Controller
     {
         private readonly IRepository<Brand> _brandRepository;
-        public BrandController(IRepository<Brand> brandRepository)
+        private readonly IStringLocalizer<LocalizationController> _localizer;
+        public BrandController(IRepository<Brand> brandRepository, IStringLocalizer<LocalizationController> localizer)
         {
             _brandRepository = brandRepository;
+            _localizer = localizer;
         }
 
         [HttpGet]
@@ -71,6 +74,16 @@ namespace SmartStore.Areas.Admin.Controllers
             var brand = await _brandRepository.GetOneAsync(e => e.Id == id);
             if (brand is null) return NotFound();
             
+            try
+            {
+                _brandRepository.Delete(brand);
+                await _brandRepository.Commit();
+                TempData["SuccessMessage"] = _localizer["BrandDeletedSuccessfully"].Value;
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = _localizer["BrandDeleteFailed"].Value;
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -78,11 +91,19 @@ namespace SmartStore.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id, CancellationToken cancellationToken)
         {
-            var brand = await _brandRepository.GetOneAsync(e => e.Id == id);
+            var brand = await _brandRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
             if (brand is null) return NotFound(); 
             
-            _brandRepository.Delete(brand);
-            await _brandRepository.Commit(cancellationToken);
+            try
+            {
+                _brandRepository.Delete(brand);
+                await _brandRepository.Commit(cancellationToken);
+                TempData["SuccessMessage"] = _localizer["BrandDeletedSuccessfully"].Value;
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = _localizer["BrandDeleteFailed"].Value;
+            }
             return RedirectToAction(nameof(Index));
         }    
     }

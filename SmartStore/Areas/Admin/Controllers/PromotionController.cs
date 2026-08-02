@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using SmartStore.Models;
 using SmartStore.Repositories;
 
@@ -11,17 +12,20 @@ namespace SmartStore.Areas.Admin.Controllers
         private readonly IRepository<Product> _productRepository;
         private readonly IRepository<Category> _categoryRepository;
         private readonly IRepository<Brand> _brandRepository;
+        private readonly IStringLocalizer<LocalizationController> _localizer;
 
         public PromotionController(
             IRepository<Promotion> promotionRepository,
             IRepository<Product> productRepository,
             IRepository<Category> categoryRepository,
-            IRepository<Brand> brandRepository)
+            IRepository<Brand> brandRepository,
+            IStringLocalizer<LocalizationController> localizer)
         {
             _promotionRepository = promotionRepository;
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
             _brandRepository = brandRepository;
+            _localizer = localizer;
         }
 
         [HttpGet]
@@ -50,7 +54,7 @@ namespace SmartStore.Areas.Admin.Controllers
             {
                 await _promotionRepository.AddAsync(promotion, cancellationToken);
                 await _promotionRepository.Commit(cancellationToken);
-                TempData["SuccessMessage"] = "تم إضافة العرض الترويجي بنجاح!";
+                TempData["SuccessMessage"] = _localizer["PromotionAddedSuccessfully"].Value;
                 return RedirectToAction(nameof(Index));
             }
 
@@ -84,7 +88,7 @@ namespace SmartStore.Areas.Admin.Controllers
             {
                 _promotionRepository.Update(promotion);
                 await _promotionRepository.Commit(cancellationToken);
-                TempData["SuccessMessage"] = "تم تعديل العرض الترويجي بنجاح!";
+                TempData["SuccessMessage"] = _localizer["PromotionUpdatedSuccessfully"].Value;
                 return RedirectToAction(nameof(Index));
             }
 
@@ -102,7 +106,7 @@ namespace SmartStore.Areas.Admin.Controllers
             
             _promotionRepository.Delete(promotion);
             await _promotionRepository.Commit(cancellationToken);
-            TempData["SuccessMessage"] = "تم حذف العرض الترويجي بنجاح!";
+            TempData["SuccessMessage"] = _localizer["PromotionDeletedSuccessfully"].Value;
             return RedirectToAction(nameof(Index));
         }
 
@@ -115,7 +119,7 @@ namespace SmartStore.Areas.Admin.Controllers
             
             _promotionRepository.Delete(promotion);
             await _promotionRepository.Commit(cancellationToken);
-            TempData["SuccessMessage"] = "تم حذف العرض الترويجي بنجاح!";
+            TempData["SuccessMessage"] = _localizer["PromotionDeletedSuccessfully"].Value;
             return RedirectToAction(nameof(Index));
         }
     }

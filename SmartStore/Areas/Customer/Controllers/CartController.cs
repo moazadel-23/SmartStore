@@ -27,7 +27,7 @@ namespace SmartStore.Areas.Customer.Controllers
         }
 
         [Route("")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string code)
         {
             var user = await _userManager.GetUserAsync(User);
             IEnumerable<Cart> cartItems = new List<Cart>();
@@ -51,6 +51,19 @@ namespace SmartStore.Areas.Customer.Controllers
                 description = p.description
             }).ToList();
 
+            var promotion = await _promotionRepository.GetOneAsync(e => e.Code == code && e.IsValid);
+            if(promotion is not null)
+            {
+                var result = cartItems.FirstOrDefault(e => e.ProductId == promotion!.ProductId);
+                if(result is not null)
+                {
+                    ViewBag.OriginalProductPrices = new Dictionary<int, decimal> {
+                        { result.ProductId, result.Product!.Price }
+                    };
+                    result.Product!.Price -= result.Product.Price * (promotion.Discount / 100);
+                }
+            }
+
             return View(cartItems);
         }
 
@@ -60,15 +73,11 @@ namespace SmartStore.Areas.Customer.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
-            {
-                return Json(new { success = true, isGuest = true });
-            }
+                return NotFound();
 
             var product = await _productRepository.GetOneAsync(p => p.Id == productId, tracked: false);
             if (product == null)
-            {
-                return Json(new { success = false, message = "Product not found" });
-            }
+                return NotFound();
 
             var cartItem = await _cartRepository.GetOneAsync(c => c.UserId == user.Id && c.ProductId == productId);
             if (cartItem != null)
@@ -91,7 +100,7 @@ namespace SmartStore.Areas.Customer.Controllers
             var cartItems = await _cartRepository.GetAsync(c => c.UserId == user.Id);
             var totalCount = cartItems.Sum(c => c.Count);
 
-            return Json(new { success = true, isGuest = false, count = totalCount });
+            return Json(new { success = true, count = totalCount });
         }
 
         [HttpPost]
@@ -100,15 +109,11 @@ namespace SmartStore.Areas.Customer.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
-            {
-                return Json(new { success = false, message = "User not logged in" });
-            }
+                return NotFound();
 
             var cartItem = await _cartRepository.GetOneAsync(c => c.UserId == user.Id && c.ProductId == productId);
             if (cartItem == null)
-            {
-                return Json(new { success = false, message = "Item not found in cart" });
-            }
+                return NotFound();
 
             if (qty <= 0)
             {
@@ -139,9 +144,7 @@ namespace SmartStore.Areas.Customer.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
-            {
-                return Json(new { success = false, message = "User not logged in" });
-            }
+                return NotFound();
 
             var cartItem = await _cartRepository.GetOneAsync(c => c.UserId == user.Id && c.ProductId == productId);
             if (cartItem != null)
@@ -226,6 +229,7 @@ namespace SmartStore.Areas.Customer.Controllers
 
             decimal totalDiscount = 0;
             bool couponApplied = false;
+            var discountItems = new List<object>();
 
             if (request.Items != null && request.Items.Any())
             {
@@ -256,9 +260,17 @@ namespace SmartStore.Areas.Customer.Controllers
                     if (applies)
                     {
                         // Calculate item discount based on discount percentage
-                        decimal itemDiscount = (product.Price * (promotion.Discount / 100)) * item.Count;
+                        decimal unitDiscount = product.Price * (promotion.Discount / 100);
+                        decimal itemDiscount = unitDiscount * item.Count;
                         totalDiscount += itemDiscount;
                         couponApplied = true;
+
+                        discountItems.Add(new
+                        {
+                            productId = product.Id,
+                            unitDiscount = unitDiscount,
+                            totalDiscount = itemDiscount
+                        });
                     }
                 }
             }
@@ -271,7 +283,8 @@ namespace SmartStore.Areas.Customer.Controllers
             return Json(new { 
                 success = true, 
                 discount = totalDiscount, 
-                message = $"تم تطبيق كوبون خصم {promotion.Discount.ToString("G29")}% بنجاح!" 
+                message = $"تم تطبيق كوبون خصم {promotion.Discount.ToString("G29")}% بنجاح!",
+                items = discountItems
             });
         }
     }

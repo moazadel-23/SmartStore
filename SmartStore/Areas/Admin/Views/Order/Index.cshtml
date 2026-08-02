@@ -1,22 +1,23 @@
 @model IEnumerable<SmartStore.Models.Order>
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Orders";
-    ViewData["PageTitle"] = "Order Management";
+    ViewData["Title"] = Localizer["Orders"];
+    ViewData["PageTitle"] = Localizer["OrderManagement"];
 
     var totalOrders = Model?.Count() ?? 0;
     var pendingOrders = Model?.Count(o => o.OrderStatus == OrderStatus.Pending) ?? 0;
     var completedOrders = Model?.Count(o => o.OrderStatus == OrderStatus.Delivered) ?? 0;
     var totalRevenue = Model?.Where(o => o.OrderStatus == OrderStatus.Delivered).Sum(o => o.TotalAmount) ?? 0;
+    bool isArabic = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar", StringComparison.OrdinalIgnoreCase);
 }
 
 <link rel="stylesheet" href="~/css/order-admin.css">
 
 <div class="home-content">
     <div class="breadcrumb-bar">
-        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> Home</span>
+        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> @Localizer["Home"]</span>
         <i class='bx bx-chevron-right bc-sep'></i>
-        <span class="bc-current">Orders</span>
+        <span class="bc-current">@Localizer["Orders"]</span>
         <span class="bc-date"><i class='bx bx-calendar'></i> @DateTime.Now.ToString("dddd, MMMM dd yyyy")</span>
     </div>
 
@@ -26,7 +27,7 @@
             <div class="ord-kpi-icon ok-blue"><i class='bx bx-shopping-bag'></i></div>
             <div>
                 <div class="ord-kpi-val">@totalOrders</div>
-                <div class="ord-kpi-label">Total Orders</div>
+                <div class="ord-kpi-label">@Localizer["TotalOrders"]</div>
             </div>
         </div>
         <div class="ord-kpi-divider"></div>
@@ -34,7 +35,7 @@
             <div class="ord-kpi-icon ok-purple"><i class='bx bx-time'></i></div>
             <div>
                 <div class="ord-kpi-val">@pendingOrders</div>
-                <div class="ord-kpi-label">Pending</div>
+                <div class="ord-kpi-label">@Localizer["Pending"]</div>
             </div>
         </div>
         <div class="ord-kpi-divider"></div>
@@ -42,15 +43,15 @@
             <div class="ord-kpi-icon ok-green"><i class='bx bx-check-circle'></i></div>
             <div>
                 <div class="ord-kpi-val">@completedOrders</div>
-                <div class="ord-kpi-label">Delivered</div>
+                <div class="ord-kpi-label">@Localizer["Delivered"]</div>
             </div>
         </div>
         <div class="ord-kpi-divider"></div>
         <div class="ord-kpi-item">
             <div class="ord-kpi-icon ok-gold"><i class='bx bx-dollar-circle'></i></div>
             <div>
-                <div class="ord-kpi-val">$@totalRevenue.ToString("0.00")</div>
-                <div class="ord-kpi-label">Revenue</div>
+                <div class="ord-kpi-val">@(isArabic ? "" : "$")@totalRevenue.ToString("0.00")@(isArabic ? " " + Localizer["EGP"] : "")</div>
+                <div class="ord-kpi-label">@Localizer["Revenue"]</div>
             </div>
         </div>
     </div>
@@ -61,14 +62,14 @@
             <div class="ord-card-title">
                 <i class='bx bx-list-ul'></i>
                 <div>
-                    <h3>All Orders</h3>
-                    <p>Manage and track customer orders</p>
+                    <h3>@Localizer["AllOrders"]</h3>
+                    <p>@Localizer["ManageCustomerOrders"]</p>
                 </div>
             </div>
             <div class="ord-card-actions">
                 <div class="ord-search-wrap">
                     <i class='bx bx-search'></i>
-                    <input type="text" id="orderSearch" placeholder="Search by customer...">
+                    <input type="text" id="orderSearch" placeholder="@Localizer["SearchByCustomer"]">
                     <span class="ord-search-clear" id="clearSearch"><i class='bx bx-x'></i></span>
                 </div>
             </div>
@@ -80,12 +81,12 @@
                 <table class="ord-table" id="orderTable">
                     <thead>
                         <tr>
-                            <th class="th-id">Order ID</th>
-                            <th>Customer</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Total</th>
-                            <th class="th-actions">Actions</th>
+                            <th class="th-id">@Localizer["OrderID"]</th>
+                            <th>@Localizer["Customer"]</th>
+                            <th>@Localizer["Date"]</th>
+                            <th>@Localizer["Status"]</th>
+                            <th>@Localizer["Total"]</th>
+                            <th class="th-actions">@Localizer["Actions"]</th>
                         </tr>
                     </thead>
                     <tbody id="orderTableBody">
@@ -104,24 +105,24 @@
                                 <td>@order.OrderDate.ToString("MMM dd, yyyy")</td>
                                 <td>
                                     @if(order.OrderStatus == OrderStatus.Delivered){
-                                        <span class="ord-badge badge-delivered"><i class='bx bxs-circle'></i> Delivered</span>
+                                        <span class="ord-badge badge-delivered"><i class='bx bxs-circle'></i> @Localizer["Delivered"]</span>
                                     } else if (order.OrderStatus == OrderStatus.Pending) {
-                                        <span class="ord-badge badge-pending"><i class='bx bxs-circle'></i> Pending</span>
+                                        <span class="ord-badge badge-pending"><i class='bx bxs-circle'></i> @Localizer["Pending"]</span>
                                     } else if (order.OrderStatus == OrderStatus.Processing) {
-                                        <span class="ord-badge badge-processing"><i class='bx bxs-circle'></i> Processing</span>
+                                        <span class="ord-badge badge-processing"><i class='bx bxs-circle'></i> @Localizer["Processing"]</span>
                                     } else if (order.OrderStatus == OrderStatus.Shipped) {
-                                        <span class="ord-badge badge-shipped"><i class='bx bxs-circle'></i> Shipped</span>
+                                        <span class="ord-badge badge-shipped"><i class='bx bxs-circle'></i> @Localizer["Shipped"]</span>
                                     } else {
                                         <span class="ord-badge badge-cancelled"><i class='bx bxs-circle'></i> @order.OrderStatus.ToString()</span>
                                     }
                                 </td>
-                                <td><strong style="color:var(--text-dark)">$@order.TotalAmount.ToString("0.00")</strong></td>
+                                <td><strong style="color:var(--text-dark)">@(isArabic ? "" : "$")@order.TotalAmount.ToString("0.00")@(isArabic ? " " + Localizer["EGP"] : "")</strong></td>
                                 <td>
                                     <div class="ord-action-group">
-                                        <a asp-area="Admin" asp-controller="Order" asp-action="Details" asp-route-id="@order.Id" class="ord-btn ord-btn-view" title="View Details">
+                                        <a asp-area="Admin" asp-controller="Order" asp-action="Details" asp-route-id="@order.Id" class="ord-btn ord-btn-view" title="@Localizer["ViewDetails"]">
                                             <i class='bx bx-show'></i>
                                         </a>
-                                        <button type="button" class="ord-btn ord-btn-delete" title="Delete Order" data-id="@order.Id" onclick="openDeleteModal(this)">
+                                        <button type="button" class="ord-btn ord-btn-delete" title="@Localizer["DeleteOrder"]" data-id="@order.Id" onclick="openDeleteModal(this)">
                                             <i class='bx bx-trash'></i>
                                         </button>
                                     </div>
@@ -136,10 +137,10 @@
         {
             <div class="ord-empty">
                 <div class="ord-empty-icon"><i class='bx bx-shopping-bag'></i></div>
-                <h3>No Orders Found</h3>
-                <p>There are no orders placed yet.</p>
+                <h3>@Localizer["NoOrdersFound"]</h3>
+                <p>@Localizer["NoOrdersPlacedYet"]</p>
                 <a href="@Url.Action("SeedOrders", "Order", new { area = "Admin" })" class="ord-btn" style="width: auto; padding: 10px 20px; background: var(--primary-color); color: #fff; border-radius: 8px; margin-top: 15px; font-weight: 600;">
-                    <i class='bx bx-plus-circle' style="margin-right: 8px;"></i> Generate Test Orders
+                    <i class='bx bx-plus-circle' style="margin-inline-end: 8px;"></i> @Localizer["GenerateTestOrders"]
                 </a>
             </div>
         }
@@ -150,17 +151,17 @@
 <div class="ord-modal-overlay" id="deleteModal">
     <div class="ord-modal">
         <div class="ord-modal-icon"><i class='bx bx-trash'></i></div>
-        <h3 class="ord-modal-title">Delete Order?</h3>
+        <h3 class="ord-modal-title">@Localizer["DeleteOrderQuestion"]</h3>
         <p class="ord-modal-desc">
-            You are about to delete <strong id="deleteOrderName">this order</strong>.
-            This action cannot be undone.
+            @Localizer["AboutToDeleteOrder"] <strong id="deleteOrderName">this order</strong>.
+            @Localizer["ActionCannotBeUndone"]
         </p>
         <div class="ord-modal-actions">
-            <button class="ord-modal-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <button class="ord-modal-cancel" onclick="closeDeleteModal()">@Localizer["Cancel"]</button>
             <form id="deleteForm" method="post" asp-area="Admin" asp-controller="Order" asp-action="Delete">
                  <input type="hidden" name="id" id="deleteOrderId" value="" />
                  <button type="submit" class="ord-modal-confirm" style="border:none; cursor:pointer; font-family: inherit; font-size: 1rem;">
-                     <i class='bx bx-trash'></i> Delete
+                     <i class='bx bx-trash'></i> @Localizer["Delete"]
                  </button>
             </form>
         </div>
@@ -171,7 +172,7 @@
 <script>
 function openDeleteModal(btn) {
     const id = btn.dataset.id;
-    document.getElementById('deleteOrderName').textContent = "Order #" + id;
+    document.getElementById('deleteOrderName').textContent = "@Localizer["Order"] #" + id;
     document.getElementById('deleteOrderId').value = id;
     document.getElementById('deleteModal').classList.add('show');
 }

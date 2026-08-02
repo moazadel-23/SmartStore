@@ -1,8 +1,8 @@
 @model SmartStore.Models.Category
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Update Category";
-    ViewData["PageTitle"] = "Category Management";
+    ViewData["Title"] = Localizer["UpdateCategory"];
+    ViewData["PageTitle"] = Localizer["CategoryManagement"];
 }
 
 <link rel="stylesheet" href="~/css/category-admin.css">
@@ -11,11 +11,11 @@
 
     <!-- ── Breadcrumb ─────────────────────────── -->
     <div class="breadcrumb-bar">
-        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> Home</span>
+        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> @Localizer["Home"]</span>
         <i class='bx bx-chevron-right bc-sep'></i>
-        <a asp-action="Index" class="bc-link">Categories</a>
+        <a asp-action="Index" class="bc-link">@Localizer["Categories"]</a>
         <i class='bx bx-chevron-right bc-sep'></i>
-        <span class="bc-current">Update Category</span>
+        <span class="bc-current">@Localizer["UpdateCategory"]</span>
         <span class="bc-date">
             <i class='bx bx-calendar'></i>
             @DateTime.Now.ToString("dddd, MMMM dd yyyy")
@@ -29,17 +29,18 @@
                 <i class='bx bx-edit-alt'></i>
             </div>
             <div>
-                <h2>Update Category</h2>
-                <p>Modify the details of your product category below</p>
+                <h2>@Localizer["UpdateCategory"]</h2>
+                <p>@Localizer["UpdateCategory"]</p>
             </div>
         </div>
     </div>
 
     <!-- ── Form ───────────────────────────────── -->
     <form asp-action="Update" asp-controller="Category" asp-area="Admin"
-          method="post" id="createCategoryForm" novalidate>
+          method="post" id="createCategoryForm" enctype="multipart/form-data" novalidate>
         @Html.AntiForgeryToken()
         <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="ImageUrl" />
 
         <div class="create-layout">
 
@@ -50,14 +51,14 @@
                 <div class="create-card">
                     <div class="create-card-header">
                         <i class='bx bx-info-circle'></i>
-                        <span>Category Details</span>
+                        <span>@Localizer["CategoryDetails"]</span>
                     </div>
                     <div class="create-card-body">
 
                         <!-- Name -->
                         <div class="form-field" id="field-name">
                             <label asp-for="Name" class="field-label">
-                                Category Name
+                                @Localizer["CategoryName"]
                                 <span class="field-required">*</span>
                             </label>
                             <div class="field-input-wrap">
@@ -69,19 +70,19 @@
                                        id="nameInput">
                             </div>
                             <span asp-validation-for="Name" class="field-error"></span>
-                            <div class="field-hint">Use a clear, concise name that customers can recognise.</div>
+                            <div class="field-hint">@Localizer["UseClearConciseName"]</div>
                         </div>
 
                         <!-- Description -->
                         <div class="form-field" id="field-desc">
                             <label asp-for="Description" class="field-label">
-                                Description
-                                <span class="field-optional">Optional</span>
+                                @Localizer["Description"]
+                                <span class="field-optional">@Localizer["Optional"]</span>
                             </label>
                             <div class="field-textarea-wrap">
                                 <textarea asp-for="Description"
                                           class="field-textarea"
-                                          placeholder="Describe what products belong in this category…"
+                                          placeholder="@Localizer["DescribeProductsBelong"]"
                                           rows="5"
                                           id="descInput"></textarea>
                             </div>
@@ -91,6 +92,19 @@
                             </div>
                         </div>
 
+                        <!-- Image Upload -->
+                        <div class="form-field" id="field-image">
+                            <label class="field-label">
+                                @Localizer["CategoryImage"]
+                                <span class="field-optional">@Localizer["Optional"]</span>
+                            </label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-image field-icon'></i>
+                                <input type="file" name="ImageFile" id="imageInput" class="field-input" accept="image/*" style="padding-top: 10px;">
+                            </div>
+                            <div class="field-hint">@Localizer["UploadNewImageToReplaceCategorySlider"]</div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -98,17 +112,26 @@
                 <div class="create-card preview-card">
                     <div class="create-card-header">
                         <i class='bx bx-show-alt'></i>
-                        <span>Live Preview</span>
+                        <span>@Localizer["LivePreview"]</span>
                     </div>
                     <div class="create-card-body">
                         <div class="preview-row">
-                            <div class="preview-avatar" id="previewAvatar">?</div>
+                            <div class="preview-avatar" id="previewAvatar">
+                                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                                {
+                                    <img src="@Model.ImageUrl" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;" id="existingPreviewImg" />
+                                }
+                                else
+                                {
+                                    <text>?</text>
+                                }
+                            </div>
                             <div class="preview-meta">
-                                <div class="preview-name" id="previewName">Category Name</div>
-                                <div class="preview-desc" id="previewDesc">Description will appear here…</div>
+                                <div class="preview-name" id="previewName">@Localizer["CategoryName"]</div>
+                                <div class="preview-desc" id="previewDesc">@Localizer["Description"]…</div>
                             </div>
                             <span class="preview-badge" id="previewBadge">
-                                <i class='bx bxs-circle'></i> Active
+                                <i class='bx bxs-circle'></i> @Localizer["Active"]
                             </span>
                         </div>
                     </div>
@@ -123,21 +146,21 @@
                 <div class="create-card">
                     <div class="create-card-header">
                         <i class='bx bx-send'></i>
-                        <span>Save Changes</span>
+                        <span>@Localizer["SaveChange"]</span>
                     </div>
                     <div class="create-card-body">
 
                         <!-- Status Toggle -->
                         <div class="form-field">
-                            <label class="field-label">Status</label>
+                            <label class="field-label">@Localizer["Status"]</label>
                             <div class="status-toggle-group" id="statusToggle">
                                 <label class="status-option status-active-opt selected" id="statusActiveLabel">
                                     <input type="radio" asp-for="Status" value="true"
                                            name="Status" id="statusActive" checked>
                                     <i class='bx bx-check-circle'></i>
                                     <div>
-                                        <span class="st-title">Active</span>
-                                        <span class="st-desc">Visible to customers</span>
+                                        <span class="st-title">@Localizer["Active"]</span>
+                                        <span class="st-desc">@Localizer["VisibleToCustomers"]</span>
                                     </div>
                                 </label>
                                 <label class="status-option status-inactive-opt" id="statusInactiveLabel">
@@ -145,8 +168,8 @@
                                            name="Status" id="statusInactive">
                                     <i class='bx bx-x-circle'></i>
                                     <div>
-                                        <span class="st-title">Inactive</span>
-                                        <span class="st-desc">Hidden from store</span>
+                                        <span class="st-title">@Localizer["Inactive"]</span>
+                                        <span class="st-desc">@Localizer["HiddenFromStore"]</span>
                                     </div>
                                 </label>
                             </div>
@@ -158,7 +181,7 @@
                         <div class="publish-info">
                             <div class="pub-info-row">
                                 <i class='bx bx-user'></i>
-                                <span>Updated by <strong>Admin</strong></span>
+                                <span>@Localizer["CreatedBy"] <strong>Admin</strong></span>
                             </div>
                             <div class="pub-info-row">
                                 <i class='bx bx-calendar'></i>
@@ -171,11 +194,11 @@
                         <!-- Actions -->
                         <div class="publish-actions">
                                 <a asp-area="Admin" asp-controller="Category" asp-action="Index" class="pub-cancel-btn">
-                                    <i class='bx bx-x'></i> Cancel
+                                    <i class='bx bx-x'></i> @Localizer["Cancel"]
                                 </a>
                             <button type="submit" class="pub-submit-btn" id="submitBtn">
                                 <i class='bx bx-check'></i>
-                                <span>Save Category</span>
+                                <span>@Localizer["SaveChange"]</span>
                                 <div class="btn-loader" id="btnLoader"></div>
                             </button>
                         </div>
@@ -187,13 +210,13 @@
                 <div class="create-card tips-card">
                     <div class="create-card-header">
                         <i class='bx bx-bulb'></i>
-                        <span>Tips</span>
+                        <span>@Localizer["Tips"]</span>
                     </div>
                     <div class="create-card-body">
                         <ul class="tips-list">
-                            <li><i class='bx bx-check'></i> Ensure changes are accurate</li>
-                            <li><i class='bx bx-check'></i> Modifying category affects its products</li>
-                            <li><i class='bx bx-check'></i> Status changes apply immediately</li>
+                            <li><i class='bx bx-check'></i> @Localizer["EnsureChangesAccurateTip"]</li>
+                            <li><i class='bx bx-check'></i> @Localizer["ModifyingCategoryAffectsTip"]</li>
+                            <li><i class='bx bx-check'></i> @Localizer["StatusChangesApplyTip"]</li>
                         </ul>
                     </div>
                 </div>
@@ -209,6 +232,7 @@
     /* ── Live Preview ──────────────────────────── */
     const nameInput   = document.getElementById('nameInput');
     const descInput   = document.getElementById('descInput');
+    const imageInput  = document.getElementById('imageInput');
     const previewName = document.getElementById('previewName');
     const previewDesc = document.getElementById('previewDesc');
     const previewAv   = document.getElementById('previewAvatar');
@@ -220,23 +244,44 @@
         const name = nameInput?.value.trim() || '';
         const desc = descInput?.value.trim() || '';
 
-        if (previewName) previewName.textContent = name || 'Category Name';
-        if (previewDesc) previewDesc.textContent = desc || 'Description will appear here…';
+        if (previewName) previewName.textContent = name || '@Localizer["CategoryName"]';
+        if (previewDesc) previewDesc.textContent = desc || '@Localizer["Description"]…';
 
-        if (previewAv && name) {
-            const initial = name.charAt(0).toUpperCase();
-            const color   = avatarColors[name.charCodeAt(0) % avatarColors.length];
-            previewAv.textContent = initial;
-            previewAv.style.background = color + '22';
-            previewAv.style.color      = color;
-        } else if (previewAv) {
-            previewAv.textContent = '?';
-            previewAv.style.background = '';
-            previewAv.style.color = '';
+        const file = imageInput?.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (previewAv) {
+                    previewAv.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;" />`;
+                    previewAv.style.background = 'none';
+                }
+            }
+            reader.readAsDataURL(file);
+        } else {
+            const existingImg = document.getElementById('existingPreviewImg');
+            if (existingImg) {
+                // If there's an existing image preview, keep it.
+            } else if (previewAv && name) {
+                const initial = name.charAt(0).toUpperCase();
+                const color   = avatarColors[name.charCodeAt(0) % avatarColors.length];
+                previewAv.textContent = initial;
+                previewAv.style.background = color + '22';
+                previewAv.style.color      = color;
+            } else if (previewAv) {
+                previewAv.textContent = '?';
+                previewAv.style.background = '';
+                previewAv.style.color = '';
+            }
         }
     }
 
     nameInput?.addEventListener('input', updatePreview);
+    imageInput?.addEventListener('change', () => {
+        // Remove existing preview image element if a new file is chosen
+        const existingImg = document.getElementById('existingPreviewImg');
+        if (existingImg) existingImg.remove();
+        updatePreview();
+    });
     descInput?.addEventListener('input', function () {
         if (charCount) charCount.textContent = this.value.length;
         updatePreview();
@@ -263,7 +308,7 @@
         statusInactLabel?.classList.toggle('selected', !isActive);
         if (previewBadge) {
             previewBadge.className = 'preview-badge ' + (isActive ? 'badge-active' : 'badge-inactive');
-            previewBadge.innerHTML = `<i class='bx bxs-circle'></i> ${isActive ? 'Active' : 'Inactive'}`;
+            previewBadge.innerHTML = `<i class='bx bxs-circle'></i> ${isActive ? '@Localizer["Active"]' : '@Localizer["Inactive"]'}`;
         }
     }
     statusActive?.addEventListener('change', syncStatus);
@@ -280,7 +325,7 @@
     form?.addEventListener('submit', function () {
         if (submitBtn) {
             submitBtn.disabled = true;
-            submitBtn.querySelector('span').textContent = 'Saving…';
+            submitBtn.querySelector('span').textContent = '@Localizer["SaveChange"]…';
             if (btnLoader) btnLoader.style.display = 'block';
         }
     });

@@ -1,7 +1,19 @@
 @model SmartStore.ViewModel.DashboardViewModel
+@inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> UserManager
 @{
     Layout = "_AdminLayout";
-
+    
+    string userDisplayName = "Moa";
+    if (User.Identity?.IsAuthenticated == true) {
+        var currentUser = await UserManager.GetUserAsync(User);
+        if (currentUser != null) {
+            userDisplayName = currentUser.FirstName;
+            if (string.IsNullOrEmpty(userDisplayName)) {
+                userDisplayName = currentUser.UserName ?? "Moa";
+            }
+        }
+    }
+    bool isArabic = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar", StringComparison.OrdinalIgnoreCase);
 }
 
 <div class="home-content">
@@ -10,23 +22,23 @@
     <div class="dashboard-hero-row">
         <!-- Welcome Hero Card -->
         <div class="hero-gradient-card">
-            <h1>Hello Ana,</h1>
-            <p>Welcome to your E-commerce Dashboard! Monitor your sales, orders, and gain valuable insights.</p>
+            <h1>@Localizer["WelcomeDashboardPrefix"] @(userDisplayName),</h1>
+            <p>@Localizer["WelcomeDashboardSubtitle"]</p>
         </div>
 
         <!-- Ideas for You Card -->
         <div class="ideas-card">
             <div class="ideas-header">
-                <h3>Ideas for You</h3>
+                <h3>@Localizer["IdeasForYou"]</h3>
                 <div class="ideas-nav-btns">
                     <button class="ideas-nav-btn"><i class='bx bx-chevron-left'></i></button>
                     <button class="ideas-nav-btn"><i class='bx bx-chevron-right'></i></button>
                 </div>
             </div>
             <div class="ideas-content">
-                <h4>Create a Blog Post for your product</h4>
-                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem</p>
-                <button class="read-btn">Read Now</button>
+                <h4>@Localizer["CreateBlogPost"]</h4>
+                <p>@Localizer["CreateBlogPostSubtitle"]</p>
+                <button class="read-btn">@Localizer["ReadNow"]</button>
             </div>
         </div>
     </div>
@@ -39,7 +51,7 @@
                 <div class="kpi-icon-container products">
                     <i class='bx bx-box'></i>
                 </div>
-                <span class="kpi-title">Total Products</span>
+                <span class="kpi-title">@Localizer["TotalProducts"]</span>
             </div>
             <div class="kpi-body">
                 <span class="kpi-value" style="margin-left: 15px;">@(Model?.TotalProduct ?? 0)</span>
@@ -55,10 +67,10 @@
                 <div class="kpi-icon-container orders">
                     <i class='bx bx-shopping-bag'></i>
                 </div>
-                <span class="kpi-title">Orders</span>
+                <span class="kpi-title">@Localizer["Orders"]</span>
             </div>
             <div class="kpi-body">
-                <span class="kpi-value">5,312</span>
+                <span class="kpi-value">@(Model?.TotalOrdersCount.ToString("N0") ?? "0")</span>
                 <span class="kpi-trend up">
                     <i class='bx bx-trending-up'></i>
                     <span>2.29%</span>
@@ -72,10 +84,10 @@
                 <div class="kpi-icon-container revenue">
                     <i class='bx bx-dollar-circle'></i>
                 </div>
-                <span class="kpi-title">Revenue</span>
+                <span class="kpi-title">@Localizer["Revenue"]</span>
             </div>
             <div class="kpi-body">
-                <span class="kpi-value">$120,000</span>
+                <span class="kpi-value">@(isArabic ? "" : "$")@(Model?.TotalRevenue.ToString("N0") ?? "0")@(isArabic ? " " + Localizer["EGP"] : "")</span>
                 <span class="kpi-trend up">
                     <i class='bx bx-trending-up'></i>
                     <span>2.19%</span>
@@ -89,7 +101,7 @@
                 <div class="kpi-icon-container conversion">
                     <i class='bx bx-group'></i>
                 </div>
-                <span class="kpi-title">Total Users</span>
+                <span class="kpi-title">@Localizer["TotalUsers"]</span>
             </div>
             <div class="kpi-body">
                 <span class="kpi-value" style="margin-left: 15px;">@(Model?.TotalUsersCount ?? 0)</span>
@@ -108,23 +120,23 @@
         <!-- Revenue Line Chart -->
         <div class="chart-box">
             <div class="box-header" style="margin-bottom: 0;">
-                <h3>Revenue</h3>
+                <h3>@Localizer["Revenue"]</h3>
                 <i class='bx bx-dots-horizontal-rounded' style="color: var(--text-muted); cursor: pointer;"></i>
             </div>
             <div class="chart-summary-header">
                 <div class="summary-item-col active" id="showIncomeBtn">
                     <span class="summary-item-label">
                         <span class="legend-dot" style="background: #10b981;"></span>
-                        Total Income
+                        @Localizer["TotalIncome"]
                     </span>
-                    <span class="summary-item-value">$120,000</span>
+                    <span class="summary-item-value">@(isArabic ? "" : "$")@(Model?.TotalRevenue.ToString("N0") ?? "0")@(isArabic ? " " + Localizer["EGP"] : "")</span>
                 </div>
                 <div class="summary-item-col" id="showExpensesBtn">
                     <span class="summary-item-label">
                         <span class="legend-dot" style="background: #f59e0b;"></span>
-                        Total expenses
+                        @Localizer["TotalExpenses"]
                     </span>
-                    <span class="summary-item-value">$198,214</span>
+                    <span class="summary-item-value">@(isArabic ? "" : "$")198,214@(isArabic ? " " + Localizer["EGP"] : "")</span>
                 </div>
             </div>
             <div class="chart-container">
@@ -135,7 +147,7 @@
         <!-- Product Sales Donut Chart -->
         <div class="chart-box">
             <div class="box-header">
-                <h3>Product Sales</h3>
+                <h3>@Localizer["ProductSales"]</h3>
                 <i class='bx bx-dots-horizontal-rounded' style="color: var(--text-muted); cursor: pointer;"></i>
             </div>
             <div class="donut-wrap" style="height: 180px;">
@@ -145,40 +157,40 @@
                 <div class="legend-item-new">
                     <div class="legend-left-side">
                         <span class="legend-dot" style="background: #10b981;"></span>
-                        <span>Smartphones</span>
+                        <span>@Localizer["Mobiles"]</span>
                     </div>
                     <div class="legend-value-row">
-                        <span>$22,120</span>
+                        <span>@(isArabic ? "" : "$")22,120@(isArabic ? " " + Localizer["EGP"] : "")</span>
                         <span class="legend-percent">38.1%</span>
                     </div>
                 </div>
                 <div class="legend-item-new">
                     <div class="legend-left-side">
                         <span class="legend-dot" style="background: #f59e0b;"></span>
-                        <span>Laptops</span>
+                        <span>@Localizer["Laptops"]</span>
                     </div>
                     <div class="legend-value-row">
-                        <span>$4510</span>
+                        <span>@(isArabic ? "" : "$")4,510@(isArabic ? " " + Localizer["EGP"] : "")</span>
                         <span class="legend-percent">28.6%</span>
                     </div>
                 </div>
                 <div class="legend-item-new">
                     <div class="legend-left-side">
                         <span class="legend-dot" style="background: #3b82f6;"></span>
-                        <span>Headphones</span>
+                        <span>@Localizer["Speakers"]</span>
                     </div>
                     <div class="legend-value-row">
-                        <span>$800</span>
+                        <span>@(isArabic ? "" : "$")800@(isArabic ? " " + Localizer["EGP"] : "")</span>
                         <span class="legend-percent">23.8%</span>
                     </div>
                 </div>
                 <div class="legend-item-new">
                     <div class="legend-left-side">
                         <span class="legend-dot" style="background: #ef4444;"></span>
-                        <span>Cameras</span>
+                        <span>@Localizer["ScreensTVs"]</span>
                     </div>
                     <div class="legend-value-row">
-                        <span>$420</span>
+                        <span>@(isArabic ? "" : "$")420@(isArabic ? " " + Localizer["EGP"] : "")</span>
                         <span class="legend-percent">9.5%</span>
                     </div>
                 </div>
@@ -192,19 +204,19 @@
         <!-- Recent Orders Table -->
         <div class="chart-box recent-orders-box">
             <div class="box-header">
-                <h3>Recent Orders</h3>
-                <a href="#" class="view-all">View All <i class='bx bx-arrow-back bx-rotate-180'></i></a>
+                <h3>@Localizer["RecentOrders"]</h3>
+                <a href="#" class="view-all">@Localizer["ShowAll"] <i class='bx bx-arrow-back bx-rotate-180'></i></a>
             </div>
             <div class="sales-details">
                 <table>
                     <thead>
                         <tr>
-                            <th>Order ID</th>
-                            <th>Customer</th>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th>@Localizer["OrderID"]</th>
+                            <th>@Localizer["Customer"]</th>
+                            <th>@Localizer["Date"]</th>
+                            <th>@Localizer["Amount"]</th>
+                            <th>@Localizer["Status"]</th>
+                            <th>@Localizer["Action"]</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -226,7 +238,7 @@
                                         </div>
                                     </td>
                                     <td class="order-date">@order.OrderDate.ToString("MMM dd, yyyy")</td>
-                                    <td class="order-amount">$@order.TotalAmount.ToString("0.00")</td>
+                                    <td class="order-amount">@(isArabic ? "" : "$")@order.TotalAmount.ToString("N2")@(isArabic ? " " + Localizer["EGP"] : "")</td>
                                     <td>
                                         @{
                                             var badgeClass = order.OrderStatus switch {
@@ -247,7 +259,7 @@
                                 </tr>
                             }
                         } else {
-                            <tr><td colspan="6" style="text-align:center; padding: 20px;">No recent orders found.</td></tr>
+                            <tr><td colspan="6" style="text-align:center; padding: 20px;">@Localizer["NoRecentOrders"]</td></tr>
                         }
                     </tbody>
                 </table>
@@ -257,7 +269,7 @@
         <!-- Activity Feed -->
         <div class="chart-box activity-box">
             <div class="box-header">
-                <h3>Recent Activity</h3>
+                <h3>@Localizer["RecentActivity"]</h3>
                 <i class='bx bx-refresh act-refresh' title="Refresh" style="cursor:pointer;"></i>
             </div>
 
@@ -299,15 +311,15 @@
             <!-- Quick Stats Mini -->
             <div class="mini-stats">
                 <div class="mini-stat">
-                    <span class="ms-label">Today's Sales</span>
-                    <span class="ms-value">$4,230</span>
+                    <span class="ms-label">@Localizer["TodaySales"]</span>
+                    <span class="ms-value">@(isArabic ? "" : "$")4,230@(isArabic ? " " + Localizer["EGP"] : "")</span>
                 </div>
                 <div class="mini-stat">
-                    <span class="ms-label">New Customers</span>
+                    <span class="ms-label">@Localizer["NewCustomers"]</span>
                     <span class="ms-value">+18</span>
                 </div>
                 <div class="mini-stat">
-                    <span class="ms-label">Pending Orders</span>
+                    <span class="ms-label">@Localizer["PendingOrders"]</span>
                     <span class="ms-value warned">12</span>
                 </div>
             </div>
@@ -333,7 +345,7 @@
     gradExpenses.addColorStop(1, 'rgba(245, 158, 11, 0.0)');
 
     const incomeData = {
-        labels: ['Jan', 'Feb', 'March', 'April', 'May', 'Jun', 'Jul'],
+        labels: ['@Html.Raw(new DateTime(2026, 1, 1).ToString("MMM"))', '@Html.Raw(new DateTime(2026, 2, 1).ToString("MMM"))', '@Html.Raw(new DateTime(2026, 3, 1).ToString("MMM"))', '@Html.Raw(new DateTime(2026, 4, 1).ToString("MMM"))', '@Html.Raw(new DateTime(2026, 5, 1).ToString("MMM"))', '@Html.Raw(new DateTime(2026, 6, 1).ToString("MMM"))', '@Html.Raw(new DateTime(2026, 7, 1).ToString("MMM"))'],
         data:   [30000, 40000, 28000, 51000, 42000, 105000, 97000],
         borderColor: '#10b981',
         backgroundColor: gradIncome,
@@ -344,7 +356,7 @@
     };
 
     const expensesData = {
-        labels: ['Jan', 'Feb', 'March', 'April', 'May', 'Jun', 'Jul'],
+        labels: ['@Html.Raw(new DateTime(2026, 1, 1).ToString("MMM"))', '@Html.Raw(new DateTime(2026, 2, 1).ToString("MMM"))', '@Html.Raw(new DateTime(2026, 3, 1).ToString("MMM"))', '@Html.Raw(new DateTime(2026, 4, 1).ToString("MMM"))', '@Html.Raw(new DateTime(2026, 5, 1).ToString("MMM"))', '@Html.Raw(new DateTime(2026, 6, 1).ToString("MMM"))', '@Html.Raw(new DateTime(2026, 7, 1).ToString("MMM"))'],
         data:   [11000, 32000, 45000, 32000, 34000, 52000, 41000],
         borderColor: '#f59e0b',
         backgroundColor: gradExpenses,
@@ -387,7 +399,10 @@
                     padding: 12,
                     displayColors: false,
                     callbacks: {
-                        label: ctx => '$' + ctx.parsed.y.toLocaleString()
+                        label: ctx => {
+                            const isAr = @(isArabic ? "true" : "false");
+                            return isAr ? ctx.parsed.y.toLocaleString() + ' @Html.Raw(Localizer["EGP"])' : '$' + ctx.parsed.y.toLocaleString();
+                        }
                     }
                 }
             },
@@ -454,7 +469,7 @@
     new Chart(ctx2, {
         type: 'doughnut',
         data: {
-            labels: ['Smartphones', 'Laptops', 'Headphones', 'Cameras'],
+            labels: ['@Html.Raw(Localizer["Mobiles"])', '@Html.Raw(Localizer["Laptops"])', '@Html.Raw(Localizer["Speakers"])', '@Html.Raw(Localizer["ScreensTVs"])'],
             datasets: [{
                 data: [38.1, 28.6, 23.8, 9.5],
                 backgroundColor: ['#10b981', '#f59e0b', '#3b82f6', '#ef4444'],
@@ -500,8 +515,8 @@
     }
 
     // run on load
-    animateCount(document.querySelector('#kpi-revenue .kpi-value'),  120000, '$', '');
-    animateCount(document.querySelector('#kpi-orders .kpi-value'),   5312,  '',  '');
+    animateCount(document.querySelector('#kpi-revenue .kpi-value'),  @Html.Raw(Model?.TotalRevenue ?? 0), '@Html.Raw(isArabic ? "" : "$")', '@Html.Raw(isArabic ? " " + Localizer["EGP"] : "")');
+    animateCount(document.querySelector('#kpi-orders .kpi-value'),   @(Model?.TotalOrdersCount ?? 0),  '',  '');
     animateCount(document.querySelector('#kpi-users .kpi-value'),    @(Model?.TotalUsersCount ?? 0),  '',  '');
     animateCount(document.querySelector('#kpi-products .kpi-value'), @(Model?.TotalProduct ?? 0),  '',  '');
 })();

@@ -1,12 +1,20 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace SmartStore.Models
 {
     public enum OrderStatus
     {
+        [Display(Name = "Pending")]
         Pending,
+        [Display(Name = "Processing")]
         Processing,
+        [Display(Name = "Shipped")]
         Shipped,
+        [Display(Name = "Delivered")]
         Delivered,
+        [Display(Name = "Returned")]
         Returned,
+        [Display(Name = "Cancelled")]
         Cancelled
     }   
     public class Order

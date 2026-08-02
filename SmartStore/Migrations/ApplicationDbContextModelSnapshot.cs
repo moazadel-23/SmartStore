@@ -163,6 +163,10 @@ namespace SmartStore.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -205,7 +209,15 @@ namespace SmartStore.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ProfileImg")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -246,6 +258,81 @@ namespace SmartStore.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AnkerTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid1CategoryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid1ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid1LinkUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid1Subtitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid1Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid2CategoryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid2ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid2LinkUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid2Subtitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid2Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid3CategoryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid3ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid3LinkUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid3Subtitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid3Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid4CategoryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid4ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid4LinkUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid4Subtitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid4Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid5CategoryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid5ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid5LinkUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid5Subtitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grid5Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HuaweiImageUrl")
@@ -302,6 +389,18 @@ namespace SmartStore.Migrations
                     b.Property<string>("Slide3LinkUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Slide4ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slide4LinkUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slide5ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slide5LinkUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Banners");
@@ -342,6 +441,9 @@ namespace SmartStore.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("UserId", "ProductId");
 
                     b.HasIndex("ProductId");
@@ -359,6 +461,9 @@ namespace SmartStore.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -472,6 +577,12 @@ namespace SmartStore.Migrations
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DeliveryTimeCairoGiza")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeliveryTimeOutside")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Discount")
                         .HasColumnType("decimal(18,2)");
 
@@ -483,6 +594,18 @@ namespace SmartStore.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("OverviewDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OverviewImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OverviewTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PackageContents")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
@@ -492,8 +615,17 @@ namespace SmartStore.Migrations
                     b.Property<decimal>("Rate")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("ReturnPolicy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SKU")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Warranty")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("description")
                         .IsRequired()
@@ -528,6 +660,67 @@ namespace SmartStore.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductImgs");
+                });
+
+            modelBuilder.Entity("SmartStore.Models.ProductReview", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductReviews");
+                });
+
+            modelBuilder.Entity("SmartStore.Models.ProductSpecification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsHighlight")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductSpecifications");
                 });
 
             modelBuilder.Entity("SmartStore.Models.Promotion", b =>
@@ -704,6 +897,28 @@ namespace SmartStore.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("SmartStore.Models.ProductReview", b =>
+                {
+                    b.HasOne("SmartStore.Models.Product", "Product")
+                        .WithMany("Reviews")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("SmartStore.Models.ProductSpecification", b =>
+                {
+                    b.HasOne("SmartStore.Models.Product", "Product")
+                        .WithMany("Specifications")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("SmartStore.Models.Promotion", b =>
                 {
                     b.HasOne("SmartStore.Models.Brand", "Brand")
@@ -733,6 +948,10 @@ namespace SmartStore.Migrations
             modelBuilder.Entity("SmartStore.Models.Product", b =>
                 {
                     b.Navigation("ProductSubImgs");
+
+                    b.Navigation("Reviews");
+
+                    b.Navigation("Specifications");
                 });
 #pragma warning restore 612, 618
         }

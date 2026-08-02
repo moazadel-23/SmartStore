@@ -1,8 +1,8 @@
 @model IEnumerable<SmartStore.Models.Category>
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Categories";
-    ViewData["PageTitle"] = "Category Management";
+    ViewData["Title"] = Localizer["Categories"];
+    ViewData["PageTitle"] = Localizer["CategoryManagement"];
 
     var totalCats    = Model?.Count() ?? 0;
     var activeCats   = Model?.Count(c => c.Status) ?? 0;
@@ -15,9 +15,9 @@
 
     <!-- ── Breadcrumb ─────────────────────────── -->
     <div class="breadcrumb-bar">
-        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> Home</span>
+        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> @Localizer["Home"]</span>
         <i class='bx bx-chevron-right bc-sep'></i>
-        <span class="bc-current">Categories</span>
+        <span class="bc-current">@Localizer["Categories"]</span>
         <span class="bc-date"><i class='bx bx-calendar'></i> @DateTime.Now.ToString("dddd, MMMM dd yyyy")</span>
     </div>
 
@@ -27,7 +27,7 @@
             <div class="cat-kpi-icon ck-blue"><i class='bx bx-category'></i></div>
             <div>
                 <div class="cat-kpi-val">@totalCats</div>
-                <div class="cat-kpi-label">Total Categories</div>
+                <div class="cat-kpi-label">@Localizer["TotalCategories"]</div>
             </div>
         </div>
         <div class="cat-kpi-divider"></div>
@@ -35,7 +35,7 @@
             <div class="cat-kpi-icon ck-green"><i class='bx bx-check-circle'></i></div>
             <div>
                 <div class="cat-kpi-val">@activeCats</div>
-                <div class="cat-kpi-label">Active</div>
+                <div class="cat-kpi-label">@Localizer["Active"]</div>
             </div>
         </div>
         <div class="cat-kpi-divider"></div>
@@ -43,7 +43,7 @@
             <div class="cat-kpi-icon ck-red"><i class='bx bx-x-circle'></i></div>
             <div>
                 <div class="cat-kpi-val">@inactiveCats</div>
-                <div class="cat-kpi-label">Inactive</div>
+                <div class="cat-kpi-label">@Localizer["Inactive"]</div>
             </div>
         </div>
         <div class="cat-kpi-divider"></div>
@@ -51,7 +51,7 @@
             <div class="cat-kpi-icon ck-purple"><i class='bx bx-trending-up'></i></div>
             <div>
                 <div class="cat-kpi-val">@(totalCats > 0 ? Math.Round((double)activeCats / totalCats * 100, 0) : 0)%</div>
-                <div class="cat-kpi-label">Active Rate</div>
+                <div class="cat-kpi-label">@Localizer["ActiveRate"]</div>
             </div>
         </div>
     </div>
@@ -64,30 +64,30 @@
             <div class="cat-card-title">
                 <i class='bx bx-list-ul'></i>
                 <div>
-                    <h3>All Categories</h3>
-                    <p>Manage and organise your store categories</p>
+                    <h3>@Localizer["AllCategories"]</h3>
+                    <p>@Localizer["ManageOrganiseCategories"]</p>
                 </div>
             </div>
             <div class="cat-card-actions">
                 <!-- Search -->
                 <div class="cat-search-wrap">
                     <i class='bx bx-search'></i>
-                    <input type="text" id="categorySearch" placeholder="Search by name or description…">
-                    <span class="cat-search-clear" id="clearSearch" title="Clear"><i class='bx bx-x'></i></span>
+                    <input type="text" id="categorySearch" placeholder="@Localizer["SearchByNameOrDesc"]">
+                    <span class="cat-search-clear" id="clearSearch" title="@Localizer["Cancel"]"><i class='bx bx-x'></i></span>
                 </div>
                 <!-- Filter -->
                 <div class="cat-filter-wrap">
                     <select id="statusFilter" class="cat-filter-select">
-                        <option value="all">All Status</option>
-                        <option value="active">Active Only</option>
-                        <option value="inactive">Inactive Only</option>
+                        <option value="all">@Localizer["AllStatus"]</option>
+                        <option value="active">@Localizer["ActiveOnly"]</option>
+                        <option value="inactive">@Localizer["InactiveOnly"]</option>
                     </select>
                     <i class='bx bx-chevron-down cat-filter-arrow'></i>
                 </div>
                 <!-- Add Button -->
                 <a asp-area="Admin" asp-controller="Category" asp-action="Create" class="cat-add-btn" id="addCategoryBtn">
                     <i class='bx bx-plus'></i>
-                    <span>Add Category</span>
+                    <span>@Localizer["AddCategory"]</span>
                 </a>
             </div>
         </div>
@@ -97,7 +97,7 @@
         {
             <!-- Result Counter -->
             <div class="cat-result-bar">
-                <span id="resultCount">Showing <strong>@totalCats</strong> categories</span>
+                <span id="resultCount">@Html.Raw(string.Format(Localizer["ShowingNCategories"].Value, totalCats))</span>
             </div>
 
             <div class="cat-table-wrap">
@@ -108,16 +108,16 @@
                                 <input type="checkbox" id="selectAll" class="cat-checkbox">
                             </th>
                             <th class="sortable" data-col="1">
-                                Category <i class='bx bx-sort'></i>
+                                @Localizer["Category"] <i class='bx bx-sort'></i>
                             </th>
-                            <th>Description</th>
+                            <th>@Localizer["Description"]</th>
                             <th class="sortable" data-col="3">
-                                Status <i class='bx bx-sort'></i>
+                                @Localizer["Status"] <i class='bx bx-sort'></i>
                             </th>
                             <th class="th-id sortable" data-col="0">
-                                ID <i class='bx bx-sort'></i>
+                                @Localizer["ID"] <i class='bx bx-sort'></i>
                             </th>
-                            <th class="th-actions">Actions</th>
+                            <th class="th-actions">@Localizer["Actions"]</th>
                         </tr>
                     </thead>
                     <tbody id="categoryTableBody">
@@ -136,9 +136,18 @@
                                 </td>
                                 <td>
                                     <div class="cat-name-cell">
-                                        <div class="cat-avatar" style="background: @(color)20; color: @color;">
-                                            @initial
-                                        </div>
+                                        @if (!string.IsNullOrEmpty(category.ImageUrl))
+                                        {
+                                            <div class="cat-avatar overflow-hidden" style="background: #f4f4f5; border: 1px solid #e4e4e7;">
+                                                <img src="@category.ImageUrl" alt="@category.Name" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;" />
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="cat-avatar" style="background: @(color)20; color: @color;">
+                                                @initial
+                                            </div>
+                                        }
                                         <div class="cat-meta">
                                             <span class="cat-name">@category.Name</span>
                                         </div>
@@ -153,13 +162,13 @@
                                     @if (category.Status)
                                     {
                                         <span class="cat-badge badge-active">
-                                            <i class='bx bxs-circle'></i> Active
+                                            <i class='bx bxs-circle'></i> @Localizer["Active"]
                                         </span>
                                     }
                                     else
                                     {
                                         <span class="cat-badge badge-inactive">
-                                            <i class='bx bxs-circle'></i> Inactive
+                                            <i class='bx bxs-circle'></i> @Localizer["Inactive"]
                                         </span>
                                     }
                                 </td>
@@ -169,12 +178,12 @@
                                 <td>
                                     <div class="cat-action-group">
                                         <a asp-area="Admin" asp-controller="Category" asp-action="Update" asp-route-id="@category.Id"
-                                           class="cat-btn cat-btn-edit" title="Edit category">
+                                           class="cat-btn cat-btn-edit" title="@Localizer["EditCategory"]">
                                             <i class='bx bx-edit-alt'></i>
                                         </a>
                                         <button type="button"
                                                 class="cat-btn cat-btn-delete"
-                                                title="Delete category"
+                                                title="@Localizer["Delete"]"
                                                 data-id="@category.Id"
                                                 data-name="@category.Name"
                                                 onclick="openDeleteModal(this)">
@@ -190,7 +199,7 @@
 
             <!-- Pagination placeholder -->
             <div class="cat-footer">
-                <span class="cat-footer-info" id="footerSelected">0 items selected</span>
+                <span class="cat-footer-info" id="footerSelected">0 @Localizer["Selected"]</span>
                 <div class="cat-pagination">
                     <button class="pg-btn" disabled><i class='bx bx-chevron-left'></i></button>
                     <button class="pg-btn pg-active">1</button>
@@ -204,10 +213,10 @@
                 <div class="cat-empty-icon">
                     <i class='bx bx-category'></i>
                 </div>
-                <h3>No Categories Yet</h3>
-                <p>Get started by adding your first product category.</p>
+                <h3>@Localizer["NoCategoriesYet"]</h3>
+                <p>@Localizer["GetStartedCategory"]</p>
                 <a asp-action="Create" class="cat-add-btn">
-                    <i class='bx bx-plus'></i> Create First Category
+                    <i class='bx bx-plus'></i> @Localizer["CreateFirstCategory"]
                 </a>
             </div>
         }
@@ -220,17 +229,17 @@
         <div class="cat-modal-icon">
             <i class='bx bx-trash'></i>
         </div>
-        <h3 class="cat-modal-title">Delete Category?</h3>
+        <h3 class="cat-modal-title">@Localizer["DeleteCategoryQuestion"]</h3>
         <p class="cat-modal-desc">
-            You are about to delete <strong id="deleteCatName">this category</strong>.
-            This action cannot be undone.
+            @Localizer["AboutToDeleteCategory"]
+            <strong id="deleteCatName" style="color: #EF4444; display: block; margin-top: 8px; font-size: 1.1rem;"></strong>
         </p>
         <div class="cat-modal-actions">
-            <button class="cat-modal-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <button class="cat-modal-cancel" onclick="closeDeleteModal()">@Localizer["Cancel"]</button>
             <form id="deleteForm" method="post" asp-area="Admin" asp-controller="Category" asp-action="Delete">
                  <input type="hidden" name="id" id="deleteCatId" value="" />
                  <button type="submit" class="cat-modal-confirm" style="border:none; cursor:pointer; font-family: inherit; font-size: 1rem;">
-                     <i class='bx bx-trash'></i> Delete
+                     <i class='bx bx-trash'></i> @Localizer["Delete"]
                  </button>
             </form>
         </div>
@@ -284,8 +293,10 @@ function filterTable() {
         }
     });
 
+    const isAr = @(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "true" : "false");
+
     if (resultCount) {
-        resultCount.innerHTML = `Showing <strong>${visible}</strong> categories`;
+        resultCount.innerHTML = isAr ? `عرض <strong>${visible}</strong> أقسام` : `Showing <strong>${visible}</strong> categories`;
     }
 }
 
@@ -306,7 +317,9 @@ const selectAll   = document.getElementById('selectAll');
 const footerSel   = document.getElementById('footerSelected');
 function updateSelectedCount() {
     const count = tableBody?.querySelectorAll('.row-check:checked').length || 0;
-    if (footerSel) footerSel.textContent = `${count} item${count !== 1 ? 's' : ''} selected`;
+    if (footerSel) {
+        footerSel.textContent = isAr ? `${count} تم تحديدها` : `${count} item${count !== 1 ? 's' : ''} selected`;
+    }
 }
 selectAll?.addEventListener('change', function() {
     tableBody?.querySelectorAll('.row-check').forEach(cb => cb.checked = this.checked);
@@ -356,5 +369,27 @@ document.querySelectorAll('.cat-row').forEach((row, i) => {
         row.style.transform  = 'translateY(0)';
     }, 60 + i * 45);
 });
+
+/* ── Toast Notification ────────────────────── */
+function showToast(message, duration = 4000) {
+    const toast = document.getElementById('catToast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), duration);
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <text>
+    showToast("@Html.Raw(TempData["SuccessMessage"])");
+    </text>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <text>
+    showToast("@Html.Raw(TempData["ErrorMessage"])");
+    </text>
+}
 </script>
 }

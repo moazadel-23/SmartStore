@@ -1,380 +1,646 @@
 @model SmartStore.ViewModel.Store.ProductDetailViewModel
 @{
-    Layout = null;
+    Layout = "_Layout";
     var p = Model.Product;
     var discountedPrice = p.Price - (p.Price * p.Discount / 100);
     var mainImg = p.MainImg;
     var subImgs = p.ProductSubImgs?.ToList() ?? new();
+    ViewData["Title"] = p.Name;
+    ViewData["HideSubNav"] = false; // Show categories in second navbar
+    bool isArabic = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar", StringComparison.OrdinalIgnoreCase);
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@p.Name - SmartStore</title>
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
-    <link type="text/css" rel="stylesheet" href="~/css/user-css/bootstrap.min.css" />
-    <link type="text/css" rel="stylesheet" href="~/css/user-css/slick.css" />
-    <link type="text/css" rel="stylesheet" href="~/css/user-css/slick-theme.css" />
-    <link type="text/css" rel="stylesheet" href="~/css/user-css/nouislider.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link type="text/css" rel="stylesheet" href="~/css/user-css/style.css" />
-    <link rel="stylesheet" href="~/css/store.css" asp-append-version="true" />
-</head>
-<body>
-    <!-- ─── Top Bar ─── -->
-    <div class="store-topbar">
-        <div class="container d-flex align-items-center">
-            <div class="topbar-links">
-                <a href="tel:+021-95-51-84"><i class="fa fa-phone"></i> +021-95-51-84</a>
-                <a href="mailto:support@smartstore.com"><i class="fa fa-envelope-o"></i> support@smartstore.com</a>
-            </div>
-            <div class="topbar-right">
-                <a href="#">Track Order</a>
-                <a href="#">Help</a>
-            </div>
+<style>
+    body {
+        background-color: #f8fafc !important;
+    }
+    .pdp-gallery {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    .pdp-main-img {
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #f1f5f9;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        max-width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: 20px;
+    }
+    .pdp-main-img img {
+        max-height: 90%;
+        max-width: 90%;
+        object-fit: contain;
+        transition: opacity 0.2s ease-in-out;
+    }
+    .pdp-thumbnails .thumb {
+        border: 1px solid #e2e8f0;
+        padding: 4px;
+        background: #fff;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+    }
+    .pdp-thumbnails .thumb.active {
+        border-color: #002d72 !important;
+        box-shadow: 0 0 0 2px rgba(0, 45, 114, 0.15);
+    }
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 3px;
+        height: 3px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+
+<!-- Header navigation -->
+@await Html.PartialAsync("_BTechHeader")
+
+<div class="max-w-[1250px] mx-auto px-4 pt-6 pb-16 font-cairo @(isArabic ? "text-right" : "text-left")" dir="@(isArabic ? "rtl" : "ltr")">
+    
+    <!-- Breadcrumbs -->
+    <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100/50">
+        <div class="flex items-center gap-2 text-xs text-gray-400">
+            <a href="/" class="hover:text-[#002d72] transition-colors decoration-none">@(isArabic ? "الرئيسية" : "Home")</a>
+            <i class="fas @(isArabic ? "fa-chevron-left" : "fa-chevron-right") text-[8px] text-gray-300"></i>
+            <a href="/Customer/Home/Store" class="hover:text-[#002d72] transition-colors decoration-none">@(isArabic ? "المتجر" : "Store")</a>
+            <i class="fas @(isArabic ? "fa-chevron-left" : "fa-chevron-right") text-[8px] text-gray-300"></i>
+            @if (p.Brand != null)
+            {
+                <a href="/Customer/Home/Store?Filter.BrandIds=@p.BrandId" class="hover:text-[#002d72] transition-colors decoration-none">@p.Brand.Name</a>
+                <i class="fas @(isArabic ? "fa-chevron-left" : "fa-chevron-right") text-[8px] text-gray-300"></i>
+            }
+            <span class="text-gray-500 font-semibold truncate max-w-[150px] md:max-w-xs">@p.Name</span>
         </div>
+        
+        <a href="/Customer/Home/Store" class="flex items-center gap-1.5 text-xs text-gray-500 hover:text-[#002d72] transition-colors decoration-none font-bold">
+            <i class="fas @(isArabic ? "fa-arrow-right" : "fa-arrow-left")"></i>
+            <span>@(isArabic ? "العودة للمتجر" : "Back to Store")</span>
+        </a>
     </div>
 
-    <!-- ─── Nav ─── -->
-    <nav class="store-nav">
-        <div class="container nav-inner">
-            <a href="/Customer/Home/Index" class="nav-logo">Smart<span>Store</span></a>
-            <div class="nav-search">
-                <form id="searchForm" method="get" action="/Customer/Home/Store">
-                    <input type="text" id="searchInput" name="SearchQuery" placeholder="Search products..." autocomplete="off">
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
-                <div class="search-suggestions" id="searchSuggestions"></div>
-            </div>
-            <div class="nav-actions">
-                <a href="/Customer/Home/Index#wishlistSection" title="Wishlist" id="wishlistIcon">
-                    <i class="fa fa-heart-o"></i>
-                    <span class="badge" id="wishlistCount">0</span>
-                </a>
-                <a href="#" title="Cart" id="cartIcon">
-                    <i class="fa fa-shopping-cart"></i>
-                    <span class="badge" id="cartCount">0</span>
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- BREADCRUMB -->
-    <div id="breadcrumb" class="section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <ul class="breadcrumb-tree">
-                        <li><a href="/Customer/Home/Store">Home</a></li>
-                        <li><a href="/Customer/Home/Store">All Categories</a></li>
-                        @if (p.Category != null)
-                        {
-                            <li><a href="/Customer/Home/Store?Filter.CategoryIds=@p.CategoryId">@p.Category.Name</a></li>
-                        }
-                        @if (p.Brand != null)
-                        {
-                            <li><a href="/Customer/Home/Store?Filter.BrandIds=@p.BrandId">@p.Brand.Name</a></li>
-                        }
-                        <li class="active">@p.Name</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- /BREADCRUMB -->
-
-    <!-- SECTION -->
-    <div class="section">
-        <div class="container">
-            <div class="row">
-                <!-- Product main img -->
-                <div class="col-md-5 col-md-push-2">
-                    <div id="product-main-img">
-                        <div class="product-preview">
-                            <img src="~/img/@mainImg" alt="@p.Name">
+    <!-- MAIN PRODUCT ROW -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Left Side: Interactive Gallery Column -->
+        <div class="lg:col-span-6 space-y-6">
+            <div class="pdp-gallery">
+                <div class="flex gap-4 items-start w-full @(isArabic ? "flex-row-reverse" : "flex-row")">
+                    <!-- Vertical Thumbnails -->
+                    <div class="pdp-thumbnails flex flex-col gap-2.5 w-16 shrink-0 max-h-[480px] overflow-y-auto hide-scrollbar">
+                        <div class="thumb active w-14 h-14 rounded-xl border border-gray-200 cursor-pointer overflow-hidden p-1 flex-shrink-0 transition-all duration-200 hover:border-[#002d72]" data-src="/img/@mainImg">
+                            <img src="/img/@mainImg" alt="@p.Name" onerror="this.src='https://via.placeholder.com/100x100?text=No+Image'" class="w-full h-full object-contain">
                         </div>
                         @foreach (var sub in subImgs)
                         {
-                            <div class="product-preview">
-                                <img src="~/ProductSubImges/@sub.SubImg" alt="@p.Name">
+                            <div class="thumb w-14 h-14 rounded-xl border border-gray-200 cursor-pointer overflow-hidden p-1 flex-shrink-0 transition-all duration-200 hover:border-[#002d72]" data-src="/ProductSubImges/@sub.SubImg">
+                                <img src="/ProductSubImges/@sub.SubImg" alt="@p.Name" onerror="this.src='https://via.placeholder.com/100x100?text=No+Image'" class="w-full h-full object-contain">
                             </div>
                         }
                     </div>
-                </div>
-
-                <!-- Product thumb imgs -->
-                <div class="col-md-2 col-md-pull-5">
-                    <div id="product-imgs">
-                        <div class="product-preview">
-                            <img src="~/img/@mainImg" alt="@p.Name">
-                        </div>
-                        @foreach (var sub in subImgs)
-                        {
-                            <div class="product-preview">
-                                <img src="~/ProductSubImges/@sub.SubImg" alt="@p.Name">
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <!-- Product details -->
-                <div class="col-md-5">
-                    <div class="product-details">
-                        <h2 class="product-name">@p.Name</h2>
-                        <div>
-                            <div class="product-rating">
-                                @for (int i = 1; i <= 5; i++)
-                                {
-                                    if (i <= p.Rate)
-                                    {
-                                        <i class="fa fa-star"></i>
-                                    }
-                                    else
-                                    {
-                                        <i class="fa fa-star-o"></i>
-                                    }
-                                }
-                            </div>
-                            <a class="review-link" href="#">@p.Rate.ToString("0.0") Review(s) | Add your review</a>
-                        </div>
-                        <div>
+                    
+                    <!-- Large Main Preview Image -->
+                    <div class="flex-1 relative">
+                        <div class="pdp-main-img relative rounded-3xl overflow-hidden cursor-crosshair bg-white border border-gray-100 shadow-sm p-4 flex items-center justify-center w-full" id="mainImageContainer">
+                            <img id="mainProductImage" src="/img/@mainImg" alt="@p.Name" onerror="this.src='https://via.placeholder.com/600x600?text=No+Image'" class="max-w-[90%] max-h-[90%] object-contain">
+                            <div class="zoom-lens absolute border border-[#002d72] bg-white/20 pointer-events-none hidden" id="zoomLens" style="width: 120px; height: 120px;"></div>
+                            
                             @if (p.Discount > 0)
                             {
-                                <h3 class="product-price">@discountedPrice.ToString("N2") <del class="product-old-price">@p.Price.ToString("N0")</del></h3>
-                            }
-                            else
-                            {
-                                <h3 class="product-price">@p.Price.ToString("N2")</h3>
-                            }
-                            @if (p.Quantity > 0)
-                            {
-                                <span class="product-available">In Stock</span>
-                            }
-                            else
-                            {
-                                <span class="product-available" style="color:#D10024;">Out of Stock</span>
+                                <div class="absolute top-4 right-4 bg-[#002d72] text-white font-bold text-[10px] px-2.5 py-1 rounded-[12px] z-10 shadow-md">
+                                    -@(p.Discount)% @(isArabic ? "خصم" : "OFF")
+                                </div>
                             }
                         </div>
-                        <p>@p.description</p>
-
-                        <div class="product-options">
-                            <label>
-                                Size
-                                <select class="input-select">
-                                    <option value="0">X</option>
-                                </select>
-                            </label>
-                            <label>
-                                Color
-                                <select class="input-select">
-                                    <option value="0">Red</option>
-                                </select>
-                            </label>
-                        </div>
-
-                        <div class="add-to-cart">
-                            <div class="qty-label">
-                                Qty
-                                <div class="input-number">
-                                    <input type="number" value="1" min="1" max="@((int)Math.Max(1, p.Quantity))">
-                                    <span class="qty-up">+</span>
-                                    <span class="qty-down">-</span>
-                                </div>
-                            </div>
-                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
-                        </div>
-
-                        <ul class="product-btns">
-                            <li><a href="#"><i class="fa fa-heart-o"></i> add to wishlist</a></li>
-                            <li><a href="#"><i class="fa fa-exchange"></i> add to compare</a></li>
-                        </ul>
-
-                        <ul class="product-links">
-                            <li>Category:</li>
-                            @if (p.Category != null)
-                            {
-                                <li><a href="/Customer/Home/Store?Filter.CategoryIds=@p.CategoryId">@p.Category.Name</a></li>
-                            }
-                        </ul>
-
-                        <ul class="product-links">
-                            <li>Share:</li>
-                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-                            <li><a href="#"><i class="fa fa-envelope"></i></a></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Product tab -->
-                <div class="col-md-12">
-                    <div id="product-tab">
-                        <ul class="tab-nav">
-                            <li class="active"><a data-toggle="tab" href="#tab1">Description</a></li>
-                            <li><a data-toggle="tab" href="#tab2">Details</a></li>
-                            <li><a data-toggle="tab" href="#tab3">Reviews (0)</a></li>
-                        </ul>
-                        <div class="tab-content">
-                            <div id="tab1" class="tab-pane fade in active">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p>@p.description</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="tab2" class="tab-pane fade in">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p><strong>Brand:</strong> @(p.Brand?.Name ?? "N/A")</p>
-                                        <p><strong>Category:</strong> @(p.Category?.Name ?? "N/A")</p>
-                                        <p><strong>Price:</strong> @(p.Discount > 0 ? p.Price.ToString("N0") : p.Price.ToString("N2"))</p>
-                                        <p><strong>Discount:</strong> @(p.Discount)%</p>
-                                        <p><strong>Stock:</strong> @((int)p.Quantity) units</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="tab3" class="tab-pane fade in">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p>No reviews yet. Be the first to review this product!</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Zoom Result Overlay -->
+                        <div class="pdp-zoom-result absolute border border-gray-100 rounded-3xl bg-no-repeat shadow-2xl hidden bg-white" id="zoomResult" style="width: 400px; height: 400px; z-index: 50;"></div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Section: Related Products -->
-    <div class="section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="section-title text-center">
-                        <h3 class="title">Related Products</h3>
+        <!-- Right Side: Details & Actions Column -->
+        <div class="lg:col-span-6">
+            <div class="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm space-y-5">
+                
+                <!-- Brand Badge & Title -->
+                <div class="space-y-2">
+                    <div class="text-[10px] font-black text-[#002d72] bg-[#002d72]/5 px-3 py-1 rounded-full border border-blue-100/30 inline-block uppercase tracking-wider">
+                        @(p.Brand?.Name ?? "SmartStore")
                     </div>
-                </div>
-                @foreach (var item in Model.RelatedProducts)
-                {
-                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6 col-6 mb-4">
-                        @await Html.PartialAsync("_ProductCard", item)
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-
-    <!-- NEWSLETTER -->
-    <div id="newsletter" class="section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="newsletter">
-                        <p>Sign Up for the <strong>NEWSLETTER</strong></p>
-                        <form>
-                            <input class="input" type="email" placeholder="Enter Your Email">
-                            <button class="newsletter-btn"><i class="fa fa-envelope"></i> Subscribe</button>
-                        </form>
-                        <ul class="newsletter-follow">
-                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                            <li><a href="#"><i class="fa fa-pinterest"></i></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- FOOTER -->
-    <footer id="footer">
-        <div class="section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">About Us</h3>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</p>
-                            <ul class="footer-links">
-                                <li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
-                                <li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
-                                <li><a href="#"><i class="fa fa-envelope-o"></i>email@email.com</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">Categories</h3>
-                            <ul class="footer-links">
-                                <li><a href="#">Hot deals</a></li>
-                                <li><a href="#">Laptops</a></li>
-                                <li><a href="#">Smartphones</a></li>
-                                <li><a href="#">Cameras</a></li>
-                                <li><a href="#">Accessories</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="clearfix visible-xs"></div>
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">Information</h3>
-                            <ul class="footer-links">
-                                <li><a href="#">About Us</a></li>
-                                <li><a href="#">Contact Us</a></li>
-                                <li><a href="#">Privacy Policy</a></li>
-                                <li><a href="#">Orders and Returns</a></li>
-                                <li><a href="#">Terms & Conditions</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-xs-6">
-                        <div class="footer">
-                            <h3 class="footer-title">Service</h3>
-                            <ul class="footer-links">
-                                <li><a href="#">My Account</a></li>
-                                <li><a href="#">View Cart</a></li>
-                                <li><a href="#">Wishlist</a></li>
-                                <li><a href="#">Track My Order</a></li>
-                                <li><a href="#">Help</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="bottom-footer" class="section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 text-center">
-                        <ul class="footer-payments">
-                            <li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
-                            <li><a href="#"><i class="fa fa-credit-card"></i></a></li>
-                            <li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
-                            <li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
-                            <li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
-                            <li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
-                        </ul>
-                        <span class="copyright">
-                            Copyright &copy; @DateTime.Now.Year All rights reserved | SmartStore
+                    <h1 class="text-xl sm:text-2xl font-black text-gray-900 leading-snug">@p.Name</h1>
+                    
+                    <!-- Rating and Sold Count Summary -->
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-xs font-extrabold text-gray-400 bg-gray-50 px-2 py-0.5 rounded border border-gray-100">
+                            @(isArabic ? "مباع: 15K+" : "15K+ Sold")
                         </span>
+                        <span class="text-gray-300">•</span>
+                        <span class="text-amber-400 flex items-center text-xs">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= p.Rate) { <text>★</text> } else { <span class="text-gray-200">★</span> }
+                            }
+                        </span>
+                        <span class="text-xs text-gray-500 font-bold">(@p.Rate.ToString("0.0"))</span>
+                        <span class="text-gray-300">•</span>
+                        <a href="#product-tab" onclick="$('button[data-tab=\'reviews\']').click();" class="text-xs text-[#002d72] hover:underline decoration-none font-bold">
+                            @(isArabic ? "256 مراجعة" : "256 Reviews")
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Stock Status Info -->
+                <div class="text-xs font-bold py-1 border-t border-b border-gray-50">
+                    @if (p.Quantity > 0)
+                    {
+                        <span class="text-emerald-600 flex items-center gap-1.5">
+                            <i class="fas fa-check-circle"></i>
+                            <span>@(isArabic ? "متوفر في المخزون" : "In Stock")</span>
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="text-rose-500 flex items-center gap-1.5">
+                            <i class="fas fa-times-circle"></i>
+                            <span>@(isArabic ? "غير متوفر حالياً" : "Out of Stock")</span>
+                        </span>
+                    }
+                </div>
+                
+                <!-- Pricing Card -->
+                <div class="bg-gray-50/50 p-4 rounded-2xl border border-gray-100/50 space-y-1">
+                    @if (p.Discount > 0)
+                    {
+                        <div class="text-[10px] text-gray-400 font-extrabold line-through">@p.Price.ToString("N0") ج.م</div>
+                        <div class="flex items-baseline gap-2.5">
+                            <div class="text-3xl font-black text-gray-900">@discountedPrice.ToString("N0") <span class="text-xs font-bold text-gray-500">ج.م</span></div>
+                            <div class="bg-emerald-50 text-emerald-600 font-extrabold text-[10px] px-2 py-0.5 rounded border border-emerald-100/30">
+                                @(isArabic ? "وفر" : "Save") @((p.Price * p.Discount / 100).ToString("N0")) ج.م
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-3xl font-black text-gray-900">@p.Price.ToString("N0") <span class="text-xs font-bold text-gray-500">ج.م</span></div>
+                    }
+                </div>
+
+                <!-- Static Variants Selector (Matches BaliBeli style details) -->
+                <div class="space-y-4 pt-1">
+                    <!-- Color variant selection -->
+                    <div>
+                        <div class="text-xs font-bold text-gray-900 mb-2">@(isArabic ? "اختر اللون" : "Select Color")</div>
+                        <div class="flex gap-2.5 items-center">
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="color-variant" value="black" checked class="sr-only peer">
+                                <div class="w-8 h-8 rounded-full bg-gray-900 border border-gray-300 flex items-center justify-center transition-all peer-checked:ring-2 peer-checked:ring-[#002d72] peer-checked:ring-offset-2"></div>
+                            </label>
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="color-variant" value="silver" class="sr-only peer">
+                                <div class="w-8 h-8 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center transition-all peer-checked:ring-2 peer-checked:ring-[#002d72] peer-checked:ring-offset-2"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Storage variant selection -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="text-xs font-bold text-gray-900">@(isArabic ? "اختر المساحة" : "Select Storage")</div>
+                            <a href="#" class="text-[10px] text-[#002d72] hover:underline decoration-none font-bold">@(isArabic ? "دليل الضمان" : "Warranty Guide")</a>
+                        </div>
+                        <div class="flex gap-2">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="storage-variant" value="128" checked class="sr-only peer">
+                                <span class="inline-block px-4 py-2 text-xs font-bold border border-gray-200 rounded-xl bg-white text-gray-700 transition-all peer-checked:bg-gray-900 peer-checked:text-white peer-checked:border-gray-900">
+                                    @(isArabic ? "128 جيجابايت" : "128GB")
+                                </span>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="storage-variant" value="256" class="sr-only peer">
+                                <span class="inline-block px-4 py-2 text-xs font-bold border border-gray-200 rounded-xl bg-white text-gray-700 transition-all peer-checked:bg-gray-900 peer-checked:text-white peer-checked:border-gray-900">
+                                    @(isArabic ? "256 جيجابايت" : "256GB")
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add to cart / Buy actions -->
+                <div class="pdp-cta pt-4 space-y-3">
+                    <div class="flex items-center gap-3">
+                        <!-- Quantity Inputs -->
+                        <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden h-[48px] bg-gray-50/50">
+                            <button type="button" class="w-10 h-full border-0 flex items-center justify-center hover:bg-slate-200 text-slate-600 transition-colors focus:outline-none font-extrabold cursor-pointer" id="qtyMinus">-</button>
+                            <input type="number" value="1" min="1" max="@((int)Math.Max(1, p.Quantity))" class="w-10 h-full text-center border-0 bg-transparent font-extrabold text-slate-800 text-xs focus:outline-none" id="qtyInput">
+                            <button type="button" class="w-10 h-full border-0 flex items-center justify-center hover:bg-slate-200 text-slate-600 transition-colors focus:outline-none font-extrabold cursor-pointer" id="qtyPlus">+</button>
+                        </div>
+                        
+                        <!-- Main Add to Cart button -->
+                        <button id="addToCartBtn" data-product-id="@p.Id" class="flex-1 btn-add-cart h-[48px] bg-[#002d72] hover:bg-[#001f4f] text-white font-black rounded-xl text-xs transition-all duration-200 flex items-center justify-center gap-2 border-0 cursor-pointer shadow-md shadow-blue-900/10" @(p.Quantity <= 0 ? "disabled" : "")>
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>@(isArabic ? "إضافة إلى العربة" : "Add to Bag")</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Direct Buy button -->
+                    <button id="buyNowBtn" data-product-id="@p.Id" class="w-full h-[48px] bg-white border border-[#002d72] hover:bg-blue-50/30 text-[#002d72] font-black rounded-xl text-xs transition-all duration-200 cursor-pointer" @(p.Quantity <= 0 ? "disabled" : "")>
+                        @(isArabic ? "شراء المنتج الآن" : "Buy this Item")
+                    </button>
+                    
+                    <!-- Shared support links -->
+                    <div class="flex items-center justify-between border-t border-gray-50 pt-4 mt-4">
+                        <a href="https://wa.me/201000000000" target="_blank" class="flex items-center gap-1.5 text-[11px] font-bold text-gray-500 hover:text-[#002d72] transition-colors decoration-none">
+                            <i class="fab fa-whatsapp text-sm"></i>
+                            <span>@(isArabic ? "تواصل معنا" : "Chat")</span>
+                        </a>
+                        <button class="wishlist-btn text-[11px] font-bold text-gray-500 hover:text-rose-500 transition-colors bg-transparent border-0 flex items-center gap-1.5 cursor-pointer p-0" data-product-id="@p.Id">
+                            <i class="far fa-heart text-sm"></i>
+                            <span>@(isArabic ? "أضف للمفضلة" : "Wishlist")</span>
+                        </button>
+                        <button class="text-[11px] font-bold text-gray-500 hover:text-[#002d72] transition-colors bg-transparent border-0 flex items-center gap-1.5 cursor-pointer p-0" onclick="navigator.clipboard.writeText(window.location.href); alert('@(isArabic ? "تم نسخ رابط المنتج!" : "Product link copied!")')">
+                            <i class="fas fa-share-alt text-sm"></i>
+                            <span>@(isArabic ? "مشاركة" : "Share")</span>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
 
-    <script src="~/js/user-js/jquery.min.js"></script>
-    <script src="~/js/user-js/bootstrap.min.js"></script>
-    <script src="~/js/user-js/slick.min.js"></script>
-    <script src="~/js/user-js/nouislider.min.js"></script>
-    <script src="~/js/user-js/jquery.zoom.min.js"></script>
-    <script src="~/js/user-js/main.js"></script>
-</body>
-</html>
+    <!-- Trust seals badges -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+        <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow transition-shadow">
+            <div class="w-10 h-10 rounded-xl bg-blue-50/50 text-[#002d72] flex items-center justify-center text-sm shrink-0"><i class="fas fa-shield-alt"></i></div>
+            <div class="text-xs font-bold text-gray-900">@(isArabic ? "منتج أصلي 100%" : "100% Genuine Product")</div>
+        </div>
+        <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow transition-shadow">
+            <div class="w-10 h-10 rounded-xl bg-blue-50/50 text-[#002d72] flex items-center justify-center text-sm shrink-0"><i class="fas fa-truck-moving"></i></div>
+            <div class="text-xs font-bold text-gray-900">@(isArabic ? "شحن سريع وآمن" : "Fast & Secure Shipping")</div>
+        </div>
+        <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow transition-shadow">
+            <div class="w-10 h-10 rounded-xl bg-blue-50/50 text-[#002d72] flex items-center justify-center text-sm shrink-0"><i class="fas fa-award"></i></div>
+            <div class="text-xs font-bold text-gray-900">@(isArabic ? "ضمان الوكيل المعتمد" : "Official Warranty")</div>
+        </div>
+        <div class="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-3 shadow-sm hover:shadow transition-shadow">
+            <div class="w-10 h-10 rounded-xl bg-blue-50/50 text-[#002d72] flex items-center justify-center text-sm shrink-0"><i class="fas fa-hand-holding-usd"></i></div>
+            <div class="text-xs font-bold text-gray-900">@(isArabic ? "الدفع عند الاستلام" : "Cash on Delivery")</div>
+        </div>
+    </div>
+
+    <!-- TABS CONTENT SECTION -->
+    <div class="product-tabs mt-12" id="product-tab">
+        <!-- Tab buttons -->
+        <div class="tab-nav flex border-b border-gray-100 gap-6 text-sm font-bold text-gray-400 mb-6 overflow-x-auto hide-scrollbar" dir="rtl">
+            <button type="button" class="pb-3 border-b-2 border-transparent hover:text-slate-700 bg-transparent border-0 cursor-pointer active focus:outline-none" data-tab="description">
+                @(isArabic ? "الوصف والتفاصيل" : "Description")
+            </button>
+            @if (Model.FrequentlyBoughtTogether.Any())
+            {
+                <button type="button" class="pb-3 border-b-2 border-transparent hover:text-slate-700 bg-transparent border-0 cursor-pointer focus:outline-none" data-tab="styling">
+                    @(isArabic ? "أفكار للتنسيق" : "Styling Ideas")
+                </button>
+            }
+            <button type="button" class="pb-3 border-b-2 border-transparent hover:text-slate-700 bg-transparent border-0 cursor-pointer focus:outline-none" data-tab="specifications">
+                @(isArabic ? "المواصفات الفنية" : "Specifications")
+            </button>
+            <button type="button" class="pb-3 border-b-2 border-transparent hover:text-slate-700 bg-transparent border-0 cursor-pointer focus:outline-none" data-tab="reviews">
+                @(isArabic ? "التقييمات" : "Reviews")
+            </button>
+        </div>
+
+        <!-- Tab contents wrapper card -->
+        <div class="tab-content bg-white border border-gray-100 rounded-3xl p-6 shadow-sm">
+            
+            <!-- Description Tab -->
+            <div class="tab-pane active" id="tab-description">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-base font-extrabold text-gray-900 mb-2">@(isArabic ? "تفاصيل المنتج" : "Product Details")</h3>
+                        <p class="text-xs md:text-sm text-gray-600 leading-relaxed whitespace-pre-line bg-gray-50/50 p-4 rounded-2xl border border-gray-100/50">@p.description</p>
+                    </div>
+                    
+                    @if (p.Specifications != null && p.Specifications.Any(s => s.IsHighlight))
+                    {
+                        <div>
+                            <h4 class="text-xs font-black text-gray-900 uppercase tracking-wider mb-3">@(isArabic ? "أهم المميزات" : "Key Specs")</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+                                @foreach (var spec in p.Specifications.Where(s => s.IsHighlight))
+                                {
+                                    <div class="flex items-center justify-between py-2 text-xs border-b border-gray-100/50">
+                                        <span class="font-bold text-gray-500">@spec.Key</span>
+                                        <span class="text-gray-900 font-bold">@spec.Value</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            <!-- Styling Ideas Tab (Frequently Bought Together) -->
+            @if (Model.FrequentlyBoughtTogether.Any())
+            {
+                <div class="tab-pane" id="tab-styling">
+                    <div class="flex flex-col lg:flex-row gap-6 items-start">
+                        <!-- Bundle items checklist -->
+                        <div class="flex-1 flex flex-wrap items-center gap-4 py-2 justify-center lg:justify-start">
+                            <!-- Main product item -->
+                            <div class="flex items-center gap-3 bg-white p-3 border border-gray-100 rounded-2xl shadow-sm w-full sm:w-auto">
+                                <input type="checkbox" checked disabled class="w-4 h-4 text-[#002d72] focus:ring-[#002d72] border-gray-300 rounded shrink-0 cursor-not-allowed">
+                                <img src="/img/@mainImg" alt="@p.Name" onerror="this.src='https://via.placeholder.com/100x100?text=No+Image'" class="w-12 h-12 object-contain bg-white rounded-lg border border-gray-100 p-1">
+                                <div class="text-xs">
+                                    <div class="font-bold text-gray-800 line-clamp-1 max-w-[150px]">@p.Name</div>
+                                    <div class="font-black text-[#002d72]">@discountedPrice.ToString("N0") ج.م</div>
+                                </div>
+                            </div>
+
+                            <!-- Accessories bundle -->
+                            @foreach (var item in Model.FrequentlyBoughtTogether)
+                            {
+                                var accessoryPrice = item.Price - (item.Price * item.Discount / 100);
+                                <div class="text-gray-300 font-extrabold text-lg select-none">+</div>
+                                
+                                <div class="flex items-center gap-3 bg-white p-3 border border-gray-100 rounded-2xl shadow-sm w-full sm:w-auto">
+                                    <input type="checkbox" checked data-price="@accessoryPrice" data-id="@item.Id" class="bundle-item-checkbox w-4 h-4 text-[#002d72] focus:ring-[#002d72] border-gray-300 rounded shrink-0 cursor-pointer">
+                                    <img src="/img/@item.MainImg" alt="@item.Name" onerror="this.src='https://via.placeholder.com/100x100?text=No+Image'" class="w-12 h-12 object-contain bg-white rounded-lg border border-gray-100 p-1">
+                                    <div class="text-xs">
+                                        <div class="font-bold text-gray-800 line-clamp-1 max-w-[150px]">@item.Name</div>
+                                        <div class="font-black text-[#002d72]">@accessoryPrice.ToString("N0") ج.م</div>
+                                    </div>
+                                    <!-- Hidden add button for programmatic trigger -->
+                                    <button class="card-add hidden bought-item-btn" data-product-id="@item.Id"></button>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Summary calculation card -->
+                        <div class="w-full lg:w-64 bg-gray-50 border border-gray-100 rounded-2xl p-4 shrink-0 shadow-sm space-y-4">
+                            <div>
+                                <div class="text-xs text-gray-500 mb-1">@(isArabic ? "المجموع الكلي:" : "Total Price:")</div>
+                                @{
+                                    var bundleSum = discountedPrice + Model.FrequentlyBoughtTogether.Sum(x => x.Price - (x.Price * x.Discount / 100));
+                                }
+                                <div class="text-2xl font-black text-gray-900" id="bundleTotalPrice" data-base="@discountedPrice" data-sum="@bundleSum">@bundleSum.ToString("N0") ج.م</div>
+                            </div>
+                            
+                            <button id="addBundleBtn" class="w-full h-11 bg-[#002d72] hover:bg-[#001f4f] text-white font-bold text-xs rounded-xl border-0 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm shadow-blue-900/10">
+                                <i class="fas fa-shopping-bag"></i>
+                                <span>@(isArabic ? "إضافة المجموعة بالكامل" : "Add all to Bag")</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+            
+            <!-- Specifications Tab -->
+            <div class="tab-pane" id="tab-specifications">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-base font-extrabold text-gray-900 mb-3">@(isArabic ? "المواصفات الفنية الكاملة" : "Technical Specifications")</h3>
+                        <div class="border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+                            <table class="w-full text-xs md:text-sm">
+                                <tbody class="divide-y divide-gray-100">
+                                    <tr class="bg-gray-50/50">
+                                        <td class="font-bold text-gray-505 w-[200px] p-3">@(isArabic ? "الماركة" : "Brand")</td>
+                                        <td class="text-gray-900 p-3">@(p.Brand?.Name ?? "SmartStore")</td>
+                                    </tr>
+                                    <tr class="bg-white">
+                                        <td class="font-bold text-gray-550 p-3">@(isArabic ? "الموديل" : "Model")</td>
+                                        <td class="text-gray-900 p-3">@p.Name</td>
+                                    </tr>
+                                    @if (p.Specifications != null && p.Specifications.Any())
+                                    {
+                                        var isEven = true;
+                                        foreach (var spec in p.Specifications)
+                                        {
+                                            <tr class="@(isEven ? "bg-gray-50/50" : "bg-white")">
+                                                <td class="font-bold text-gray-500 p-3">@spec.Key</td>
+                                                <td class="text-gray-900 p-3">@spec.Value</td>
+                                            </tr>
+                                            isEven = !isEven;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    @if (!string.IsNullOrEmpty(p.PackageContents))
+                    {
+                        <div class="pt-2">
+                            <h4 class="text-xs font-black text-gray-900 mb-2">@(isArabic ? "محتويات العبوة" : "Package Contents")</h4>
+                            <p class="text-xs text-gray-600 leading-relaxed whitespace-pre-line bg-gray-50 p-3.5 rounded-xl border border-gray-100/50">@p.PackageContents</p>
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            <!-- Reviews Tab -->
+            <div class="tab-pane" id="tab-reviews">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+                    <!-- Overall rating breakdown card -->
+                    <div class="md:col-span-4 bg-gray-50/50 rounded-2xl border border-gray-100 p-5 flex flex-col items-center justify-center text-center shadow-sm">
+                        <div class="text-5xl font-black text-gray-900">@p.Rate.ToString("0.0")</div>
+                        <div class="stars flex my-2 text-amber-400 text-lg">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= p.Rate) { <text>★</text> } else { <span class="text-gray-200">★</span> }
+                            }
+                        </div>
+                        <div class="text-[10px] text-gray-400 font-bold mb-4">@(isArabic ? "بناءً على تقييمات العملاء" : "Based on customer reviews")</div>
+
+                        <!-- Star breakdown visual percentages -->
+                        <div class="w-full space-y-2">
+                            @for (int stars = 5; stars >= 1; stars--)
+                            {
+                                var pct = stars == 5 ? 40 : (stars == 4 ? 25 : (stars == 3 ? 18 : (stars == 2 ? 10 : 7)));
+                                <div class="flex items-center text-[10px] font-bold text-gray-500 gap-2">
+                                    <span class="w-12 text-right">@stars @(isArabic ? "نجوم" : "stars")</span>
+                                    <div class="flex-1 bg-gray-250 h-2 rounded overflow-hidden">
+                                        <div class="bg-[#002d72] h-full rounded" style="width: @(pct)%;"></div>
+                                    </div>
+                                    <span class="w-8 text-left">@(pct)%</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- List of comments & submit form -->
+                    <div class="md:col-span-8 space-y-6">
+                        <div class="max-h-[350px] overflow-y-auto pr-1 border-b border-gray-100 pb-4 space-y-3 scrollbar-thin">
+                            <h4 class="text-xs font-black text-gray-900 mb-2">@(isArabic ? "آراء العملاء المضافة" : "Customer Comments")</h4>
+                            
+                            @if (p.Reviews != null && p.Reviews.Any())
+                            {
+                                foreach (var r in p.Reviews.OrderByDescending(x => x.CreatedAt))
+                                {
+                                    <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="font-bold text-xs text-gray-800">@r.CustomerName</span>
+                                            <span class="text-[9px] text-gray-400 font-semibold">@r.CreatedAt.ToString("yyyy-MM-dd")</span>
+                                        </div>
+                                        <div class="stars flex mb-1 text-[10px] text-amber-400">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= r.Rating) { <text>★</text> } else { <span class="text-gray-200">★</span> }
+                                            }
+                                        </div>
+                                        <p class="text-xs text-gray-600 leading-normal m-0 font-medium">@r.Comment</p>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <!-- Fallback default reviews -->
+                                <div class="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="font-bold text-xs text-gray-800">أحمد علي</span>
+                                        <span class="text-[9px] text-gray-400 font-semibold">2026-07-10</span>
+                                    </div>
+                                    <div class="stars flex mb-1 text-[10px] text-amber-400">★★★★★</div>
+                                    <p class="text-xs text-gray-600 leading-normal m-0 font-medium">منتج ممتاز جداً وتغليف رائع وتوصيل سريع وسرعة استجابة ممتازة.</p>
+                                </div>
+                                <div class="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="font-bold text-xs text-gray-800">سارة محمد</span>
+                                        <span class="text-[9px] text-gray-400 font-semibold">2026-07-08</span>
+                                    </div>
+                                    <div class="stars flex mb-1 text-[10px] text-amber-400">★★★★☆</div>
+                                    <p class="text-xs text-gray-600 leading-normal m-0 font-medium">سهل الاستخدام والألوان ممتازة، توصيل سريع جداً وتعامل محترم.</p>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Submission review form -->
+                        <div class="bg-gray-50/30 p-4 border border-gray-100 rounded-2xl shadow-sm">
+                            <h4 class="text-xs font-black text-gray-900 mb-3">@(isArabic ? "أضف تقييمك" : "Write a Review")</h4>
+                            <form asp-action="AddReview" asp-controller="Home" asp-area="Customer" method="post" class="space-y-4">
+                                <input type="hidden" name="productId" value="@p.Id" />
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-gray-400 mb-1">@(isArabic ? "الاسم" : "Your Name")</label>
+                                        <input type="text" name="customerName" required class="w-full text-xs border border-gray-200 rounded-xl p-2.5 focus:border-[#002d72] focus:outline-none font-bold" placeholder="@(isArabic ? "ادخل اسمك..." : "Enter name...")" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-gray-400 mb-1">@(isArabic ? "التقييم بالنجوم" : "Star Rating")</label>
+                                        <div class="flex gap-1 text-base text-gray-200 cursor-pointer pt-1" id="ratingInputStar">
+                                            <i class="fas fa-star text-amber-400" data-val="1"></i>
+                                            <i class="fas fa-star text-amber-400" data-val="2"></i>
+                                            <i class="fas fa-star text-amber-400" data-val="3"></i>
+                                            <i class="fas fa-star text-amber-400" data-val="4"></i>
+                                            <i class="fas fa-star text-amber-400" data-val="5"></i>
+                                        </div>
+                                        <input type="hidden" name="rating" id="selectedStarValue" value="5">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-400 mb-1">@(isArabic ? "رأيك بالتفصيل" : "Comment")</label>
+                                    <textarea name="comment" required rows="3" class="w-full text-xs border border-gray-200 rounded-xl p-2.5 focus:border-[#002d72] focus:outline-none font-bold" placeholder="@(isArabic ? "اكتب رأيك بالتفصيل هنا..." : "Write details...")"></textarea>
+                                </div>
+                                <button type="submit" class="bg-[#002d72] hover:bg-[#001f4f] text-white font-bold text-xs px-6 py-2.5 rounded-xl border-0 transition-all cursor-pointer shadow-sm shadow-blue-900/10">
+                                    @(isArabic ? "إرسال التقييم" : "Submit Review")
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products List grid -->
+    <div class="related-products mt-16">
+        <div class="section-title mb-6 border-b border-gray-100 pb-3 flex items-center justify-between">
+            <h3 class="text-lg font-black text-gray-900 m-0">@(isArabic ? "منتجات ذات صلة" : "Related Products")</h3>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            @foreach (var item in Model.RelatedProducts.Take(4))
+            {
+                <div class="bg-white rounded-2xl border border-gray-100/80 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300">
+                    @await Html.PartialAsync("_ProductCard", item)
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Sticky bottom CTA bar for mobile scroll (matches store.js) -->
+<div class="pdp-sticky-cta flex items-center justify-between border-t border-slate-100 bg-white p-3 z-50 fixed bottom-0 left-0 right-0 shadow-lg" id="stickyCta" style="display: none;">
+    <div class="flex items-center gap-1.5">
+        <img src="/img/@mainImg" onerror="this.src='https://via.placeholder.com/100x100?text=No+Image'" class="w-10 h-10 object-contain rounded-lg border border-slate-200 p-0.5 bg-white">
+        <div>
+            <div class="text-[10px] font-bold text-slate-800 truncate max-w-[100px] md:max-w-[150px]">@p.Name</div>
+            <div class="text-xs font-black text-[#002d72]">@discountedPrice.ToString("N0") ج.م</div>
+        </div>
+    </div>
+    <div class="flex items-center gap-2">
+        <div class="sticky-qty flex items-center border border-slate-200 rounded-lg overflow-hidden h-[36px] bg-slate-50">
+            <button type="button" class="w-8 h-full border-0 flex items-center justify-center hover:bg-slate-200 text-slate-600 focus:outline-none" id="stickyQtyMinus">-</button>
+            <input type="number" value="1" min="1" max="@((int)Math.Max(1, p.Quantity))" class="w-8 h-full text-center border-0 bg-transparent font-extrabold text-slate-800 text-xs focus:outline-none" id="stickyQtyInput">
+            <button type="button" class="w-8 h-full border-0 flex items-center justify-center hover:bg-slate-200 text-slate-600 focus:outline-none" id="stickyQtyPlus">+</button>
+        </div>
+        <button id="stickyAddBtn" data-product-id="@p.Id" class="sticky-add h-[36px] px-4 bg-[#002d72] hover:bg-[#001f4f] text-white font-bold rounded-lg text-xs transition-colors border-0 focus:outline-none" @(p.Quantity <= 0 ? "disabled" : "")>
+            @(isArabic ? "إضافة للعربة" : "Add to Cart")
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/store.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function() {
+            // Interactive rating stars
+            $('#ratingInputStar i').on('click', function() {
+                var val = parseInt($(this).data('val'), 10);
+                $('#selectedStarValue').val(val);
+                $('#ratingInputStar i').each(function(index) {
+                    if (index < val) {
+                        $(this).removeClass('text-gray-200').addClass('text-amber-400');
+                    } else {
+                        $(this).removeClass('text-amber-400').addClass('text-gray-200');
+                    }
+                });
+            });
+
+            // Styling Ideas: Accessory selection check handler
+            $('.bundle-item-checkbox').on('change', function() {
+                var total = parseFloat($('#bundleTotalPrice').data('base'));
+                $('.bundle-item-checkbox:checked').each(function() {
+                    total += parseFloat($(this).data('price'));
+                });
+                $('#bundleTotalPrice').text(total.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' ج.م');
+            });
+
+            // Bundle additions action handler
+            $('#addBundleBtn').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Programmatically trigger add on checked bundle item buttons
+                $('.bundle-item-checkbox:checked').each(function() {
+                    var container = $(this).closest('div');
+                    var btn = container.find('.bought-item-btn');
+                    if (btn.length) {
+                        btn.click();
+                    }
+                });
+                
+                // Add the main product
+                $('#addToCartBtn').click();
+            });
+        });
+    </script>
+}

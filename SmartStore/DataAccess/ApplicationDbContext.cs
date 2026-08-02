@@ -15,6 +15,8 @@ namespace SmartStore.DataAccess
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<BannerModel> Banners { get; set; }
+        public DbSet<ProductSpecification> ProductSpecifications { get; set; }
+        public DbSet<ProductReview> ProductReviews { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
           : base(options)

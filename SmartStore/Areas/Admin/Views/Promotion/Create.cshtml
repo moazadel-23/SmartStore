@@ -1,8 +1,8 @@
 @model SmartStore.Models.Promotion
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Create Promotion";
-    ViewData["PageTitle"] = "Promotion Management";
+    ViewData["Title"] = Localizer["CreatePromotion"];
+    ViewData["PageTitle"] = Localizer["PromotionManagement"];
     var products = ViewBag.products as IEnumerable<SmartStore.Models.Product> ?? new List<SmartStore.Models.Product>();
     var categories = ViewBag.categories as IEnumerable<SmartStore.Models.Category> ?? new List<SmartStore.Models.Category>();
     var brands = ViewBag.brands as IEnumerable<SmartStore.Models.Brand> ?? new List<SmartStore.Models.Brand>();
@@ -14,11 +14,11 @@
 
     <!-- ── Breadcrumb ─────────────────────────── -->
     <div class="breadcrumb-bar">
-        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> Home</span>
+        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> @Localizer["Home"]</span>
         <i class='bx bx-chevron-right bc-sep'></i>
-        <a asp-action="Index" class="bc-link">Promotions</a>
+        <a asp-action="Index" class="bc-link">@Localizer["Promotions"]</a>
         <i class='bx bx-chevron-right bc-sep'></i>
-        <span class="bc-current">New Promotion</span>
+        <span class="bc-current">@Localizer["NewPromotion"]</span>
         <span class="bc-date">
             <i class='bx bx-calendar'></i>
             @DateTime.Now.ToString("dddd, MMMM dd yyyy")
@@ -32,8 +32,8 @@
                 <i class='bx bxs-offer'></i>
             </div>
             <div>
-                <h2>Create New Promotion</h2>
-                <p>Define a new discount promotion applied to a specific product, category, brand, or store-wide</p>
+                <h2>@Localizer["CreateNewPromotion"]</h2>
+                <p>@Localizer["DefinePromotionSubtitle"]</p>
             </div>
         </div>
     </div>
@@ -52,36 +52,36 @@
                 <div class="create-card">
                     <div class="create-card-header">
                         <i class='bx bx-info-circle'></i>
-                        <span>Promotion Details</span>
+                        <span>@Localizer["PromotionDetails"]</span>
                     </div>
                     <div class="create-card-body">
 
                         <!-- Target Scope Selection -->
                         <div class="form-field">
-                            <label class="field-label">Promotion Target Scope</label>
+                            <label class="field-label">@Localizer["PromotionTargetScope"]</label>
                             <div class="field-input-wrap">
                                 <i class='bx bx-bullseye field-icon'></i>
                                 <select id="targetScopeSelect" class="field-input" style="appearance: none; padding-right: 2rem;">
-                                    <option value="product">Apply to Specific Product</option>
-                                    <option value="category">Apply to Specific Category</option>
-                                    <option value="brand">Apply to Specific Brand</option>
-                                    <option value="general">General (Apply to All Products)</option>
+                                    <option value="product">@Localizer["ApplyToSpecificProduct"]</option>
+                                    <option value="category">@Localizer["ApplyToSpecificCategory"]</option>
+                                    <option value="brand">@Localizer["ApplyToSpecificBrand"]</option>
+                                    <option value="general">@Localizer["GeneralAllProducts"]</option>
                                 </select>
                                 <i class='bx bx-chevron-down' style="position: absolute; right: 1rem; pointer-events: none; color: var(--text-muted, #6b7280);"></i>
                             </div>
-                            <div class="field-hint">Choose whether this promotion applies to a product, category, brand, or the entire store.</div>
+                            <div class="field-hint">@Localizer["TargetScopeHint"]</div>
                         </div>
 
                         <!-- Product Selection -->
                         <div class="form-field target-select-field" id="field-product">
                             <label asp-for="ProductId" class="field-label">
-                                Target Product
+                                @Localizer["TargetProduct"]
                                 <span class="field-required">*</span>
                             </label>
                             <div class="field-input-wrap">
                                 <i class='bx bx-shopping-bag field-icon'></i>
                                 <select asp-for="ProductId" class="field-input" id="productSelect" style="appearance: none; padding-right: 2rem;">
-                                    <option value="">-- Select a Product --</option>
+                                    <option value="">-- @Localizer["SelectProduct"] --</option>
                                     @foreach (var prod in products)
                                     {
                                         <option value="@prod.Id" data-name="@prod.Name">@prod.Name (Price: @prod.Price.ToString("F2") ج.م)</option>
@@ -95,13 +95,13 @@
                         <!-- Category Selection -->
                         <div class="form-field target-select-field" id="field-category" style="display: none;">
                             <label asp-for="CategoryId" class="field-label">
-                                Target Category
+                                @Localizer["TargetCategory"]
                                 <span class="field-required">*</span>
                             </label>
                             <div class="field-input-wrap">
                                 <i class='bx bx-category field-icon'></i>
                                 <select asp-for="CategoryId" class="field-input" id="categorySelect" style="appearance: none; padding-right: 2rem;">
-                                    <option value="">-- Select a Category --</option>
+                                    <option value="">-- @Localizer["SelectCategory"] --</option>
                                     @foreach (var cat in categories)
                                     {
                                         <option value="@cat.Id" data-name="@cat.Name">@cat.Name</option>
@@ -115,13 +115,13 @@
                         <!-- Brand Selection -->
                         <div class="form-field target-select-field" id="field-brand" style="display: none;">
                             <label asp-for="BrandId" class="field-label">
-                                Target Brand
+                                @Localizer["TargetBrand"]
                                 <span class="field-required">*</span>
                             </label>
                             <div class="field-input-wrap">
                                 <i class='bx bx-purchase-tag field-icon'></i>
                                 <select asp-for="BrandId" class="field-input" id="brandSelect" style="appearance: none; padding-right: 2rem;">
-                                    <option value="">-- Select a Brand --</option>
+                                    <option value="">-- @Localizer["SelectBrand"] --</option>
                                     @foreach (var b in brands)
                                     {
                                         <option value="@b.Id" data-name="@b.Name">@b.Name</option>
@@ -136,7 +136,7 @@
                             <!-- Code -->
                             <div class="form-field" id="field-code">
                                 <label asp-for="Code" class="field-label">
-                                    Promo Code
+                                    @Localizer["PromoCode"]
                                     <span class="field-required">*</span>
                                 </label>
                                 <div class="field-input-wrap">
@@ -149,13 +149,13 @@
                                            style="text-transform: uppercase;">
                                 </div>
                                 <span asp-validation-for="Code" class="field-error"></span>
-                                <div class="field-hint">Unique coupon code (e.g. UPPERCASE letters & numbers).</div>
+                                <div class="field-hint">@Localizer["PromoCodeHint"]</div>
                             </div>
 
                             <!-- Discount -->
                             <div class="form-field" id="field-discount">
                                 <label asp-for="Discount" class="field-label">
-                                    Discount Percentage (%)
+                                    @Localizer["DiscountPercentage"] (%)
                                     <span class="field-required">*</span>
                                 </label>
                                 <div class="field-input-wrap">
@@ -170,7 +170,7 @@
                                            step="0.01">
                                 </div>
                                 <span asp-validation-for="Discount" class="field-error"></span>
-                                <div class="field-hint">Enter discount value from 0 to 100%.</div>
+                                <div class="field-hint">@Localizer["DiscountPercentageHint"]</div>
                             </div>
                         </div>
 
@@ -178,7 +178,7 @@
                             <!-- Publish At -->
                             <div class="form-field" id="field-publish">
                                 <label asp-for="PublishAt" class="field-label">
-                                    Publish / Start Date
+                                    @Localizer["PublishStartDate"]
                                     <span class="field-required">*</span>
                                 </label>
                                 <div class="field-input-wrap">
@@ -190,13 +190,13 @@
                                            value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")">
                                 </div>
                                 <span asp-validation-for="PublishAt" class="field-error"></span>
-                                <div class="field-hint">When the promotion starts becoming active.</div>
+                                <div class="field-hint">@Localizer["StartDateHint"]</div>
                             </div>
 
                             <!-- Valid To -->
                             <div class="form-field" id="field-validto">
                                 <label asp-for="ValidTo" class="field-label">
-                                    Expiration Date
+                                    @Localizer["ExpirationDate"]
                                     <span class="field-required">*</span>
                                 </label>
                                 <div class="field-input-wrap">
@@ -208,7 +208,7 @@
                                            value="@DateTime.Now.AddDays(7).ToString("yyyy-MM-ddTHH:mm")">
                                 </div>
                                 <span asp-validation-for="ValidTo" class="field-error"></span>
-                                <div class="field-hint">When the promotion expires and is no longer valid.</div>
+                                <div class="field-hint">@Localizer["ExpirationDateHint"]</div>
                             </div>
                         </div>
 
@@ -219,7 +219,7 @@
                 <div class="create-card preview-card">
                     <div class="create-card-header">
                         <i class='bx bx-show-alt'></i>
-                        <span>Live Promotion Coupon Preview</span>
+                        <span>@Localizer["LivePromotionPreview"]</span>
                     </div>
                     <div class="create-card-body" style="display: flex; justify-content: center; padding: 2rem 1rem;">
                         <!-- Stylized Coupon Card -->
@@ -232,11 +232,11 @@
                             
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
                                 <div>
-                                    <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.8);">Promotion Scope</span>
+                                    <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.8);">@Localizer["PromotionScope"]</span>
                                     <div id="previewProduct" style="font-weight: 700; font-size: 1.1rem; margin-top: 0.2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">Product Name</div>
                                 </div>
                                 <span class="preview-badge" id="previewBadge" style="background: rgba(255,255,255,0.2); color: #fff; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">
-                                    <i class='bx bxs-circle'></i> Valid
+                                    <i class='bx bxs-circle'></i> @Localizer["Valid"]
                                 </span>
                             </div>
 
@@ -244,18 +244,18 @@
 
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.8); display: block;">PROMO CODE</span>
+                                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.8); display: block;">@Localizer["PromoCode"]</span>
                                     <span id="previewCode" style="font-family: monospace; font-size: 1.5rem; font-weight: 700; letter-spacing: 1px;">CODE20</span>
                                 </div>
                                 <div style="text-align: right;">
-                                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.8); display: block;">DISCOUNT</span>
+                                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.8); display: block;">@Localizer["Discount"]</span>
                                     <span id="previewDiscount" style="font-size: 1.8rem; font-weight: 800; line-height: 1;">20% OFF</span>
                                 </div>
                             </div>
 
                             <div style="margin-top: 1rem; font-size: 0.7rem; color: rgba(255,255,255,0.7); display: flex; justify-content: space-between;">
-                                <span>Starts: <span id="previewStart">Immediately</span></span>
-                                <span>Expires: <span id="previewExpiry">In 7 Days</span></span>
+                                <span>@Localizer["Starts"]: <span id="previewStart">@Localizer["Immediately"]</span></span>
+                                <span>@Localizer["Expires"]: <span id="previewExpiry">@Localizer["In7Days"]</span></span>
                             </div>
                         </div>
                     </div>
@@ -270,21 +270,21 @@
                 <div class="create-card">
                     <div class="create-card-header">
                         <i class='bx bx-send'></i>
-                        <span>Publish</span>
+                        <span>@Localizer["Publish"]</span>
                     </div>
                     <div class="create-card-body">
 
                         <!-- IsValid Toggle -->
                         <div class="form-field">
-                            <label class="field-label">Validation Status</label>
+                            <label class="field-label">@Localizer["ValidationStatus"]</label>
                             <div class="status-toggle-group" id="statusToggle">
                                 <label class="status-option status-active-opt selected" id="statusActiveLabel">
                                     <input type="radio" asp-for="IsValid" value="true"
                                            name="IsValid" id="statusActive" checked>
                                     <i class='bx bx-check-circle'></i>
                                     <div>
-                                        <span class="st-title">Valid</span>
-                                        <span class="st-desc">Available for use</span>
+                                        <span class="st-title">@Localizer["Valid"]</span>
+                                        <span class="st-desc">@Localizer["AvailableForUse"]</span>
                                     </div>
                                 </label>
                                 <label class="status-option status-inactive-opt" id="statusInactiveLabel">
@@ -292,8 +292,8 @@
                                            name="IsValid" id="statusInactive">
                                     <i class='bx bx-x-circle'></i>
                                     <div>
-                                        <span class="st-title">Invalid</span>
-                                        <span class="st-desc">Disabled manually</span>
+                                        <span class="st-title">@Localizer["Invalid"]</span>
+                                        <span class="st-desc">@Localizer["DisabledManually"]</span>
                                     </div>
                                 </label>
                             </div>
@@ -305,7 +305,7 @@
                         <div class="publish-info">
                             <div class="pub-info-row">
                                 <i class='bx bx-user'></i>
-                                <span>Created by <strong>Admin</strong></span>
+                                <span>@Localizer["CreatedBy"] <strong>Admin</strong></span>
                             </div>
                             <div class="pub-info-row">
                                 <i class='bx bx-calendar'></i>
@@ -318,11 +318,11 @@
                         <!-- Actions -->
                         <div class="publish-actions">
                             <a asp-area="Admin" asp-controller="Promotion" asp-action="Index" class="pub-cancel-btn">
-                                <i class='bx bx-x'></i> Cancel
+                                <i class='bx bx-x'></i> @Localizer["Cancel"]
                             </a>
                             <button type="submit" class="pub-submit-btn" id="submitBtn">
                                 <i class='bx bx-check'></i>
-                                <span>Create Promo</span>
+                                <span>@Localizer["CreatePromo"]</span>
                                 <div class="btn-loader" id="btnLoader"></div>
                             </button>
                         </div>
@@ -334,14 +334,14 @@
                 <div class="create-card tips-card">
                     <div class="create-card-header">
                         <i class='bx bx-bulb'></i>
-                        <span>Tips</span>
+                        <span>@Localizer["ImportantTips"]</span>
                     </div>
                     <div class="create-card-body">
                         <ul class="tips-list">
-                            <li><i class='bx bx-check'></i> Choose target scope correctly.</li>
-                            <li><i class='bx bx-check'></i> General applies to all cart items.</li>
-                            <li><i class='bx bx-check'></i> Discount must be between 0 and 100%.</li>
-                            <li><i class='bx bx-check'></i> Set invalid status to pause the promotion.</li>
+                            <li><i class='bx bx-check'></i> @Localizer["TipTargetScope"]</li>
+                            <li><i class='bx bx-check'></i> @Localizer["TipGeneralScope"]</li>
+                            <li><i class='bx bx-check'></i> @Localizer["TipDiscountRange"]</li>
+                            <li><i class='bx bx-check'></i> @Localizer["TipPausePromo"]</li>
                         </ul>
                     </div>
                 </div>
@@ -391,19 +391,19 @@
     /* ── Live Preview Sync ─────────────────── */
     function updatePreview() {
         const scope = targetScopeSelect?.value || 'product';
-        let targetName = 'General Store Coupon';
+        let targetName = '@Localizer["GeneralStoreCoupon"]';
 
         if (scope === 'product') {
             const selectedOpt = productSelect?.options[productSelect.selectedIndex];
-            targetName = selectedOpt?.value ? 'Product: ' + selectedOpt.dataset.name : 'Product Name';
+            targetName = selectedOpt?.value ? '@Localizer["Product"]: ' + selectedOpt.dataset.name : '@Localizer["ProductName"]';
         } else if (scope === 'category') {
             const selectedOpt = categorySelect?.options[categorySelect.selectedIndex];
-            targetName = selectedOpt?.value ? 'Category: ' + selectedOpt.dataset.name : 'Category Name';
+            targetName = selectedOpt?.value ? '@Localizer["Category"]: ' + selectedOpt.dataset.name : '@Localizer["CategoryName"]';
         } else if (scope === 'brand') {
             const selectedOpt = brandSelect?.options[brandSelect.selectedIndex];
-            targetName = selectedOpt?.value ? 'Brand: ' + selectedOpt.dataset.name : 'Brand Name';
+            targetName = selectedOpt?.value ? '@Localizer["Brand"]: ' + selectedOpt.dataset.name : '@Localizer["BrandName"]';
         } else {
-            targetName = 'All Store Products';
+            targetName = '@Localizer["AllStoreProducts"]';
         }
 
         if (previewProduct) previewProduct.textContent = targetName;
@@ -452,7 +452,7 @@
         statusInactLabel?.classList.toggle('selected', !isActive);
         if (previewBadge) {
             previewBadge.style.background = isActive ? 'rgba(255,255,255,0.2)' : 'rgba(239, 68, 68, 0.4)';
-            previewBadge.innerHTML = `<i class='bx bxs-circle'></i> ${isActive ? 'Valid' : 'Disabled'}`;
+            previewBadge.innerHTML = `<i class='bx bxs-circle'></i> ${isActive ? '@Localizer["Valid"]' : '@Localizer["Disabled"]'}`;
         }
     }
     statusActive?.addEventListener('change', syncStatus);
@@ -515,7 +515,7 @@
 
         if (submitBtn) {
             submitBtn.disabled = true;
-            submitBtn.querySelector('span').textContent = 'Creating…';
+            submitBtn.querySelector('span').textContent = '@Localizer["Creating"]…';
             if (btnLoader) btnLoader.style.display = 'block';
         }
     });

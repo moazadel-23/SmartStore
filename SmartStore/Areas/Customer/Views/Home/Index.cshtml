@@ -1,11 +1,11 @@
-@model StoreViewModel
+﻿@model StoreViewModel
 @using System.IO
 @using System.Text.Json
 @using SmartStore.Models
 @inject SmartStore.DataAccess.ApplicationDbContext _context
 @{
     Layout = null;
-    ViewData["Title"] = "بي تك | الأجهزة المنزلية والالكترونيات | بأسعار وعروض مميزة";
+    ViewData["Title"] = Localizer["HomePageTitle"];
     var wishlistProducts = ViewBag.WishlistProducts as List<Product>;
 
     // Load Banners from Database
@@ -15,37 +15,194 @@
     {
         banners = new BannerModel
         {
-            Slide1ImageUrl = "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1600&fit=crop&q=80",
-            Slide2ImageUrl = "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=1600&fit=crop&q=80",
-            Slide3ImageUrl = "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1600&fit=crop&q=80",
+            Slide1ImageUrl = "/Banners/banner_slide1.png",
+            Slide2ImageUrl = "/Banners/banner_slide2.png",
+            Slide3ImageUrl = "/Banners/banner_slide3.png",
+            Slide4ImageUrl = "/Banners/banner_slide4.png",
+            Slide5ImageUrl = "/Banners/banner_slide5.png",
         };
     }
 
+    // Fallback Slide Images if empty in DB
+    if (string.IsNullOrEmpty(banners.Slide1ImageUrl)) banners.Slide1ImageUrl = "/Banners/banner_slide1.png";
+    if (string.IsNullOrEmpty(banners.Slide2ImageUrl)) banners.Slide2ImageUrl = "/Banners/banner_slide2.png";
+    if (string.IsNullOrEmpty(banners.Slide3ImageUrl)) banners.Slide3ImageUrl = "/Banners/banner_slide3.png";
+    if (string.IsNullOrEmpty(banners.Slide4ImageUrl)) banners.Slide4ImageUrl = "/Banners/banner_slide4.png";
+    if (string.IsNullOrEmpty(banners.Slide5ImageUrl)) banners.Slide5ImageUrl = "/Banners/banner_slide5.png";
+
     // Fallback for Huawei and Anker Promo Banners
-    if (string.IsNullOrEmpty(banners.HuaweiTitle)) banners.HuaweiTitle = "مهرجان هواوي HUAWEI";
-    if (string.IsNullOrEmpty(banners.HuaweiSubtitle)) banners.HuaweiSubtitle = "احصل على كوبونات خصم فورية وهدايا مجانية عند شراء أي من أجهزة هواوي لابتوب أو ساعة ذكية.";
+    if (string.IsNullOrEmpty(banners.HuaweiTitle)) banners.HuaweiTitle = Localizer["HuaweiTitle"].Value;
+    if (string.IsNullOrEmpty(banners.HuaweiSubtitle)) banners.HuaweiSubtitle = Localizer["HuaweiSubtitle"].Value;
     if (string.IsNullOrEmpty(banners.HuaweiLinkUrl)) banners.HuaweiLinkUrl = "/Customer/Home/Store?SearchQuery=Huawei";
     if (string.IsNullOrEmpty(banners.HuaweiImageUrl)) banners.HuaweiImageUrl = "/Banners/6dd23630-6367-416d-9d5f-8e35a0ad917d.avif";
 
-    if (string.IsNullOrEmpty(banners.AnkerTitle)) banners.AnkerTitle = "أنكر ANKER لشواحن الهواتف وملحقاتها";
-    if (string.IsNullOrEmpty(banners.AnkerSubtitle)) banners.AnkerSubtitle = "أقوى حماية وأسرع شحن لهواتفك الذكية، عروض خصم تصل لـ 25% حصرياً.";
+    if (string.IsNullOrEmpty(banners.AnkerTitle)) banners.AnkerTitle = Localizer["AnkerTitle"].Value;
+    if (string.IsNullOrEmpty(banners.AnkerSubtitle)) banners.AnkerSubtitle = Localizer["AnkerSubtitle"].Value;
     if (string.IsNullOrEmpty(banners.AnkerLinkUrl)) banners.AnkerLinkUrl = "/Customer/Home/Store?SearchQuery=Anker";
     if (string.IsNullOrEmpty(banners.AnkerImageUrl)) banners.AnkerImageUrl = "/Banners/285ed515-8497-4161-9279-8372cb39b622.avif";
 
     // Fallback for Installment Banners
-    if (string.IsNullOrEmpty(banners.Installment1Title)) banners.Installment1Title = "قسط على سعر الكاش";
-    if (string.IsNullOrEmpty(banners.Installment1Subtitle)) banners.Installment1Subtitle = "0% فوائد | 0% مقدم | 0% مصاريف إدارية";
-    if (string.IsNullOrEmpty(banners.Installment1Duration)) banners.Installment1Duration = "12 شهر";
+    if (string.IsNullOrEmpty(banners.Installment1Title)) banners.Installment1Title = Localizer["InstallmentTitleDefault"].Value;
+    if (string.IsNullOrEmpty(banners.Installment1Subtitle)) banners.Installment1Subtitle = Localizer["InstallmentSubtitleDefault1"].Value;
+    if (string.IsNullOrEmpty(banners.Installment1Duration)) banners.Installment1Duration = Localizer["Installment12Months"].Value;
     if (string.IsNullOrEmpty(banners.Installment1LinkUrl)) banners.Installment1LinkUrl = "/Customer/Home/Store";
 
-    if (string.IsNullOrEmpty(banners.Installment2Title)) banners.Installment2Title = "قسط على سعر الكاش";
-    if (string.IsNullOrEmpty(banners.Installment2Subtitle)) banners.Installment2Subtitle = "0% فوائد | 0% مقدم | 0% مصاريف إدارية";
-    if (string.IsNullOrEmpty(banners.Installment2Duration)) banners.Installment2Duration = "3 شهور";
+    if (string.IsNullOrEmpty(banners.Installment2Title)) banners.Installment2Title = Localizer["InstallmentTitleDefault"].Value;
+    if (string.IsNullOrEmpty(banners.Installment2Subtitle)) banners.Installment2Subtitle = Localizer["InstallmentSubtitleDefault2"].Value;
+    if (string.IsNullOrEmpty(banners.Installment2Duration)) banners.Installment2Duration = Localizer["Installment3Months"].Value;
     if (string.IsNullOrEmpty(banners.Installment2LinkUrl)) banners.Installment2LinkUrl = "/Customer/Home/Store";
+
+    // Load categories for category link resolver
+    var allCategories = _context.Categories.ToList();
+
+    // Grid category links helper
+    string GetGridLink(string? categoryName, string? fallbackLink)
+    {
+        if (!string.IsNullOrWhiteSpace(categoryName))
+        {
+            var matchedCat = allCategories.FirstOrDefault(c => c.Name.Trim().Equals(categoryName.Trim(), System.StringComparison.OrdinalIgnoreCase));
+            if (matchedCat != null)
+            {
+                return $"/Customer/Home/Store?Filter.CategoryIds={matchedCat.Id}";
+            }
+        }
+        return string.IsNullOrEmpty(fallbackLink) ? "/Customer/Home/Store" : fallbackLink;
+    }
+
+    // Resolved Category IDs from DB based on names
+    var electronicsId = allCategories.FirstOrDefault(c => c.Name.Equals("Electronics", System.StringComparison.OrdinalIgnoreCase))?.Id;
+    var homeAppliancesId = allCategories.FirstOrDefault(c => c.Name.Equals("Home Appliances", System.StringComparison.OrdinalIgnoreCase))?.Id;
+    var gamingId = allCategories.FirstOrDefault(c => c.Name.Equals("Gaming", System.StringComparison.OrdinalIgnoreCase))?.Id;
+    var personalCareId = allCategories.FirstOrDefault(c => c.Name.Equals("Personal Care", System.StringComparison.OrdinalIgnoreCase))?.Id;
+
+    bool isRTL = System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
+
+    // Seed B.TECH categories in the database if they are not already present
+    if (allCategories.Count <= 5)
+    {
+        var seedCats = new List<Category>
+        {
+            new Category { Name = "Mobiles", Description = "Smartphones and mobile devices", ImageUrl = "/img/iphone15.png", Status = true },
+            new Category { Name = "Laptops", Description = "Laptops and notebooks", ImageUrl = "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=150&h=150&fit=crop&q=80", Status = true },
+            new Category { Name = "PlayStation", Description = "Gaming consoles and accessories", ImageUrl = "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=150&h=150&fit=crop&q=80", Status = true },
+            new Category { Name = "TVs", Description = "Televisions and screens", ImageUrl = "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=150&h=150&fit=crop&q=80", Status = true },
+            new Category { Name = "Air Conditioners", Description = "ACs and cooling systems", ImageUrl = "https://images.unsplash.com/photo-1585399000684-d2f72660f092?w=150&h=150&fit=crop&q=80", Status = true },
+            new Category { Name = "Home Appliances", Description = "Refrigerators, microwaves, and home appliances", ImageUrl = "/img/micro.png", Status = true },
+            new Category { Name = "Audio Devices", Description = "Speakers, headphones, and earbuds", ImageUrl = "/img/buds.png", Status = true },
+            new Category { Name = "Smart Watches", Description = "Smartwatches and fitness bands", ImageUrl = "/img/watch9.png", Status = true },
+            new Category { Name = "Printers", Description = "Printers and scanners", ImageUrl = "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=150&h=150&fit=crop&q=80", Status = true },
+            new Category { Name = "Monitors", Description = "Computer monitors", ImageUrl = "/img/dell_mon.png", Status = true },
+            new Category { Name = "Computer Accessories", Description = "Keyboards, mice, and hubs", ImageUrl = "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=150&h=150&fit=crop&q=80", Status = true },
+            new Category { Name = "Storage Units", Description = "Flash drives and portable SSDs", ImageUrl = "https://images.unsplash.com/photo-1618424181497-157f25b6ddd5?w=150&h=150&fit=crop&q=80", Status = true },
+            new Category { Name = "Networks", Description = "Routers and networking devices", ImageUrl = "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=150&h=150&fit=crop&q=80", Status = true }
+        };
+
+        foreach (var seed in seedCats)
+        {
+            if (!allCategories.Any(c => c.Name.Equals(seed.Name, StringComparison.OrdinalIgnoreCase)))
+            {
+                _context.Categories.Add(seed);
+            }
+        }
+        _context.SaveChanges();
+        allCategories = _context.Categories.ToList();
+    }
+
+    var dbCategories = allCategories.Where(c => c.Status).ToList();
+
+    string GetCategoryDisplayName(Category cat)
+    {
+        var name = cat.Name;
+        if (name.Equals("Mobiles", StringComparison.OrdinalIgnoreCase)) return isRTL ? "ظ…ظˆط¨ط§ظٹظ„ط§طھ" : "Mobiles";
+        if (name.Equals("Laptops", StringComparison.OrdinalIgnoreCase)) return isRTL ? "ظ„ط§ط¨ طھظˆط¨" : "Laptops";
+        if (name.Equals("PlayStation", StringComparison.OrdinalIgnoreCase)) return isRTL ? "ط¨ظ„ط§ظٹ ط³طھظٹط´ظ†" : "PlayStation";
+        if (name.Equals("TVs", StringComparison.OrdinalIgnoreCase)) return isRTL ? "طھظ„ظپط²ظٹظˆظ†ط§طھ" : "TVs";
+        if (name.Equals("Air Conditioners", StringComparison.OrdinalIgnoreCase)) return isRTL ? "طھظƒظٹظٹظپط§طھ" : "Air Conditioners";
+        if (name.Equals("Home Appliances", StringComparison.OrdinalIgnoreCase)) return isRTL ? "ط£ط¬ظ‡ط²ط© ظ…ظ†ط²ظ„ظٹط©" : "Home Appliances";
+        if (name.Equals("Audio Devices", StringComparison.OrdinalIgnoreCase)) return isRTL ? "ط£ط¬ظ‡ط²ط© طµظˆطھ" : "Audio Devices";
+        if (name.Equals("Smart Watches", StringComparison.OrdinalIgnoreCase)) return isRTL ? "ط³ط§ط¹ط§طھ ط°ظƒظٹط©" : "Smart Watches";
+        if (name.Equals("Printers", StringComparison.OrdinalIgnoreCase)) return isRTL ? "ط·ط§ط¨ط¹ط§طھ" : "Printers";
+        if (name.Equals("Monitors", StringComparison.OrdinalIgnoreCase)) return isRTL ? "ط´ط§ط´ط§طھ" : "Monitors";
+        if (name.Equals("Computer Accessories", StringComparison.OrdinalIgnoreCase)) return isRTL ? "ط¥ظƒط³ط³ظˆط§ط±ط§طھ ظƒظ…ط¨ظٹظˆطھط±" : "Computer Accessories";
+        if (name.Equals("Storage Units", StringComparison.OrdinalIgnoreCase)) return isRTL ? "ظˆط­ط¯ط§طھ طھط®ط²ظٹظ†" : "Storage Units";
+        if (name.Equals("Networks", StringComparison.OrdinalIgnoreCase)) return isRTL ? "ط´ط¨ظƒط§طھ" : "Networks";
+        
+        return Localizer[name].Value;
+    }
+
+    string GetCategoryLink(Category cat)
+    {
+        var name = cat.Name.ToLower();
+        var catId = cat.Id;
+        
+        if (name.Contains("phone") || name.Contains("mobile"))
+            return $"/Customer/Home/Store?Filter.CategoryIds={catId}&SearchQuery=phone";
+        if (name.Contains("laptop") || name.Contains("notebook"))
+            return $"/Customer/Home/Store?Filter.CategoryIds={catId}&SearchQuery=laptop";
+        if (name.Contains("playstation") || name.Contains("gaming"))
+            return $"/Customer/Home/Store?Filter.CategoryIds={catId}&SearchQuery=playstation";
+        if (name.Contains("tv") || name.Contains("television"))
+            return $"/Customer/Home/Store?Filter.CategoryIds={catId}&SearchQuery=tv";
+        if (name.Contains("conditioner") || name.Contains("ac"))
+            return $"/Customer/Home/Store?Filter.CategoryIds={catId}&SearchQuery=ac";
+        if (name.Contains("audio") || name.Contains("sound") || name.Contains("speaker") || name.Contains("buds"))
+            return $"/Customer/Home/Store?Filter.CategoryIds={catId}&SearchQuery=buds";
+        if (name.Contains("watch") || name.Contains("wearable"))
+            return $"/Customer/Home/Store?Filter.CategoryIds={catId}&SearchQuery=watch";
+        if (name.Contains("printer"))
+            return $"/Customer/Home/Store?Filter.CategoryIds={catId}&SearchQuery=printer";
+        if (name.Contains("monitor") || name.Contains("screen"))
+            return $"/Customer/Home/Store?Filter.CategoryIds={catId}&SearchQuery=monitor";
+        if (name.Contains("accessory") || name.Contains("keyboard") || name.Contains("mouse"))
+            return $"/Customer/Home/Store?Filter.CategoryIds={catId}&SearchQuery=hub";
+        if (name.Contains("storage") || name.Contains("ssd") || name.Contains("flash"))
+            return $"/Customer/Home/Store?Filter.CategoryIds={catId}&SearchQuery=storage";
+        if (name.Contains("network") || name.Contains("router"))
+            return $"/Customer/Home/Store?Filter.CategoryIds={catId}&SearchQuery=network";
+
+        return $"/Customer/Home/Store?Filter.CategoryIds={catId}";
+    }
+
+    string GetCategoryImageUrl(Category cat)
+    {
+        if (!string.IsNullOrEmpty(cat.ImageUrl))
+            return cat.ImageUrl;
+            
+        var name = cat.Name.ToLower();
+        if (name.Contains("phone") || name.Contains("mobile"))
+            return "/img/iphone15.png";
+        if (name.Contains("laptop") || name.Contains("notebook"))
+            return "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=150&h=150&fit=crop&q=80";
+        if (name.Contains("playstation") || name.Contains("gaming"))
+            return "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=150&h=150&fit=crop&q=80";
+        if (name.Contains("tv") || name.Contains("television"))
+            return "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=150&h=150&fit=crop&q=80";
+        if (name.Contains("conditioner") || name.Contains("ac"))
+            return "https://images.unsplash.com/photo-1585399000684-d2f72660f092?w=150&h=150&fit=crop&q=80";
+        if (name.Contains("appliance"))
+            return "/img/micro.png";
+        if (name.Contains("audio") || name.Contains("sound") || name.Contains("speaker") || name.Contains("buds"))
+            return "/img/buds.png";
+        if (name.Contains("watch") || name.Contains("wearable"))
+            return "/img/watch9.png";
+        if (name.Contains("printer"))
+            return "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=150&h=150&fit=crop&q=80";
+        if (name.Contains("monitor") || name.Contains("screen"))
+            return "/img/dell_mon.png";
+        if (name.Contains("accessory") || name.Contains("keyboard") || name.Contains("mouse"))
+            return "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=150&h=150&fit=crop&q=80";
+        if (name.Contains("storage") || name.Contains("ssd") || name.Contains("flash"))
+            return "https://images.unsplash.com/photo-1618424181497-157f25b6ddd5?w=150&h=150&fit=crop&q=80";
+        if (name.Contains("network") || name.Contains("router"))
+            return "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=150&h=150&fit=crop&q=80";
+
+        return "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?w=150&h=150&fit=crop&q=80";
+    }
 }
 
+
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name" dir="@(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "rtl" : "ltr")">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -56,9 +213,9 @@
             theme: {
                 extend: {
                     colors: {
-                        'btech-orange': '#ff6a00',
-                        'btech-orange-dark': '#e05d00',
-                        'btech-orange-light': '#fff0e6',
+                        'btech-orange': '#2563eb',
+                        'btech-orange-dark': '#1d4ed8',
+                        'btech-orange-light': '#eff6ff',
                         'btech-black': '#111111',
                         'btech-gray': '#f4f4f5',
                         'whatsapp': '#25D366',
@@ -97,9 +254,98 @@
         
         /* Highlight active offers filter tab */
         .offers-tab.active {
-            background-color: #ff6a00;
+            background-color: #2563eb;
             color: #ffffff;
-            border-color: #ff6a00;
+            border-color: #2563eb;
+        }
+
+        /* BTech Category Slider Styles */
+        .category-item-circle {
+            width: 68px;
+            height: 46px;
+            border-radius: 10px;
+            background-color: #f4f5f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+            border: 1px solid #e2e8f0;
+            overflow: visible; /* Allows image to pop out of bounds */
+            margin-top: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @@media (min-width: 640px) {
+            .category-item-circle {
+                width: 84px;
+                height: 56px;
+                border-radius: 12px;
+                margin-top: 28px;
+            }
+        }
+        @@media (min-width: 768px) {
+            .category-item-circle {
+                width: 94px;
+                height: 64px;
+                border-radius: 14px;
+                margin-top: 32px;
+            }
+        }
+        .category-item-btech {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+        }
+        .category-item-btech img {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            position: absolute;
+            top: -22px; /* Pops out of the card by half of its size */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 6px 10px rgba(0,0,0,0.1)); /* Beautiful realistic shadow */
+        }
+        @@media (min-width: 640px) {
+            .category-item-btech img {
+                width: 80px;
+                height: 80px;
+                top: -28px;
+            }
+        }
+        @@media (min-width: 768px) {
+            .category-item-btech img {
+                width: 90px;
+                height: 90px;
+                top: -30px;
+            }
+        }
+        .category-item-btech:hover .category-item-circle {
+            background-color: #ffffff;
+            border-color: #2563eb;
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.15);
+            transform: translateY(2px);
+        }
+        .category-item-btech:hover img {
+            transform: translateY(-8px) scale(1.08); /* Lifts image up while card moves down on hover */
+            filter: drop-shadow(0 16px 20px rgba(37, 99, 235, 0.25));
+        }
+        .cat-scroll-track {
+            height: 3px;
+            background-color: #e4e4e7;
+            border-radius: 9999px;
+            width: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        .cat-scroll-thumb {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            background-color: #111111;
+            border-radius: 9999px;
+            transition: left 0.1s ease, right 0.1s ease, width 0.1s ease;
         }
     </style>
     <!-- Boxicons -->
@@ -109,176 +355,194 @@
 </head>
 <body class="bg-gray-50 pb-20 md:pb-0">
 
-    <!-- ═══ MAIN HEADER & SEARCH ═══ -->
+    <!-- â•گâ•گâ•گ MAIN HEADER & SEARCH â•گâ•گâ•گ -->
     @await Html.PartialAsync("_BTechHeader")
 
+    <!-- â•گâ•گâ•گ HERO BANNER SLIDER (Full-Width - Outside main) â•گâ•گâ•گ -->
+    <section class="relative overflow-hidden bg-gray-900 group" style="width:100%;">
+        
+        <!-- Carousel Container -->
+        <div id="heroCarousel" class="relative w-full h-[220px] sm:h-[360px] md:h-[440px] overflow-hidden">
+            
+            <!-- Slide 1 -->
+            <a href="@banners.Slide1LinkUrl" class="carousel-slide absolute inset-0 opacity-100 transition-all duration-700 ease-in-out block border-0 cursor-pointer" data-index="0">
+                <img src="@banners.Slide1ImageUrl" class="w-full h-full object-cover object-center" alt="Slide 1" />
+            </a>
+
+            <!-- Slide 2 -->
+            <a href="@banners.Slide2LinkUrl" class="carousel-slide absolute inset-0 opacity-0 transition-all duration-700 ease-in-out block border-0 cursor-pointer" data-index="1">
+                <img src="@banners.Slide2ImageUrl" class="w-full h-full object-cover object-center" alt="Slide 2" />
+            </a>
+
+            <!-- Slide 3 -->
+            <a href="@banners.Slide3LinkUrl" class="carousel-slide absolute inset-0 opacity-0 transition-all duration-700 ease-in-out block border-0 cursor-pointer" data-index="2">
+                <img src="@banners.Slide3ImageUrl" class="w-full h-full object-cover object-center" alt="Slide 3" />
+            </a>
+
+            <!-- Slide 4 -->
+            <a href="@banners.Slide4LinkUrl" class="carousel-slide absolute inset-0 opacity-0 transition-all duration-700 ease-in-out block border-0 cursor-pointer" data-index="3">
+                <img src="@banners.Slide4ImageUrl" class="w-full h-full object-cover object-center" alt="Slide 4" />
+            </a>
+
+            <!-- Slide 5 -->
+            <a href="@banners.Slide5LinkUrl" class="carousel-slide absolute inset-0 opacity-0 transition-all duration-700 ease-in-out block border-0 cursor-pointer" data-index="4">
+                <img src="@banners.Slide5ImageUrl" class="w-full h-full object-cover object-center" alt="Slide 5" />
+            </a>
+
+        </div>
+
+        <!-- Carousel Controls -->
+        <button type="button" id="prevSlide" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 hover:bg-black/60 text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 border-0 cursor-pointer z-20">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        <button type="button" id="nextSlide" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 hover:bg-black/60 text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 border-0 cursor-pointer z-20">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <!-- Slide Indicators (5 dots) -->
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
+            <button type="button" class="carousel-indicator w-8 h-1.5 rounded-full bg-white transition-all duration-300 cursor-pointer border-0" data-slide="0"></button>
+            <button type="button" class="carousel-indicator w-4 h-1.5 rounded-full bg-white/40 transition-all duration-300 cursor-pointer border-0" data-slide="1"></button>
+            <button type="button" class="carousel-indicator w-4 h-1.5 rounded-full bg-white/40 transition-all duration-300 cursor-pointer border-0" data-slide="2"></button>
+            <button type="button" class="carousel-indicator w-4 h-1.5 rounded-full bg-white/40 transition-all duration-300 cursor-pointer border-0" data-slide="3"></button>
+            <button type="button" class="carousel-indicator w-4 h-1.5 rounded-full bg-white/40 transition-all duration-300 cursor-pointer border-0" data-slide="4"></button>
+        </div>
+
+    </section>
 
     <main class="max-w-8xl mx-auto px-4 py-4 space-y-8">
         
-        <!-- ═══ HERO BANNER SLIDER ═══ -->
-        <section class="relative rounded-2xl overflow-hidden shadow-sm min-h-[220px] sm:min-h-[360px] md:min-h-[440px] bg-gray-900 group">
+        <!-- â•گâ•گâ•گ B.TECH STYLE CATEGORIES SLIDER â•گâ•گâ•گ -->
+        <section class="bg-white py-8 px-4 sm:px-6 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden select-none">
+            <!-- Slider Track -->
+            <div id="categorySlider" class="flex gap-8 sm:gap-10 md:gap-12 overflow-x-auto scroll-smooth hide-scrollbar pt-10 pl-8 pr-14 sm:pl-12 sm:pr-20 pb-3" style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;">
+                @foreach (var cat in dbCategories)
+                {
+                    var dispName = GetCategoryDisplayName(cat);
+                    var link = GetCategoryLink(cat);
+                    var imgUrl = GetCategoryImageUrl(cat);
+
+                    <a href="@link" class="category-item-btech flex flex-col items-center gap-2.5 flex-shrink-0 text-center decoration-none" style="scroll-snap-align: start; width: 80px; sm:width: 96px; md:width: 108px;">
+                        <div class="category-item-circle">
+                            <img src="@Url.Content(imgUrl)" alt="@dispName" onerror="this.src='https://via.placeholder.com/150?text=@dispName'" />
+                        </div>
+                        <span class="font-bold text-[11px] sm:text-xs md:text-[13px] text-gray-700 font-sans tracking-wide leading-tight hover:text-blue-600 transition-colors">@dispName</span>
+                    </a>
+                }
+            </div>
             
-            <!-- Carousel Container -->
-            <div id="heroCarousel" class="relative w-full h-[220px] sm:h-[360px] md:h-[440px] overflow-hidden">
+            @{
+                var prevIcon = isRTL ? "fa-chevron-right" : "fa-chevron-left";
+                var nextIcon = isRTL ? "fa-chevron-left" : "fa-chevron-right";
+            }
+            <!-- Controls (Chevrons + Scroll Bar Indicator) -->
+            <div class="flex items-center justify-center gap-4 mt-2">
+                <!-- Prev Button (scrolls back) -->
+                <button type="button" id="catSliderPrev" class="w-8 h-8 rounded-full border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 flex items-center justify-center shadow-sm transition-all focus:outline-none cursor-pointer">
+                    <i class="fas @prevIcon text-[10px]"></i>
+                </button>
                 
-                <!-- Slide 1 -->
-                <div class="carousel-slide absolute inset-0 opacity-100 transition-all duration-700 ease-in-out" data-index="0">
-                    <img src="@banners.Slide1ImageUrl" class="w-full h-full object-cover" alt="العرض الأول" />
-                    <div class="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 md:bottom-12 md:right-12 z-10">
-                        <a href="/Customer/Home/Store" class="inline-flex items-center gap-2 bg-[#ff6a00] hover:bg-[#e05d00] text-white font-black px-6 py-2.5 rounded-full shadow-lg transition-all transform hover:scale-105 text-sm border-0 no-underline">
-                            <span>تسوق الآن</span>
-                            <i class="fas fa-chevron-left text-[10px]"></i>
-                        </a>
-                    </div>
+                <!-- Progress Track Line -->
+                <div class="cat-scroll-track">
+                    <div id="catProgress" class="cat-scroll-thumb" style="width: 30%; left: 0%;"></div>
                 </div>
-
-                <!-- Slide 2 -->
-                <div class="carousel-slide absolute inset-0 opacity-0 transition-all duration-700 ease-in-out" data-index="1">
-                    <img src="@banners.Slide2ImageUrl" class="w-full h-full object-cover" alt="العرض الثاني" />
-                    <div class="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 md:bottom-12 md:right-12 z-10">
-                        <a href="/Customer/Home/Store" class="inline-flex items-center gap-2 bg-[#ff6a00] hover:bg-[#e05d00] text-white font-black px-6 py-2.5 rounded-full shadow-lg transition-all transform hover:scale-105 text-sm border-0 no-underline">
-                            <span>تسوق الآن</span>
-                            <i class="fas fa-chevron-left text-[10px]"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Slide 3 -->
-                <div class="carousel-slide absolute inset-0 opacity-0 transition-all duration-700 ease-in-out" data-index="2">
-                    <img src="@banners.Slide3ImageUrl" class="w-full h-full object-cover" alt="العرض الثالث" />
-                    <div class="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 md:bottom-12 md:right-12 z-10">
-                        <a href="/Customer/Home/Store" class="inline-flex items-center gap-2 bg-[#ff6a00] hover:bg-[#e05d00] text-white font-black px-6 py-2.5 rounded-full shadow-lg transition-all transform hover:scale-105 text-sm border-0 no-underline">
-                            <span>تسوق الآن</span>
-                            <i class="fas fa-chevron-left text-[10px]"></i>
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Carousel Controls -->
-            <button type="button" id="prevSlide" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 hover:bg-black/60 text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 border-0 cursor-pointer z-20">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-            <button type="button" id="nextSlide" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 hover:bg-black/60 text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 border-0 cursor-pointer z-20">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-
-            <!-- Slide Indicators -->
-            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
-                <button type="button" class="carousel-indicator w-2 h-2 rounded-full bg-white transition-all cursor-pointer border-0" data-slide="0"></button>
-                <button type="button" class="carousel-indicator w-2 h-2 rounded-full bg-white/50 transition-all cursor-pointer border-0" data-slide="1"></button>
-                <button type="button" class="carousel-indicator w-2 h-2 rounded-full bg-white/50 transition-all cursor-pointer border-0" data-slide="2"></button>
-            </div>
-
-        </section>
-
-        <!-- ═══ CIRCULAR CATEGORIES ROW ═══ -->
-        <section class="bg-white py-6 px-4 rounded-2xl border border-gray-100 shadow-sm overflow-x-auto hide-scrollbar">
-            <div class="flex items-center justify-between gap-4 md:justify-around min-w-[640px]">
-                <a href="/Customer/Home/Store" class="category-item flex flex-col items-center gap-2 flex-shrink-0 text-center">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center p-3">
-                        <i class="fas fa-th-large text-btech-orange text-xl sm:text-2xl"></i>
-                    </div>
-                    <span class="font-bold text-xs sm:text-sm text-gray-700">كل الأقسام</span>
-                </a>
                 
-                <a href="/Customer/Home/Store?Filter.CategoryIds=1" class="category-item flex flex-col items-center gap-2 flex-shrink-0 text-center">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center p-2.5">
-                        <img src="~/img/iphone15.png" alt="موبايل" class="w-full h-full object-contain" onerror="this.src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=100&h=100&fit=crop&q=80'" />
-                    </div>
-                    <span class="font-bold text-xs sm:text-sm text-gray-700">موبايل</span>
-                </a>
-
-                <a href="/Customer/Home/Store?Filter.CategoryIds=2" class="category-item flex flex-col items-center gap-2 flex-shrink-0 text-center">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center p-2.5">
-                        <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=100&h=100&fit=crop&q=80" alt="لابتوب" class="w-full h-full object-contain" />
-                    </div>
-                    <span class="font-bold text-xs sm:text-sm text-gray-700">لابتوب</span>
-                </a>
-
-                <a href="/Customer/Home/Store?Filter.CategoryIds=3" class="category-item flex flex-col items-center gap-2 flex-shrink-0 text-center">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center p-2.5">
-                        <img src="~/img/dell_mon.png" alt="شاشات" class="w-full h-full object-contain" onerror="this.src='https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=100&h=100&fit=crop&q=80'" />
-                    </div>
-                    <span class="font-bold text-xs sm:text-sm text-gray-700">شاشات</span>
-                </a>
-
-                <a href="/Customer/Home/Store?Filter.CategoryIds=4" class="category-item flex flex-col items-center gap-2 flex-shrink-0 text-center">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center p-2.5">
-                        <img src="~/img/ipad.png" alt="تابلت" class="w-full h-full object-contain" onerror="this.src='https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=100&h=100&fit=crop&q=80'" />
-                    </div>
-                    <span class="font-bold text-xs sm:text-sm text-gray-700">تابلت</span>
-                </a>
-
-                <a href="/Customer/Home/Store?Filter.CategoryIds=5" class="category-item flex flex-col items-center gap-2 flex-shrink-0 text-center">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center p-2.5">
-                        <img src="~/img/watch9.png" alt="ساعات ذكية" class="w-full h-full object-contain" onerror="this.src='https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=100&h=100&fit=crop&q=80'" />
-                    </div>
-                    <span class="font-bold text-xs sm:text-sm text-gray-700">ساعات ذكية</span>
-                </a>
-
-                <a href="/Customer/Home/Store?Filter.CategoryIds=6" class="category-item flex flex-col items-center gap-2 flex-shrink-0 text-center">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center p-2.5">
-                        <img src="~/img/sony_audio.png" alt="صوتيات" class="w-full h-full object-contain" onerror="this.src='https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop&q=80'" />
-                    </div>
-                    <span class="font-bold text-xs sm:text-sm text-gray-700">صوتيات</span>
-                </a>
+                <!-- Next Button (scrolls forward) -->
+                <button type="button" id="catSliderNext" class="w-8 h-8 rounded-full border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 flex items-center justify-center shadow-sm transition-all focus:outline-none cursor-pointer">
+                    <i class="fas @nextIcon text-[10px]"></i>
+                </button>
             </div>
         </section>
 
-        <!-- ═══ PROMOTIONAL BANNERS ═══ -->
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Huawei Banner -->
-            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-red-50 to-pink-50 border border-red-100 p-6 flex flex-col md:flex-row justify-between items-center gap-6 group hover:shadow-md transition-all duration-300">
-                <div class="space-y-3 max-w-md text-right">
-                    <span class="inline-block bg-red-100 text-red-600 text-xs font-black px-3 py-1 rounded-full">مهرجان هواوي</span>
-                    <h3 class="text-xl font-black text-gray-900">مهرجان هواوي HUAWEI</h3>
-                    <p class="text-gray-600 text-xs sm:text-sm font-medium leading-relaxed font-bold">احصل على كوبونات خصم فورية وهدايا مجانية عند شراء أي من أجهزة هواوي لابتوب أو ساعة ذكية.</p>
-                    <a href="/Customer/Home/Store?SearchQuery=Huawei" class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-black px-5 py-2 rounded-full text-xs transition-transform transform hover:scale-105 border-0 no-underline">
-                        <span>تسوق الآن</span>
-                        <i class="fas fa-chevron-left text-[8px]"></i>
-                    </a>
-                </div>
-                <div class="w-32 h-32 flex-shrink-0 flex items-center justify-center">
-                    <img src="/Banners/6dd23630-6367-416d-9d5f-8e35a0ad917d.avif" alt="HUAWEI" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=200&h=200&fit=crop&q=80'" />
-                </div>
+        <!-- â•گâ•گâ•گ PROMOTIONAL GRID BANNERS (5-Banner Grid) â•گâ•گâ•گ -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            
+            <!-- Left Side (RTL) / Right Side (LTR): 2x2 Small Banners Grid -->
+            <div class="lg:col-span-1 grid grid-cols-1 sm:grid-cols-2 gap-5 @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "order-1" : "order-2")">
+                
+                <!-- Banner 1: Laptops (Grid1) -->
+                <a href="@GetGridLink(banners.Grid1CategoryName, banners.Grid1LinkUrl)" class="relative overflow-hidden rounded-none bg-white hover:shadow-md transition-all duration-300 block h-[180px] sm:h-[210px] border border-gray-100 text-decoration-none group">
+                    @if (!string.IsNullOrEmpty(banners.Grid1Title))
+                    {
+                        <div class="absolute inset-0 p-6 flex flex-col justify-start z-10 @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "text-right" : "text-left")">
+                            <h4 class="text-white text-xl font-black drop-shadow-lg mb-1.5 leading-tight">@banners.Grid1Title</h4>
+                            <p class="text-white text-sm font-bold drop-shadow-md">@banners.Grid1Subtitle</p>
+                        </div>
+                    }
+                    <img src="@(string.IsNullOrEmpty(banners.Grid1ImageUrl) ? "/Banners/grid1.png" : banners.Grid1ImageUrl)" class="w-full h-full object-contain absolute inset-0 p-1 transform group-hover:scale-105 transition-transform duration-500" alt="Laptops" onerror="this.src='/Banners/grid1.png'" />
+                </a>
+
+                <!-- Banner 2: Home Appliances (Grid2) -->
+                <a href="@GetGridLink(banners.Grid2CategoryName, banners.Grid2LinkUrl)" class="relative overflow-hidden rounded-none bg-white hover:shadow-md transition-all duration-300 block h-[180px] sm:h-[210px] border border-gray-100 text-decoration-none group">
+                    @if (!string.IsNullOrEmpty(banners.Grid2Title))
+                    {
+                        <div class="absolute inset-0 p-6 flex flex-col justify-start z-10 @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "text-right" : "text-left")">
+                            <h4 class="text-white text-xl font-black drop-shadow-lg mb-1.5 leading-tight">@banners.Grid2Title</h4>
+                            <p class="text-white text-sm font-bold drop-shadow-md">@banners.Grid2Subtitle</p>
+                        </div>
+                    }
+                    <img src="@(string.IsNullOrEmpty(banners.Grid2ImageUrl) ? "/Banners/grid2.png" : banners.Grid2ImageUrl)" class="w-full h-full object-contain absolute inset-0 p-1 transform group-hover:scale-105 transition-transform duration-500" alt="Home Appliances" onerror="this.src='/Banners/grid2.png'" />
+                </a>
+
+                <!-- Banner 3: Mobiles (Grid3) -->
+                <a href="@GetGridLink(banners.Grid3CategoryName, banners.Grid3LinkUrl)" class="relative overflow-hidden rounded-none bg-white hover:shadow-md transition-all duration-300 block h-[180px] sm:h-[210px] border border-gray-100 text-decoration-none group">
+                    @if (!string.IsNullOrEmpty(banners.Grid3Title))
+                    {
+                        <div class="absolute inset-0 p-6 flex flex-col justify-start z-10 @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "text-right" : "text-left")">
+                            <h4 class="text-white text-xl font-black drop-shadow-lg mb-1.5 leading-tight">@banners.Grid3Title</h4>
+                            <p class="text-white text-sm font-bold drop-shadow-md">@banners.Grid3Subtitle</p>
+                        </div>
+                    }
+                    <img src="@(string.IsNullOrEmpty(banners.Grid3ImageUrl) ? "/Banners/grid3.png" : banners.Grid3ImageUrl)" class="w-full h-full object-contain absolute inset-0 p-1 transform group-hover:scale-105 transition-transform duration-500" alt="Mobiles" onerror="this.src='/Banners/grid3.png'" />
+                </a>
+
+                <!-- Banner 4: Accessories (Grid4) -->
+                <a href="@GetGridLink(banners.Grid4CategoryName, banners.Grid4LinkUrl)" class="relative overflow-hidden rounded-none bg-white hover:shadow-md transition-all duration-300 block h-[180px] sm:h-[210px] border border-gray-100 text-decoration-none group">
+                    @if (!string.IsNullOrEmpty(banners.Grid4Title))
+                    {
+                        <div class="absolute inset-0 p-6 flex flex-col justify-start z-10 @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "text-right" : "text-left")">
+                            <h4 class="text-white text-xl font-black drop-shadow-lg mb-1.5 leading-tight">@banners.Grid4Title</h4>
+                            <p class="text-white text-sm font-bold drop-shadow-md">@banners.Grid4Subtitle</p>
+                        </div>
+                    }
+                    <img src="@(string.IsNullOrEmpty(banners.Grid4ImageUrl) ? "/Banners/grid4.png" : banners.Grid4ImageUrl)" class="w-full h-full object-contain absolute inset-0 p-1 transform group-hover:scale-105 transition-transform duration-500" alt="Accessories" onerror="this.src='/Banners/grid4.png'" />
+                </a>
+
             </div>
 
-            <!-- Anker Banner -->
-            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 p-6 flex flex-col md:flex-row justify-between items-center gap-6 group hover:shadow-md transition-all duration-300">
-                <div class="space-y-3 max-w-md text-right">
-                    <span class="inline-block bg-blue-100 text-blue-600 text-xs font-black px-3 py-1 rounded-full">عروض أنكر</span>
-                    <h3 class="text-xl font-black text-gray-900">أنكر ANKER لشواحن الهواتف وملحقاتها</h3>
-                    <p class="text-gray-600 text-xs sm:text-sm font-medium leading-relaxed font-bold">أقوى حماية وأسرع شحن لهواتفك الذكية، عروض خصم تصل لـ 25% حصرياً.</p>
-                    <a href="/Customer/Home/Store?SearchQuery=Anker" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-black px-5 py-2 rounded-full text-xs transition-transform transform hover:scale-105 border-0 no-underline">
-                        <span>تسوق الآن</span>
-                        <i class="fas fa-chevron-left text-[8px]"></i>
-                    </a>
-                </div>
-                <div class="w-32 h-32 flex-shrink-0 flex items-center justify-center">
-                    <img src="/Banners/285ed515-8497-4161-9279-8372cb39b622.avif" alt="ANKER" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=200&h=200&fit=crop&q=80'" />
-                </div>
+            <!-- Right Side (RTL) / Left Side (LTR): 1 Large Banner -->
+            <div class="lg:col-span-1 @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "order-2" : "order-1")">
+                <a href="@GetGridLink(banners.Grid5CategoryName, banners.Grid5LinkUrl)" class="relative overflow-hidden rounded-none bg-white hover:shadow-md transition-all duration-300 block h-[300px] sm:h-[440px] border border-gray-100 text-decoration-none group">
+                    @if (!string.IsNullOrEmpty(banners.Grid5Title))
+                    {
+                        <div class="absolute inset-0 p-8 flex flex-col justify-start z-10 @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "text-right" : "text-left")">
+                            <h4 class="text-white text-2xl font-black drop-shadow-lg mb-2 leading-tight">@banners.Grid5Title</h4>
+                            <p class="text-white text-base font-bold drop-shadow-md">@banners.Grid5Subtitle</p>
+                        </div>
+                    }
+                    <img src="@(string.IsNullOrEmpty(banners.Grid5ImageUrl) ? "/Banners/grid5.png" : banners.Grid5ImageUrl)" class="w-full h-full object-cover absolute inset-0 transform group-hover:scale-105 transition-transform duration-500" alt="Dishwashers" onerror="this.src='/Banners/grid5.png'" />
+                </a>
             </div>
+
         </section>
 
-        <!-- ═══ "أقوى العروض!" (STRONGEST OFFERS) FILTERED CAROUSEL ═══ -->
+        <!-- â•گâ•گâ•گ "ط£ظ‚ظˆظ‰ ط§ظ„ط¹ط±ظˆط¶!" (STRONGEST OFFERS) FILTERED CAROUSEL â•گâ•گâ•گ -->
         <section class="space-y-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <h2 class="text-xl sm:text-2xl font-black text-gray-800">أقوى العروض!</h2>
+                    <h2 class="text-xl sm:text-2xl font-black text-gray-800">ط£ظ‚ظˆظ‰ ط§ظ„ط¹ط±ظˆط¶!</h2>
                     <span class="w-2.5 h-2.5 rounded-full bg-btech-orange animate-ping"></span>
                 </div>
-                <a href="/Customer/Home/Store" class="text-btech-orange text-xs sm:text-sm font-black hover:underline">عرض الكل ←</a>
+                <a href="/Customer/Home/Store" class="text-btech-orange text-xs sm:text-sm font-black hover:underline">ط¹ط±ط¶ ط§ظ„ظƒظ„ â†گ</a>
             </div>
 
             <!-- Categories Tabs -->
             <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1 text-xs sm:text-sm whitespace-nowrap">
-                <button onclick="filterOffers('all', this)" class="offers-tab active px-5 py-2 rounded-full border border-gray-200 font-bold transition-all">الكل</button>
-                <button onclick="filterOffers('mobile', this)" class="offers-tab px-5 py-2 rounded-full border border-gray-200 font-bold text-gray-600 transition-all">موبايل</button>
-                <button onclick="filterOffers('laptop', this)" class="offers-tab px-5 py-2 rounded-full border border-gray-200 font-bold text-gray-600 transition-all">لابتوب</button>
-                <button onclick="filterOffers('tv', this)" class="offers-tab px-5 py-2 rounded-full border border-gray-200 font-bold text-gray-600 transition-all">تلفزيونات</button>
-                <button onclick="filterOffers('watch', this)" class="offers-tab px-5 py-2 rounded-full border border-gray-200 font-bold text-gray-600 transition-all">ساعات</button>
+                <button onclick="filterOffers('all', this)" class="offers-tab active px-5 py-2 rounded-full border border-gray-200 font-bold transition-all">ط§ظ„ظƒظ„</button>
+                <button onclick="filterOffers('mobile', this)" class="offers-tab px-5 py-2 rounded-full border border-gray-200 font-bold text-gray-600 transition-all">ظ…ظˆط¨ط§ظٹظ„</button>
+                <button onclick="filterOffers('laptop', this)" class="offers-tab px-5 py-2 rounded-full border border-gray-200 font-bold text-gray-600 transition-all">ظ„ط§ط¨طھظˆط¨</button>
+                <button onclick="filterOffers('tv', this)" class="offers-tab px-5 py-2 rounded-full border border-gray-200 font-bold text-gray-600 transition-all">طھظ„ظپط²ظٹظˆظ†ط§طھ</button>
+                <button onclick="filterOffers('watch', this)" class="offers-tab px-5 py-2 rounded-full border border-gray-200 font-bold text-gray-600 transition-all">ط³ط§ط¹ط§طھ</button>
             </div>
 
             <!-- Horizontal Product Slider -->
@@ -308,13 +572,13 @@
             </div>
         </section>
 
-        <!-- ═══ 3-COLUMN UNIFIED SECTION (INSTALLMENTS, CATEGORIES & DEALS) ═══ -->
+        <!-- â•گâ•گâ•گ 3-COLUMN UNIFIED SECTION (INSTALLMENTS, CATEGORIES & DEALS) â•گâ•گâ•گ -->
         <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 bg-[#f4f4f4] p-6 rounded-3xl">
 
-            <!-- 1. Right Column: Installment Banners (عروض التقسيط) -->
+            <!-- 1. Right Column: Installment Banners (ط¹ط±ظˆط¶ ط§ظ„طھظ‚ط³ظٹط·) -->
             <div class="space-y-4 flex flex-col justify-between h-full">
                 <!-- Card 1 -->
-                <a href="@banners.Installment1LinkUrl" class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#ff6a00]/95 to-[#ff8c00] text-white p-6 flex flex-col justify-between h-[210px] shadow-sm hover:shadow-md transition-all duration-300 border-0 no-underline">
+                <a href="@banners.Installment1LinkUrl" class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#2563eb]/95 to-[#3b82f6] text-white p-6 flex flex-col justify-between h-[210px] shadow-sm hover:shadow-md transition-all duration-300 border-0 no-underline">
                     <div class="absolute -right-10 -bottom-10 w-36 h-36 rounded-full bg-white/10 group-hover:scale-110 transition-transform duration-300"></div>
                     <div class="space-y-2">
                         <span class="inline-block bg-white/20 text-white text-[10px] font-black px-3 py-1 rounded-full">@banners.Installment1Duration</span>
@@ -322,7 +586,7 @@
                         <p class="text-white/95 text-xs font-bold leading-relaxed m-0">@banners.Installment1Subtitle</p>
                     </div>
                     <div class="flex items-center gap-1 text-xs font-black group-hover:underline text-white">
-                        تسوق الآن <i class="fa-solid fa-chevron-left text-[8px]"></i>
+                        <span>@Localizer["ShopNow"]</span> <i class="fa-solid @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "fa-chevron-left" : "fa-chevron-right") text-[8px]"></i>
                     </div>
                 </a>
 
@@ -330,136 +594,136 @@
                 <a href="@banners.Installment2LinkUrl" class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#111111]/95 to-[#333333] text-white p-6 flex flex-col justify-between h-[210px] shadow-sm hover:shadow-md transition-all duration-300 border-0 no-underline">
                     <div class="absolute -right-10 -bottom-10 w-36 h-36 rounded-full bg-white/10 group-hover:scale-110 transition-transform duration-300"></div>
                     <div class="space-y-2">
-                        <span class="inline-block bg-[#ff6a00] text-white text-[10px] font-black px-3 py-1 rounded-full">@banners.Installment2Duration</span>
+                        <span class="inline-block bg-[#2563eb] text-white text-[10px] font-black px-3 py-1 rounded-full">@banners.Installment2Duration</span>
                         <h3 class="text-lg font-black leading-tight text-white m-0">@banners.Installment2Title</h3>
                         <p class="text-white/95 text-xs font-bold leading-relaxed m-0">@banners.Installment2Subtitle</p>
                     </div>
                     <div class="flex items-center gap-1 text-xs font-black group-hover:underline text-white">
-                        تسوق الآن <i class="fa-solid fa-chevron-left text-[8px]"></i>
+                        <span>@Localizer["ShopNow"]</span> <i class="fa-solid @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "fa-chevron-left" : "fa-chevron-right") text-[8px]"></i>
                     </div>
                 </a>
             </div>
 
-            <!-- 2. Center Column: Ready to Save (جاهزين للتوفير) -->
+            <!-- 2. Center Column: Ready to Save (ط¬ط§ظ‡ط²ظٹظ† ظ„ظ„طھظˆظپظٹط±) -->
             <div class="bg-white p-6 rounded-2xl flex flex-col justify-start">
-                <h2 class="text-xl font-black text-gray-900 mb-4">جاهزين للتوفير</h2>
+                <h2 class="text-xl font-black text-gray-900 mb-4">@Localizer["ReadyToSave"]</h2>
                 
                 <div class="grid grid-cols-2 gap-4">
                     <!-- Lap / Tablet -->
-                    <a href="/Customer/Home/Store?Filter.CategoryIds=2" class="group bg-[#f8f8f8] rounded-xl p-4 flex flex-col items-center justify-between h-[210px] transition-all hover:shadow-sm hover:bg-[#f3f3f3]">
+                    <a href="/Customer/Home/Store?Filter.CategoryIds=2" class="group bg-[#f8f8f8] rounded-xl p-4 flex flex-col items-center justify-between h-[210px] transition-all hover:shadow-sm hover:bg-[#f3f3f3] decoration-none">
                         <div class="h-24 w-full flex items-center justify-center p-1">
-                            <img src="~/img/ipad.png" alt="لاب توب" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=160&h=120&fit=crop&q=80'" />
+                            <img src="~/img/ipad.png" alt="ظ„ط§ط¨ طھظˆط¨" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=160&h=120&fit=crop&q=80'" />
                         </div>
                         <div class="text-center mt-2 flex flex-col items-center">
-                            <h3 class="font-black text-xs sm:text-sm text-gray-800">لاب توب</h3>
-                            <span class="text-gray-500 text-[9px] sm:text-[10px] font-bold mt-1">السعر من 15,499 ج.م</span>
+                            <h3 class="font-black text-xs sm:text-sm text-gray-800">@Localizer["Laptops"]</h3>
+                            <span class="text-gray-500 text-[9px] sm:text-[10px] font-bold mt-1">@Localizer["PriceStartingFrom"] 15,499 @Localizer["EGP"]</span>
                             <span class="text-btech-orange text-[10px] sm:text-xs font-black mt-1.5 flex items-center gap-1 group-hover:underline">
-                                تسوق الآن <i class="fa-solid fa-chevron-left text-[8px]"></i>
+                                <span>@Localizer["ShopNow"]</span> <i class="fa-solid @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "fa-chevron-left" : "fa-chevron-right") text-[8px]"></i>
                             </span>
                         </div>
                     </a>
 
                     <!-- Mobiles -->
-                    <a href="/Customer/Home/Store?Filter.CategoryIds=1" class="group bg-[#f8f8f8] rounded-xl p-4 flex flex-col items-center justify-between h-[210px] transition-all hover:shadow-sm hover:bg-[#f3f3f3]">
+                    <a href="/Customer/Home/Store?Filter.CategoryIds=1" class="group bg-[#f8f8f8] rounded-xl p-4 flex flex-col items-center justify-between h-[210px] transition-all hover:shadow-sm hover:bg-[#f3f3f3] decoration-none">
                         <div class="h-24 w-full flex items-center justify-center p-1">
-                            <img src="~/img/iphone15.png" alt="موبايلات" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=150&h=150&fit=crop&q=80'" />
+                            <img src="~/img/iphone15.png" alt="ظ…ظˆط¨ط§ظٹظ„ط§طھ" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=150&h=150&fit=crop&q=80'" />
                         </div>
                         <div class="text-center mt-2 flex flex-col items-center">
-                            <h3 class="font-black text-xs sm:text-sm text-gray-800">موبايلات</h3>
-                            <span class="text-gray-500 text-[9px] sm:text-[10px] font-bold mt-1">السعر من 2,999 ج.م</span>
+                            <h3 class="font-black text-xs sm:text-sm text-gray-800">@Localizer["Mobiles"]</h3>
+                            <span class="text-gray-500 text-[9px] sm:text-[10px] font-bold mt-1">@Localizer["PriceStartingFrom"] 2,999 @Localizer["EGP"]</span>
                             <span class="text-btech-orange text-[10px] sm:text-xs font-black mt-1.5 flex items-center gap-1 group-hover:underline">
-                                تسوق الآن <i class="fa-solid fa-chevron-left text-[8px]"></i>
+                                <span>@Localizer["ShopNow"]</span> <i class="fa-solid @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "fa-chevron-left" : "fa-chevron-right") text-[8px]"></i>
                             </span>
                         </div>
                     </a>
 
                     <!-- Speakers / Buds -->
-                    <a href="/Customer/Home/Store?Filter.CategoryIds=6" class="group bg-[#f8f8f8] rounded-xl p-4 flex flex-col items-center justify-between h-[210px] transition-all hover:shadow-sm hover:bg-[#f3f3f3]">
+                    <a href="/Customer/Home/Store?Filter.CategoryIds=6" class="group bg-[#f8f8f8] rounded-xl p-4 flex flex-col items-center justify-between h-[210px] transition-all hover:shadow-sm hover:bg-[#f3f3f3] decoration-none">
                         <div class="h-24 w-full flex items-center justify-center p-1">
-                            <img src="~/img/buds.png" alt="سماعات" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=150&h=150&fit=crop&q=80'" />
+                            <img src="~/img/buds.png" alt="ط³ظ…ط§ط¹ط§طھ" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=150&h=150&fit=crop&q=80'" />
                         </div>
                         <div class="text-center mt-2 flex flex-col items-center">
-                            <h3 class="font-black text-xs sm:text-sm text-gray-800">سماعات</h3>
-                            <span class="text-gray-500 text-[9px] sm:text-[10px] font-bold mt-1">السعر من 899 ج.م</span>
+                            <h3 class="font-black text-xs sm:text-sm text-gray-800">@Localizer["Speakers"]</h3>
+                            <span class="text-gray-500 text-[9px] sm:text-[10px] font-bold mt-1">@Localizer["PriceStartingFrom"] 899 @Localizer["EGP"]</span>
                             <span class="text-btech-orange text-[10px] sm:text-xs font-black mt-1.5 flex items-center gap-1 group-hover:underline">
-                                تسوق الآن <i class="fa-solid fa-chevron-left text-[8px]"></i>
+                                <span>@Localizer["ShopNow"]</span> <i class="fa-solid @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "fa-chevron-left" : "fa-chevron-right") text-[8px]"></i>
                             </span>
                         </div>
                     </a>
 
                     <!-- Smartwatches -->
-                    <a href="/Customer/Home/Store?Filter.CategoryIds=5" class="group bg-[#f8f8f8] rounded-xl p-4 flex flex-col items-center justify-between h-[210px] transition-all hover:shadow-sm hover:bg-[#f3f3f3]">
+                    <a href="/Customer/Home/Store?Filter.CategoryIds=5" class="group bg-[#f8f8f8] rounded-xl p-4 flex flex-col items-center justify-between h-[210px] transition-all hover:shadow-sm hover:bg-[#f3f3f3] decoration-none">
                         <div class="h-24 w-full flex items-center justify-center p-1">
-                            <img src="~/img/watch9.png" alt="ساعات ذكية" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=150&h=150&fit=crop&q=80'" />
+                            <img src="~/img/watch9.png" alt="ط³ط§ط¹ط§طھ ط°ظƒظٹط©" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=150&h=150&fit=crop&q=80'" />
                         </div>
                         <div class="text-center mt-2 flex flex-col items-center">
-                            <h3 class="font-black text-xs sm:text-sm text-gray-800">ساعات ذكية</h3>
-                            <span class="text-gray-500 text-[9px] sm:text-[10px] font-bold mt-1">السعر من 1,199 ج.م</span>
+                            <h3 class="font-black text-xs sm:text-sm text-gray-800">@Localizer["SmartWatches"]</h3>
+                            <span class="text-gray-500 text-[9px] sm:text-[10px] font-bold mt-1">@Localizer["PriceStartingFrom"] 1,199 @Localizer["EGP"]</span>
                             <span class="text-btech-orange text-[10px] sm:text-xs font-black mt-1.5 flex items-center gap-1 group-hover:underline">
-                                تسوق الآن <i class="fa-solid fa-chevron-left text-[8px]"></i>
+                                <span>@Localizer["ShopNow"]</span> <i class="fa-solid @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "fa-chevron-left" : "fa-chevron-right") text-[8px]"></i>
                             </span>
                         </div>
                     </a>
                 </div>
             </div>
 
-            <!-- 3. Left Column: Save More (وفّر أكثر) -->
+            <!-- 3. Left Column: Save More (ظˆظپظ‘ط± ط£ظƒط«ط±) -->
             <div class="bg-white p-6 rounded-2xl flex flex-col justify-start">
-                <h2 class="text-xl font-black text-gray-900 mb-4">وفّر أكثر</h2>
+                <h2 class="text-xl font-black text-gray-900 mb-4">@Localizer["SaveMore"]</h2>
                 
                 <div class="grid grid-cols-2 gap-4">
                     <!-- Home Appliances -->
-                    <a href="/Customer/Home/Store?Filter.CategoryIds=4" class="group bg-[#f8f8f8] rounded-xl p-4 flex flex-col items-center justify-between h-[210px] transition-all hover:shadow-sm hover:bg-[#f3f3f3]">
+                    <a href="/Customer/Home/Store?Filter.CategoryIds=4" class="group bg-[#f8f8f8] rounded-xl p-4 flex flex-col items-center justify-between h-[210px] transition-all hover:shadow-sm hover:bg-[#f3f3f3] decoration-none">
                         <div class="h-24 w-full flex items-center justify-center p-1">
-                            <img src="~/img/micro.png" alt="أجهزة منزلية" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=150&h=150&fit=crop&q=80'" />
+                            <img src="~/img/micro.png" alt="ط£ط¬ظ‡ط²ط© ظ…ظ†ط²ظ„ظٹط©" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=150&h=150&fit=crop&q=80'" />
                         </div>
                         <div class="text-center mt-2 flex flex-col items-center">
-                            <h3 class="font-black text-xs sm:text-sm text-gray-800">أجهزة منزلية</h3>
-                            <span class="text-gray-500 text-[9px] sm:text-[10px] font-bold mt-1">السعر من 5,999 ج.م</span>
+                            <h3 class="font-black text-xs sm:text-sm text-gray-800">@Localizer["HomeAppliances"]</h3>
+                            <span class="text-gray-500 text-[9px] sm:text-[10px] font-bold mt-1">@Localizer["PriceStartingFrom"] 5,999 @Localizer["EGP"]</span>
                             <span class="text-btech-orange text-[10px] sm:text-xs font-black mt-1.5 flex items-center gap-1 group-hover:underline">
-                                تسوق الآن <i class="fa-solid fa-chevron-left text-[8px]"></i>
+                                <span>@Localizer["ShopNow"]</span> <i class="fa-solid @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "fa-chevron-left" : "fa-chevron-right") text-[8px]"></i>
                             </span>
                         </div>
                     </a>
 
                     <!-- ACs -->
-                    <a href="/Customer/Home/Store?Filter.CategoryIds=4" class="group bg-[#f8f8f8] rounded-xl p-4 flex flex-col items-center justify-between h-[210px] transition-all hover:shadow-sm hover:bg-[#f3f3f3]">
+                    <a href="/Customer/Home/Store?Filter.CategoryIds=4" class="group bg-[#f8f8f8] rounded-xl p-4 flex flex-col items-center justify-between h-[210px] transition-all hover:shadow-sm hover:bg-[#f3f3f3] decoration-none">
                         <div class="h-24 w-full flex items-center justify-center p-1">
-                            <img src="https://images.unsplash.com/photo-1585399000684-d2f72660f092?w=200&h=150&fit=crop&q=80" alt="تكييفات" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" />
+                            <img src="https://images.unsplash.com/photo-1585399000684-d2f72660f092?w=200&h=150&fit=crop&q=80" alt="طھظƒظٹظٹظپط§طھ" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" />
                         </div>
                         <div class="text-center mt-2 flex flex-col items-center">
-                            <h3 class="font-black text-xs sm:text-sm text-gray-800">تكييفات</h3>
-                            <span class="text-gray-500 text-[9px] sm:text-[10px] font-bold mt-1">السعر من 17,499 ج.م</span>
+                            <h3 class="font-black text-xs sm:text-sm text-gray-800">@Localizer["AirConditioners"]</h3>
+                            <span class="text-gray-500 text-[9px] sm:text-[10px] font-bold mt-1">@Localizer["PriceStartingFrom"] 17,499 @Localizer["EGP"]</span>
                             <span class="text-btech-orange text-[10px] sm:text-xs font-black mt-1.5 flex items-center gap-1 group-hover:underline">
-                                تسوق الآن <i class="fa-solid fa-chevron-left text-[8px]"></i>
+                                <span>@Localizer["ShopNow"]</span> <i class="fa-solid @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "fa-chevron-left" : "fa-chevron-right") text-[8px]"></i>
                             </span>
                         </div>
                     </a>
 
                     <!-- Screens -->
-                    <a href="/Customer/Home/Store?Filter.CategoryIds=3" class="group bg-[#f8f8f8] rounded-xl p-4 flex flex-col items-center justify-between h-[210px] transition-all hover:shadow-sm hover:bg-[#f3f3f3]">
+                    <a href="/Customer/Home/Store?Filter.CategoryIds=3" class="group bg-[#f8f8f8] rounded-xl p-4 flex flex-col items-center justify-between h-[210px] transition-all hover:shadow-sm hover:bg-[#f3f3f3] decoration-none">
                         <div class="h-24 w-full flex items-center justify-center p-1">
-                            <img src="~/img/dell_mon.png" alt="شاشات" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=150&h=150&fit=crop&q=80'" />
+                            <img src="~/img/dell_mon.png" alt="ط´ط§ط´ط§طھ" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=150&h=150&fit=crop&q=80'" />
                         </div>
                         <div class="text-center mt-2 flex flex-col items-center">
-                            <h3 class="font-black text-xs sm:text-sm text-gray-800">شاشات</h3>
-                            <span class="text-gray-500 text-[9px] sm:text-[10px] font-bold mt-1">السعر من 6,299 ج.م</span>
+                            <h3 class="font-black text-xs sm:text-sm text-gray-800">@Localizer["Screens"]</h3>
+                            <span class="text-gray-500 text-[9px] sm:text-[10px] font-bold mt-1">@Localizer["PriceStartingFrom"] 6,299 @Localizer["EGP"]</span>
                             <span class="text-btech-orange text-[10px] sm:text-xs font-black mt-1.5 flex items-center gap-1 group-hover:underline">
-                                تسوق الآن <i class="fa-solid fa-chevron-left text-[8px]"></i>
+                                <span>@Localizer["ShopNow"]</span> <i class="fa-solid @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "fa-chevron-left" : "fa-chevron-right") text-[8px]"></i>
                             </span>
                         </div>
                     </a>
 
                     <!-- Gaming -->
-                    <a href="/Customer/Home/Store" class="group bg-[#f8f8f8] rounded-xl p-4 flex flex-col items-center justify-between h-[210px] transition-all hover:shadow-sm hover:bg-[#f3f3f3]">
+                    <a href="/Customer/Home/Store" class="group bg-[#f8f8f8] rounded-xl p-4 flex flex-col items-center justify-between h-[210px] transition-all hover:shadow-sm hover:bg-[#f3f3f3] decoration-none">
                         <div class="h-24 w-full flex items-center justify-center p-1">
-                            <img src="https://images.unsplash.com/photo-1605901309584-818e25960a8f?w=160&h=120&fit=crop&q=80" alt="ألعاب" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" />
+                            <img src="https://images.unsplash.com/photo-1605901309584-818e25960a8f?w=160&h=120&fit=crop&q=80" alt="ط£ظ„ط¹ط§ط¨" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" />
                         </div>
                         <div class="text-center mt-2 flex flex-col items-center">
-                            <h3 class="font-black text-xs sm:text-sm text-gray-800">ألعاب</h3>
-                            <span class="text-gray-500 text-[9px] sm:text-[10px] font-bold mt-1">السعر من 999 ج.م</span>
+                            <h3 class="font-black text-xs sm:text-sm text-gray-800">@Localizer["Gaming"]</h3>
+                            <span class="text-gray-500 text-[9px] sm:text-[10px] font-bold mt-1">@Localizer["PriceStartingFrom"] 999 @Localizer["EGP"]</span>
                             <span class="text-btech-orange text-[10px] sm:text-xs font-black mt-1.5 flex items-center gap-1 group-hover:underline">
-                                تسوق الآن <i class="fa-solid fa-chevron-left text-[8px]"></i>
+                                <span>@Localizer["ShopNow"]</span> <i class="fa-solid @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "fa-chevron-left" : "fa-chevron-right") text-[8px]"></i>
                             </span>
                         </div>
                     </a>
@@ -467,11 +731,11 @@
             </div>
         </section>
 
-        <!-- ═══ "منتجات مقترحة لك" (RECOMMENDED PRODUCTS) SLIDER ═══ -->
+        <!-- â•گâ•گâ•گ "ظ…ظ†طھط¬ط§طھ ظ…ظ‚طھط±ط­ط© ظ„ظƒ" (RECOMMENDED PRODUCTS) SLIDER â•گâ•گâ•گ -->
         <section class="space-y-4">
             <div class="flex items-center justify-between">
-                <h2 class="text-xl sm:text-2xl font-black text-gray-800">منتجات مقترحة لك</h2>
-                <a href="/Customer/Home/Store" class="text-btech-orange text-xs sm:text-sm font-black hover:underline">عرض الكل ←</a>
+                <h2 class="text-xl sm:text-2xl font-black text-gray-800">@Localizer["RecommendedForYou"]</h2>
+                <a href="/Customer/Home/Store" class="text-btech-orange text-xs sm:text-sm font-black hover:underline decoration-none">@Localizer["ShowAll"] @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "â†گ" : "â†’")</a>
             </div>
             
             <div class="relative">
@@ -489,13 +753,13 @@
         </section>
 
 
-        <!-- ═══ "الأكثر مبيعاً" (BEST SELLERS) SECTION ═══ -->
+        <!-- â•گâ•گâ•گ "ط§ظ„ط£ظƒط«ط± ظ…ط¨ظٹط¹ط§ظ‹" (BEST SELLERS) SECTION â•گâ•گâ•گ -->
         @if (Model.BestSellers.Any())
         {
             <section class="space-y-4">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-xl sm:text-2xl font-black text-gray-800">الأكثر مبيعاً</h2>
-                    <a href="/Customer/Home/Store" class="text-btech-orange text-xs sm:text-sm font-black hover:underline">عرض الكل ←</a>
+                    <h2 class="text-xl sm:text-2xl font-black text-gray-800">@Localizer["BestSellers"]</h2>
+                    <a href="/Customer/Home/Store" class="text-btech-orange text-xs sm:text-sm font-black hover:underline decoration-none">@Localizer["ShowAll"] @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "â†گ" : "â†’")</a>
                 </div>
                 
                 <div class="relative">
@@ -514,13 +778,13 @@
         }
 
 
-        <!-- ═══ "استكشف منتجات وصلت حديثاً" (NEW ARRIVALS) SECTION ═══ -->
+        <!-- â•گâ•گâ•گ "ط§ط³طھظƒط´ظپ ظ…ظ†طھط¬ط§طھ ظˆطµظ„طھ ط­ط¯ظٹط«ط§ظ‹" (NEW ARRIVALS) SECTION â•گâ•گâ•گ -->
         @if (Model.NewArrivals.Any())
         {
             <section class="space-y-4">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-xl sm:text-2xl font-black text-gray-800">استكشف منتجات وصلت حديثاً</h2>
-                    <a href="/Customer/Home/Store" class="text-btech-orange text-xs sm:text-sm font-black hover:underline">عرض الكل ←</a>
+                    <h2 class="text-xl sm:text-2xl font-black text-gray-800">@Localizer["NewArrivals"]</h2>
+                    <a href="/Customer/Home/Store" class="text-btech-orange text-xs sm:text-sm font-black hover:underline decoration-none">@Localizer["ShowAll"] @(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "â†گ" : "â†’")</a>
                 </div>
                 
                 <div class="relative">
@@ -538,13 +802,13 @@
             </section>
         }
 
-        <!-- ═══ WISHLIST SECTION (logged-in users) ═══ -->
+        <!-- â•گâ•گâ•گ WISHLIST SECTION (logged-in users) â•گâ•گâ•گ -->
         @if (wishlistProducts != null && wishlistProducts.Any())
         {
-            <section id="wishlistSection" class="bg-orange-50/50 py-10 px-6 rounded-2xl border border-orange-100/50 space-y-4">
+            <section id="wishlistSection" class="bg-blue-50/50 py-10 px-6 rounded-2xl border border-blue-100/50 space-y-4">
                 <div class="flex items-center gap-2">
                     <i class="fas fa-heart text-btech-orange text-xl"></i>
-                    <h2 class="text-xl sm:text-2xl font-black text-gray-800">قائمة الأمنيات الخاصة بي</h2>
+                    <h2 class="text-xl sm:text-2xl font-black text-gray-800">@Localizer["MyWishlistTitle"]</h2>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     @foreach (var product in wishlistProducts)
@@ -559,88 +823,83 @@
 
     </main>
 
-    <!-- ═══ FOOTER ═══ -->
+    <!-- â•گâ•گâ•گ FOOTER â•گâ•گâ•گ -->
     <footer class="bg-btech-black text-gray-400 border-t border-gray-800">
         <div class="max-w-8xl mx-auto px-4 py-12">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div class="space-y-4">
-                    <h5 class="text-white font-black text-sm uppercase tracking-wider">من نحن</h5>
-                    <p class="text-xs leading-relaxed">وجهتك المثالية للحصول على أفضل الأجهزة المنزلية والإلكترونيات والهواتف الذكية بأسعار لا تقبل المنافسة مع أفضل أنظمة تقسيط في مصر.</p>
+                    <h5 class="text-white font-black text-sm uppercase tracking-wider">@Localizer["AboutUs"]</h5>
+                    <p class="text-xs leading-relaxed">@Localizer["AboutUsText"]</p>
                 </div>
                 <div class="space-y-4">
-                    <h5 class="text-white font-black text-sm uppercase tracking-wider">الفئات الرئيسية</h5>
+                    <h5 class="text-white font-black text-sm uppercase tracking-wider">@Localizer["MainCategories"]</h5>
                     <ul class="space-y-2 text-xs">
-                        <li><a href="/Customer/Home/Store?Filter.CategoryIds=1" class="hover:text-white transition-colors">الهواتف الذكية</a></li>
-                        <li><a href="/Customer/Home/Store?Filter.CategoryIds=2" class="hover:text-white transition-colors">أجهزة اللابتوب</a></li>
-                        <li><a href="/Customer/Home/Store?Filter.CategoryIds=3" class="hover:text-white transition-colors">الشاشات والتلفزيونات</a></li>
-                        <li><a href="/Customer/Home/Store?Filter.CategoryIds=4" class="hover:text-white transition-colors">الأجهزة المنزلية الكبيرة</a></li>
+                        <li><a href="/Customer/Home/Store?Filter.CategoryIds=1" class="hover:text-white transition-colors decoration-none">@Localizer["Mobiles"]</a></li>
+                        <li><a href="/Customer/Home/Store?Filter.CategoryIds=2" class="hover:text-white transition-colors decoration-none">@Localizer["Laptops"]</a></li>
+                        <li><a href="/Customer/Home/Store?Filter.CategoryIds=3" class="hover:text-white transition-colors decoration-none">@Localizer["ScreensTVs"]</a></li>
+                        <li><a href="/Customer/Home/Store?Filter.CategoryIds=4" class="hover:text-white transition-colors decoration-none">@Localizer["HomeAppliances"]</a></li>
                     </ul>
                 </div>
                 <div class="space-y-4">
-                    <h5 class="text-white font-black text-sm uppercase tracking-wider">خدمة العملاء</h5>
+                    <h5 class="text-white font-black text-sm uppercase tracking-wider">@Localizer["CustomerService"]</h5>
                     <ul class="space-y-2 text-xs">
-                        <li><a href="#" class="hover:text-white transition-colors">اتصل بنا</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">سياسة الإرجاع والتبديل</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">الأسئلة الشائعة</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">شروط الضمان</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors decoration-none">@Localizer["ContactUs"]</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors decoration-none">@Localizer["ReturnsPolicy"]</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors decoration-none">@Localizer["FAQ"]</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors decoration-none">@Localizer["WarrantyTerms"]</a></li>
                     </ul>
                 </div>
                 <div class="space-y-4">
-                    <h5 class="text-white font-black text-sm uppercase tracking-wider">حسابي</h5>
+                    <h5 class="text-white font-black text-sm uppercase tracking-wider">@Localizer["MyAccount"]</h5>
                     <ul class="space-y-2 text-xs">
-                        <li><a href="#" class="hover:text-white transition-colors">تسجيل الدخول / إنشاء حساب</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">طلباتي</a></li>
-                        <li><a href="/Customer/Wishlist/Index" class="hover:text-white transition-colors">قائمة الأمنيات</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">إعدادات الحساب</a></li>
+                        <li><a href="/Identity/Account/Login" class="hover:text-white transition-colors decoration-none">@Localizer["LoginRegister"]</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors decoration-none">@Localizer["MyOrders"]</a></li>
+                        <li><a href="/Customer/Wishlist/Index" class="hover:text-white transition-colors decoration-none">@Localizer["Wishlist"]</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors decoration-none">@Localizer["AccountSettings"]</a></li>
                     </ul>
                 </div>
             </div>
             
             <div class="border-t border-gray-800 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs">
-                <span>&copy; @DateTime.Now.Year بي تك — جميع الحقوق محفوظة لشركة SmartStore.</span>
+                <span>&copy; @DateTime.Now.Year @Localizer["FooterRightsText"]</span>
                 <span class="flex items-center gap-3">
                     <i class="fab fa-cc-visa text-xl hover:text-white transition-colors cursor-pointer"></i>
                     <i class="fab fa-cc-mastercard text-xl hover:text-white transition-colors cursor-pointer"></i>
-                    <span class="font-bold text-gray-500">فوري / تقسيط</span>
+                    <span class="font-bold text-gray-500">ظپظˆط±ظٹ / طھظ‚ط³ظٹط·</span>
                 </span>
             </div>
         </div>
     </footer>
 
-    <!-- ═══ FIXED BOTTOM NAVIGATION BAR (Mobile only) ═══ -->
+    <!-- â•گâ•گâ•گ FIXED BOTTOM NAVIGATION BAR (Mobile only) â•گâ•گâ•گ -->
     <div class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-lg flex justify-around items-center py-2 md:hidden">
         <a href="/" class="flex flex-col items-center gap-0.5 text-btech-orange">
             <i class="fas fa-home text-lg"></i>
-            <span class="text-[9px] font-bold">الرئيسية</span>
+            <span class="text-[9px] font-bold">ط§ظ„ط±ط¦ظٹط³ظٹط©</span>
         </a>
         <a href="/Customer/Wishlist/Index" class="flex flex-col items-center gap-0.5 text-gray-500 hover:text-btech-orange transition-colors relative">
             <i class="fas fa-heart text-lg"></i>
             <span id="mobileWishlistCount" class="absolute -top-1 -right-2 w-3.5 h-3.5 bg-btech-orange text-white text-[8px] font-bold rounded-full flex items-center justify-center">0</span>
-            <span class="text-[9px] font-bold">المفضلة</span>
+            <span class="text-[9px] font-bold">ط§ظ„ظ…ظپط¶ظ„ط©</span>
         </a>
         <a href="/Customer/Home/Store" class="flex flex-col items-center gap-0.5 text-gray-500 hover:text-btech-orange transition-colors">
             <i class="fas fa-search text-lg"></i>
-            <span class="text-[9px] font-bold">البحث</span>
+            <span class="text-[9px] font-bold">ط§ظ„ط¨ط­ط«</span>
         </a>
         <a href="/Cart" class="flex flex-col items-center gap-0.5 text-gray-500 hover:text-btech-orange transition-colors relative">
             <i class="fas fa-shopping-cart text-lg"></i>
             <span id="mobileCartCount" class="absolute -top-1 -right-2 w-3.5 h-3.5 bg-btech-orange text-white text-[8px] font-bold rounded-full flex items-center justify-center">0</span>
-            <span class="text-[9px] font-bold">السلة</span>
+            <span class="text-[9px] font-bold">ط§ظ„ط³ظ„ط©</span>
         </a>
         <a href="#" class="flex flex-col items-center gap-0.5 text-gray-500 hover:text-btech-orange transition-colors">
             <i class="fas fa-ellipsis-h text-lg"></i>
-            <span class="text-[9px] font-bold">المزيد</span>
+            <span class="text-[9px] font-bold">ط§ظ„ظ…ط²ظٹط¯</span>
         </a>
     </div>
 
-    <!-- ═══ FLOATING WHATSAPP BADGE ═══ -->
-    <a href="https://wa.me/201019519390" target="_blank" rel="noopener"
-       class="fixed right-4 bottom-20 md:bottom-6 z-50 w-14 h-14 rounded-full bg-whatsapp shadow-lg hover:shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-110"
-       aria-label="Chat on WhatsApp">
-        <i class="fab fa-whatsapp text-white text-2xl sm:text-3xl"></i>
-    </a>
 
-    <!-- ═══ SCROLL TO TOP ═══ -->
+
+    <!-- â•گâ•گâ•گ SCROLL TO TOP â•گâ•گâ•گ -->
     <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})"
             class="scroll-top fixed right-4 bottom-36 md:bottom-22 z-50 w-10 h-10 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-gray-100 transition-all"
             aria-label="Scroll to top">
@@ -734,11 +993,11 @@
 
                 indicators.forEach((indicator, i) => {
                     if (i === index) {
-                        indicator.classList.remove('bg-white/50');
-                        indicator.classList.add('bg-white', 'scale-125');
+                        indicator.classList.remove('bg-white/40', 'w-4');
+                        indicator.classList.add('bg-white', 'w-8');
                     } else {
-                        indicator.classList.remove('bg-white', 'scale-125');
-                        indicator.classList.add('bg-white/50');
+                        indicator.classList.remove('bg-white', 'w-8');
+                        indicator.classList.add('bg-white/40', 'w-4');
                     }
                 });
 
@@ -791,6 +1050,133 @@
                 startAutoplay();
             }
         })();
+
+        // Category Slider Interactivity
+        (() => {
+            const slider = document.getElementById('categorySlider');
+            const btnPrev = document.getElementById('catSliderPrev');
+            const btnNext = document.getElementById('catSliderNext');
+            const progress = document.getElementById('catProgress');
+            if (!slider || !progress) return;
+
+            const isRtl = document.documentElement.dir === 'rtl';
+
+            function updateProgress() {
+                const maxScroll = slider.scrollWidth - slider.clientWidth;
+                if (maxScroll <= 0) {
+                    progress.style.width = '100%';
+                    if (isRtl) {
+                        progress.style.right = '0%';
+                        progress.style.left = 'auto';
+                    } else {
+                        progress.style.left = '0%';
+                    }
+                    return;
+                }
+
+                const pct = Math.min(Math.abs(slider.scrollLeft) / maxScroll, 1);
+                const thumbWidth = 35; // 35% of the track width
+                progress.style.width = `${thumbWidth}%`;
+
+                const maxPos = 100 - thumbWidth;
+                const position = maxPos * pct;
+
+                if (isRtl) {
+                    progress.style.right = `${position}%`;
+                    progress.style.left = 'auto';
+                } else {
+                    progress.style.left = `${position}%`;
+                }
+            }
+
+            if (btnNext) {
+                btnNext.addEventListener('click', () => {
+                    const itemWidth = slider.querySelector('.category-item-btech')?.clientWidth || 100;
+                    const scrollAmount = (isRtl ? -3 : 3) * itemWidth;
+                    slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                });
+            }
+
+            if (btnPrev) {
+                btnPrev.addEventListener('click', () => {
+                    const itemWidth = slider.querySelector('.category-item-btech')?.clientWidth || 100;
+                    const scrollAmount = (isRtl ? 3 : -3) * itemWidth;
+                    slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                });
+            }
+
+            slider.addEventListener('scroll', updateProgress);
+            window.addEventListener('resize', updateProgress);
+            
+            // Mouse drag scrolling functionality
+            let isDown = false;
+            let startX;
+            let scrollLeftVal;
+
+            slider.addEventListener('mousedown', (e) => {
+                isDown = true;
+                slider.classList.add('active');
+                startX = e.pageX - slider.offsetLeft;
+                scrollLeftVal = slider.scrollLeft;
+            });
+
+            slider.addEventListener('mouseleave', () => {
+                isDown = false;
+                slider.classList.remove('active');
+            });
+
+            slider.addEventListener('mouseup', () => {
+                isDown = false;
+                slider.classList.remove('active');
+            });
+
+            slider.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - slider.offsetLeft;
+                const walk = (x - startX) * 1.5; // scroll speed multiplier
+                slider.scrollLeft = scrollLeftVal - walk;
+            });
+
+            // Run once to initialize
+            setTimeout(updateProgress, 200);
+
+            // Autoplay scrolling every 5 seconds in one direction
+            let autoplayInterval = setInterval(() => {
+                const maxScroll = slider.scrollWidth - slider.clientWidth;
+                if (maxScroll <= 0) return;
+
+                const itemWidth = slider.querySelector('.category-item-btech')?.clientWidth || 100;
+                const currentScroll = Math.abs(slider.scrollLeft);
+
+                if (currentScroll >= maxScroll - 10) {
+                    // Loop back to the beginning smoothly
+                    slider.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    // Slide forward in RTL/LTR direction
+                    slider.scrollBy({ left: isRtl ? -itemWidth : itemWidth, behavior: 'smooth' });
+                }
+            }, 5000);
+
+            // Pause autoplay on hover
+            slider.addEventListener('mouseenter', () => clearInterval(autoplayInterval));
+            slider.addEventListener('mouseleave', () => {
+                clearInterval(autoplayInterval);
+                autoplayInterval = setInterval(() => {
+                    const maxScroll = slider.scrollWidth - slider.clientWidth;
+                    if (maxScroll <= 0) return;
+
+                    const itemWidth = slider.querySelector('.category-item-btech')?.clientWidth || 100;
+                    const currentScroll = Math.abs(slider.scrollLeft);
+
+                    if (currentScroll >= maxScroll - 10) {
+                        slider.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else {
+                        slider.scrollBy({ left: isRtl ? -itemWidth : itemWidth, behavior: 'smooth' });
+                    }
+                }, 5000);
+            });
+        })();
     </script>
 
     <!-- Chatbot Toggle Trigger -->
@@ -807,16 +1193,21 @@
                 </div>
                 <div class="chatbot-header-text">
                     <h3>SmartStore Bot</h3>
-                    <span>نشط الآن</span>
+                    <span>ظ†ط´ط· ط§ظ„ط¢ظ†</span>
                 </div>
             </div>
-            <button class="chatbot-close"><i class='bx bx-x'></i></button>
+            <div class="chatbot-header-actions">
+                <a href="https://wa.me/201019519390" target="_blank" rel="noopener" class="chatbot-whatsapp-btn" title="طھظˆط§طµظ„ ط¹ط¨ط± ظˆط§طھط³ط§ط¨">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </a>
+                <button class="chatbot-close"><i class='bx bx-x'></i></button>
+            </div>
         </div>
         <div class="chatbot-messages">
             <!-- Messages will be rendered dynamically -->
         </div>
         <div class="chatbot-footer">
-            <input type="text" class="chatbot-input" placeholder="اكتب رسالتك هنا..." />
+            <input type="text" class="chatbot-input" placeholder="ط§ظƒطھط¨ ط±ط³ط§ظ„طھظƒ ظ‡ظ†ط§..." />
             <button class="chatbot-send-btn">
                 <i class='bx bx-send'></i>
             </button>
@@ -827,3 +1218,4 @@
     <script src="~/js/chatbot.js" asp-append-version="true"></script>
 </body>
 </html>
+

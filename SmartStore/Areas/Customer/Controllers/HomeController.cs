@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SmartStore.Repositories;
+using SmartStore.ViewModel;
 using SmartStore.ViewModel.Store;
 
 namespace SmartStore.Areas.Customer.Controllers
@@ -119,7 +120,7 @@ namespace SmartStore.Areas.Customer.Controllers
         {
             var product = await _productRepository.GetOneAsync(
                 expression: p => p.Id == id,
-                include: [e => e.Brand!, e => e.Category!, e => e.ProductSubImgs],
+                include: [e => e.Brand!, e => e.Category!, e => e.ProductSubImgs, e => e.Specifications, e => e.Reviews],
                 tracked: false);
 
             if (product == null) return RedirectToAction("Store");
@@ -150,6 +151,108 @@ namespace SmartStore.Areas.Customer.Controllers
             await LoadWishlistAsync();
 
             return View(vm);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Redirect("/Identity/Account/Login");
+            }
+
+            var profileVM = new ProfileVM
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email ?? "",
+                Phone = user.PhoneNumber ?? "",
+                City = user.City ?? "",
+                Street = user.Street ?? "",
+                ProfileImg = user.ProfileImg ?? ""
+            };
+
+
+            await LoadWishlistAsync();
+            return View(profileVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Profile(ProfileVM profileVM, IFormFile? Img)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Json(new { success = false, message = "Not authenticated" });
+            }
+
+            user.FirstName = profileVM.FirstName;
+            user.LastName = profileVM.LastName;
+            user.Email = profileVM.Email;
+            user.PhoneNumber = profileVM.Phone;
+            user.City = profileVM.City;
+            user.Street = profileVM.Street;
+
+
+            if (Img != null && Img.Length > 0)
+            {
+                var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ProfileImg");
+                Directory.CreateDirectory(folder);
+                var fileName = Guid.NewGuid() + Path.GetExtension(Img.FileName);
+                var filePath = Path.Combine(folder, fileName);
+                using var stream = System.IO.File.Create(filePath);
+                await Img.CopyToAsync(stream);
+                user.ProfileImg = fileName;
+                profileVM.ProfileImg = fileName;
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return Json(new { success = true });
+            }
+
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            return Json(new { success = false, message = errors });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddReview(int productId, string customerName, string comment, int rating)
+        {
+            if (productId <= 0 || string.IsNullOrWhiteSpace(customerName) || string.IsNullOrWhiteSpace(comment))
+            {
+                return RedirectToAction("Product", new { id = productId });
+            }
+
+            var review = new ProductReview
+            {
+                ProductId = productId,
+                CustomerName = customerName,
+                Comment = comment,
+                Rating = Math.Clamp(rating, 1, 5),
+                CreatedAt = DateTime.Now
+            };
+
+            var product = await _productRepository.GetOneAsync(
+                expression: p => p.Id == productId,
+                include: [e => e.Reviews],
+                tracked: true);
+
+            if (product != null)
+            {
+                if (product.Reviews == null)
+                {
+                    product.Reviews = new List<ProductReview>();
+                }
+                product.Reviews.Add(review);
+                var totalReviewsCount = product.Reviews.Count;
+                var sumRatings = product.Reviews.Sum(r => r.Rating);
+                product.Rate = (decimal)sumRatings / totalReviewsCount;
+                await _productRepository.Commit();
+            }
+
+            return RedirectToAction("Product", new { id = productId });
         }
 
         private async Task LoadWishlistAsync()

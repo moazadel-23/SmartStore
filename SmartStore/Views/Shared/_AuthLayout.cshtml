@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name" dir="@(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "rtl" : "ltr")">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,17 +13,10 @@
 </head>
 <body class="auth-body">
     <div class="auth-root">
-        <div class="auth-container">
-            <div class="brand-logo-container">
-                <a asp-area="Admin" asp-controller="DashBoard" asp-action="Index" class="brand-logo">
-                    <span class="brand-logo-icon">S</span>
-                    <span class="brand-logo-text">SmartStore</span>
-                </a>
-            </div>
-            <main class="auth-form-panel">
-                <section class="auth-form-wrap" aria-label="Account form">
-                    @RenderBody()
-                </section>
+        <div class="phone-frame" style="height: auto; min-height: 600px; padding: 40px 0; border-radius: 30px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);">
+            <!-- Main view content -->
+            <main class="phone-content" style="padding-top: 20px;">
+                @RenderBody()
             </main>
         </div>
     </div>

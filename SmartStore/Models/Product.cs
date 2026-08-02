@@ -24,5 +24,21 @@ namespace SmartStore.Models
         public int CategoryId { get; set; }
         [ValidateNever]
         public ICollection<ProductImges> ProductSubImgs { get; set; } = new List<ProductImges>();
+        
+        public string? SKU { get; set; }
+        public string? Warranty { get; set; }
+        public string? ReturnPolicy { get; set; }
+        public string? DeliveryTimeCairoGiza { get; set; }
+        public string? DeliveryTimeOutside { get; set; }
+        public string? PackageContents { get; set; }
+        public string? OverviewTitle { get; set; }
+        public string? OverviewDescription { get; set; }
+        public string? OverviewImageUrl { get; set; }
+        
+        [ValidateNever]
+        public ICollection<ProductSpecification> Specifications { get; set; } = new List<ProductSpecification>();
+        
+        [ValidateNever]
+        public ICollection<ProductReview> Reviews { get; set; } = new List<ProductReview>();
     }
 }

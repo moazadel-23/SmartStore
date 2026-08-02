@@ -1,8 +1,8 @@
 @model IEnumerable<SmartStore.Models.Product>
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Products";
-    ViewData["PageTitle"] = "Product Management";
+    ViewData["Title"] = Localizer["Products"];
+    ViewData["PageTitle"] = Localizer["ProductManagement"];
 
     var totalProducts    = Model?.Count() ?? 0;
     var activeProducts   = Model?.Count(p => p.Status) ?? 0;
@@ -34,9 +34,9 @@
 
     <!-- ── Breadcrumb ─────────────────────────── -->
     <div class="breadcrumb-bar">
-        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> Home</span>
+        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> @Localizer["Home"]</span>
         <i class='bx bx-chevron-right bc-sep'></i>
-        <span class="bc-current">Products</span>
+        <span class="bc-current">@Localizer["Products"]</span>
         <span class="bc-date"><i class='bx bx-calendar'></i> @DateTime.Now.ToString("dddd, MMMM dd yyyy")</span>
     </div>
 
@@ -46,7 +46,7 @@
             <div class="cat-kpi-icon ck-blue"><i class='bx bx-box'></i></div>
             <div>
                 <div class="cat-kpi-val">@totalProducts</div>
-                <div class="cat-kpi-label">Total Products</div>
+                <div class="cat-kpi-label">@Localizer["TotalProducts"]</div>
             </div>
         </div>
         <div class="cat-kpi-divider"></div>
@@ -54,7 +54,7 @@
             <div class="cat-kpi-icon ck-green"><i class='bx bx-check-circle'></i></div>
             <div>
                 <div class="cat-kpi-val">@activeProducts</div>
-                <div class="cat-kpi-label">Active</div>
+                <div class="cat-kpi-label">@Localizer["Active"]</div>
             </div>
         </div>
         <div class="cat-kpi-divider"></div>
@@ -62,7 +62,7 @@
             <div class="cat-kpi-icon ck-red"><i class='bx bx-x-circle'></i></div>
             <div>
                 <div class="cat-kpi-val">@inactiveProducts</div>
-                <div class="cat-kpi-label">Inactive</div>
+                <div class="cat-kpi-label">@Localizer["Inactive"]</div>
             </div>
         </div>
         <div class="cat-kpi-divider"></div>
@@ -70,7 +70,7 @@
             <div class="cat-kpi-icon ck-purple"><i class='bx bx-trending-up'></i></div>
             <div>
                 <div class="cat-kpi-val">@(totalProducts > 0 ? Math.Round((double)activeProducts / totalProducts * 100, 0) : 0)%</div>
-                <div class="cat-kpi-label">Active Rate</div>
+                <div class="cat-kpi-label">@Localizer["ActiveRate"]</div>
             </div>
         </div>
     </div>
@@ -83,30 +83,30 @@
             <div class="cat-card-title">
                 <i class='bx bx-list-ul'></i>
                 <div>
-                    <h3>All Products</h3>
-                    <p>Manage and organise your store products</p>
+                    <h3>@Localizer["AllProducts"]</h3>
+                    <p>@Localizer["ManageOrganiseProducts"]</p>
                 </div>
             </div>
             <div class="cat-card-actions">
                 <!-- Search -->
                 <div class="cat-search-wrap">
                     <i class='bx bx-search'></i>
-                    <input type="text" id="productSearch" placeholder="Search products…">
-                    <span class="cat-search-clear" id="clearSearch" title="Clear"><i class='bx bx-x'></i></span>
+                    <input type="text" id="productSearch" placeholder="@Localizer["SearchProducts"]">
+                    <span class="cat-search-clear" id="clearSearch" title="@Localizer["Cancel"]"><i class='bx bx-x'></i></span>
                 </div>
                 <!-- Filter -->
                 <div class="cat-filter-wrap">
                     <select id="statusFilter" class="cat-filter-select">
-                        <option value="all">All Status</option>
-                        <option value="active">Active Only</option>
-                        <option value="inactive">Inactive Only</option>
+                        <option value="all">@Localizer["AllStatus"]</option>
+                        <option value="active">@Localizer["ActiveOnly"]</option>
+                        <option value="inactive">@Localizer["InactiveOnly"]</option>
                     </select>
                     <i class='bx bx-chevron-down cat-filter-arrow'></i>
                 </div>
                 <!-- Add Button -->
                 <a asp-area="Admin" asp-controller="Product" asp-action="Create" class="cat-add-btn" id="addProductBtn">
                     <i class='bx bx-plus'></i>
-                    <span>Add Product</span>
+                    <span>@Localizer["AddProduct"]</span>
                 </a>
             </div>
         </div>
@@ -116,7 +116,7 @@
         {
             <!-- Result Counter -->
             <div class="cat-result-bar">
-                <span id="resultCount">Showing <strong>@totalProducts</strong> products</span>
+                <span id="resultCount">@Html.Raw(string.Format(Localizer["ShowingNProducts"].Value, totalProducts))</span>
             </div>
 
             <div class="cat-table-wrap">
@@ -127,19 +127,19 @@
                                 <input type="checkbox" id="selectAll" class="cat-checkbox">
                             </th>
                             <th class="sortable" data-col="1">
-                                Product <i class='bx bx-sort'></i>
+                                @Localizer["Product"] <i class='bx bx-sort'></i>
                             </th>
-                            <th>Category & Brand</th>
+                            <th>@Localizer["Category"] & @Localizer["Brand"]</th>
                             <th class="sortable" data-col="3">
-                                Price <i class='bx bx-sort'></i>
+                                @Localizer["Price"] <i class='bx bx-sort'></i>
                             </th>
                             <th class="sortable" data-col="4">
-                                Qty <i class='bx bx-sort'></i>
+                                @Localizer["Quantity"] <i class='bx bx-sort'></i>
                             </th>
                             <th class="sortable" data-col="5">
-                                Status <i class='bx bx-sort'></i>
+                                @Localizer["Status"] <i class='bx bx-sort'></i>
                             </th>
-                            <th class="th-actions">Actions</th>
+                            <th class="th-actions">@Localizer["Actions"]</th>
                         </tr>
                     </thead>
                     <tbody id="productTableBody">
@@ -186,7 +186,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="cat-desc">$@product.Price.ToString("0.00")</span>
+                                    <span class="cat-desc">@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar", StringComparison.OrdinalIgnoreCase) ? "" : "$")@product.Price.ToString("0.00")@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar", StringComparison.OrdinalIgnoreCase) ? " " + Localizer["EGP"] : "")</span>
                                 </td>
                                 <td>
                                     <span class="cat-desc">@product.Quantity</span>
@@ -195,25 +195,25 @@
                                     @if (product.Status)
                                     {
                                         <span class="cat-badge badge-active">
-                                            <i class='bx bxs-circle'></i> Active
+                                            <i class='bx bxs-circle'></i> @Localizer["Active"]
                                         </span>
                                     }
                                     else
                                     {
                                         <span class="cat-badge badge-inactive">
-                                            <i class='bx bxs-circle'></i> Inactive
+                                            <i class='bx bxs-circle'></i> @Localizer["Inactive"]
                                         </span>
                                     }
                                 </td>
                                 <td>
                                     <div class="cat-action-group">
                                         <a asp-area="Admin" asp-controller="Product" asp-action="Update" asp-route-id="@product.Id"
-                                           class="cat-btn cat-btn-edit" title="Edit product">
+                                           class="cat-btn cat-btn-edit" title="@Localizer["EditProduct"]">
                                             <i class='bx bx-edit-alt'></i>
                                         </a>
                                         <button type="button"
                                                 class="cat-btn cat-btn-delete"
-                                                title="Delete product"
+                                                title="@Localizer["Delete"]"
                                                 data-id="@product.Id"
                                                 data-name="@product.Name"
                                                 onclick="openDeleteModal(this)">
@@ -229,7 +229,7 @@
 
             <!-- Pagination placeholder -->
             <div class="cat-footer">
-                <span class="cat-footer-info" id="footerSelected">0 items selected</span>
+                <span class="cat-footer-info" id="footerSelected">0 @Localizer["Selected"]</span>
                 <div class="cat-pagination">
                     <button class="pg-btn" disabled><i class='bx bx-chevron-left'></i></button>
                     <button class="pg-btn pg-active">1</button>
@@ -243,10 +243,10 @@
                 <div class="cat-empty-icon">
                     <i class='bx bx-box'></i>
                 </div>
-                <h3>No Products Yet</h3>
-                <p>Get started by adding your first product to the store.</p>
+                <h3>@Localizer["NoProductsYet"]</h3>
+                <p>@Localizer["GetStartedProduct"]</p>
                 <a asp-action="Create" class="cat-add-btn">
-                    <i class='bx bx-plus'></i> Create First Product
+                    <i class='bx bx-plus'></i> @Localizer["CreateFirstProduct"]
                 </a>
             </div>
         }
@@ -259,17 +259,17 @@
         <div class="cat-modal-icon">
             <i class='bx bx-trash'></i>
         </div>
-        <h3 class="cat-modal-title">Delete Product?</h3>
+        <h3 class="cat-modal-title">@Localizer["DeleteProductQuestion"]</h3>
         <p class="cat-modal-desc">
-            You are about to delete <strong id="deleteProductName">this product</strong>.
-            This action cannot be undone.
+            @Localizer["AboutToDeleteProduct"]
+            <strong id="deleteProductName" style="color: #EF4444; display: block; margin-top: 8px; font-size: 1.1rem;"></strong>
         </p>
         <div class="cat-modal-actions">
-            <button class="cat-modal-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <button class="cat-modal-cancel" onclick="closeDeleteModal()">@Localizer["Cancel"]</button>
             <form id="deleteForm" method="post" asp-area="Admin" asp-controller="Product" asp-action="Delete">
                  <input type="hidden" name="id" id="deleteProductId" value="" />
                  <button type="submit" class="cat-modal-confirm" style="border:none; cursor:pointer; font-family: inherit; font-size: 1rem;">
-                     <i class='bx bx-trash'></i> Delete
+                     <i class='bx bx-trash'></i> @Localizer["Delete"]
                  </button>
             </form>
         </div>
@@ -323,8 +323,10 @@ function filterTable() {
         }
     });
 
+    const isAr = @(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "true" : "false");
+
     if (resultCount) {
-        resultCount.innerHTML = `Showing <strong>${visible}</strong> products`;
+        resultCount.innerHTML = isAr ? `عرض <strong>${visible}</strong> منتجات` : `Showing <strong>${visible}</strong> products`;
     }
 }
 
@@ -345,7 +347,9 @@ const selectAll   = document.getElementById('selectAll');
 const footerSel   = document.getElementById('footerSelected');
 function updateSelectedCount() {
     const count = tableBody?.querySelectorAll('.row-check:checked').length || 0;
-    if (footerSel) footerSel.textContent = `${count} item${count !== 1 ? 's' : ''} selected`;
+    if (footerSel) {
+        footerSel.textContent = isAr ? `${count} تم تحديدها` : `${count} item${count !== 1 ? 's' : ''} selected`;
+    }
 }
 selectAll?.addEventListener('change', function() {
     tableBody?.querySelectorAll('.row-check').forEach(cb => cb.checked = this.checked);
@@ -395,5 +399,27 @@ document.querySelectorAll('.cat-row').forEach((row, i) => {
         row.style.transform  = 'translateY(0)';
     }, 60 + i * 45);
 });
+
+/* ── Toast Notification ────────────────────── */
+function showToast(message, duration = 4000) {
+    const toast = document.getElementById('catToast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), duration);
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <text>
+    showToast("@Html.Raw(TempData["SuccessMessage"])");
+    </text>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <text>
+    showToast("@Html.Raw(TempData["ErrorMessage"])");
+    </text>
+}
 </script>
 }

@@ -3,42 +3,32 @@
     ViewData["Title"] = "Verify Code";
     var email = TempData["OtpEmail"]?.ToString();
     var code = TempData["OtpCode"]?.ToString();
-    // Keep TempData values for post request or resend
     TempData.Keep("OtpEmail");
     TempData.Keep("OtpCode");
 }
 
-<div class="auth-form-header">
-    <a asp-area="Identity" asp-controller="Account" asp-action="ForgotPassword" class="auth-back-link">
-        <i class='bx bx-arrow-back'></i> Back
+<!-- Verify Code Navigation Header -->
+<div class="auth-nav-header">
+    <a asp-area="Identity" asp-controller="Account" asp-action="ForgotPassword" class="back-btn-circle" title="Back">
+        <i class='bx bx-chevron-left'></i>
     </a>
+</div>
+
+<div class="auth-form-header">
     <h2>Verify Code</h2>
-    <p>Enter the 4-digit code sent to your email address.</p>
+    <p>Please enter the code we just sent to email <span style="font-weight: 600; color: var(--ink);">@email</span></p>
 </div>
 
 <!-- ── Developer Testing Banner ── -->
 @if (!string.IsNullOrEmpty(code))
 {
-    <div class="auth-alert alert-success" style="margin-bottom: 24px;">
-        <i class='bx bx-code-alt'></i>
+    <div class="auth-alert alert-success" style="margin-bottom: 16px;">
+        <i class='bx bx-code-alt' style="font-size: 16px;"></i>
         <div>
-            <strong>[Development Mode]</strong><br />
-            Simulated OTP Code: <strong style="font-size: 16px; color: var(--success);">@code</strong>
+            <strong>[Dev Mode]</strong> Simulated OTP: <strong style="font-size: 15px; color: var(--success);">@code</strong>
         </div>
     </div>
 }
-
-<div class="otp-illustration">
-    <svg class="otp-svg" viewBox="0 0 100 100" width="80" height="80" xmlns="http://www.w3.org/2000/svg">
-        <!-- phone -->
-        <rect x="36" y="15" width="28" height="56" rx="5" fill="#f3f0ff" stroke="#6c5ce7" stroke-width="2" />
-        <!-- phone notch -->
-        <line x1="46" y1="19" x2="54" y2="19" stroke="#6c5ce7" stroke-width="2" stroke-linecap="round" />
-        <!-- envelope message overlapping -->
-        <rect x="18" y="32" width="34" height="22" rx="3" fill="#ffffff" stroke="#6c5ce7" stroke-width="2.2" />
-        <path d="M18 36 l17 9 l17 -9" stroke="#6c5ce7" stroke-width="1.8" fill="none" stroke-linejoin="round" />
-    </svg>
-</div>
 
 <form asp-area="Identity" asp-controller="Account" asp-action="VerifyOtp" method="post" class="auth-form" id="otpForm">
     @Html.AntiForgeryToken()
@@ -48,19 +38,20 @@
     <div asp-validation-summary="ModelOnly" class="auth-alert alert-error"></div>
 
     <div class="otp-grid">
-        <input type="text" maxlength="1" class="otp-input" id="otp1" required autocomplete="off" inputmode="numeric" />
-        <input type="text" maxlength="1" class="otp-input" id="otp2" required autocomplete="off" inputmode="numeric" />
-        <input type="text" maxlength="1" class="otp-input" id="otp3" required autocomplete="off" inputmode="numeric" />
-        <input type="text" maxlength="1" class="otp-input" id="otp4" required autocomplete="off" inputmode="numeric" />
+        <input type="text" maxlength="1" class="otp-input" id="otp1" required autocomplete="off" inputmode="numeric" placeholder="-" />
+        <input type="text" maxlength="1" class="otp-input" id="otp2" required autocomplete="off" inputmode="numeric" placeholder="-" />
+        <input type="text" maxlength="1" class="otp-input" id="otp3" required autocomplete="off" inputmode="numeric" placeholder="-" />
+        <input type="text" maxlength="1" class="otp-input" id="otp4" required autocomplete="off" inputmode="numeric" placeholder="-" />
     </div>
 
-    <button type="submit" class="auth-submit-btn">
-        Verify Code
+    <button type="submit" class="auth-submit-btn" id="verifySubmitBtn">
+        <span id="submitLabel">Verify</span>
+        <div class="btn-spinner" id="verifySpinner"></div>
     </button>
 </form>
 
 <div class="auth-footer-note">
-    Didn't receive the code? <a asp-area="Identity" asp-controller="Account" asp-action="ForgotPassword">Resend</a>
+    Didn't receive OTP? <a asp-area="Identity" asp-controller="Account" asp-action="ForgotPassword">Resend code</a>
 </div>
 
 @section Scripts {
@@ -107,6 +98,25 @@
         let code = "";
         inputs.forEach(input => code += input.value);
         if (fullCodeInput) fullCodeInput.value = code;
+    }
+
+    // Spinner on submit
+    const form = document.getElementById("otpForm");
+    if (form) {
+        form.addEventListener("submit", function (e) {
+            combineOtp();
+            if (fullCodeInput && fullCodeInput.value.length === 4) {
+                const btn = document.getElementById("verifySubmitBtn");
+                const spinner = document.getElementById("verifySpinner");
+                const label = document.getElementById("submitLabel");
+                
+                if (btn) btn.disabled = true;
+                if (spinner) spinner.style.display = "inline-block";
+                if (label) label.style.display = "none";
+            } else {
+                e.preventDefault();
+            }
+        });
     }
 })();
 </script>

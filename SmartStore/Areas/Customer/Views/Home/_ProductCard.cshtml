@@ -31,11 +31,11 @@
                 }
                 @if (isNew)
                 {
-                    <span class="badge-new">New</span>
+                    <span class="badge-new">@Localizer["New"]</span>
                 }
                 @if (isSoldOut)
                 {
-                    <span class="badge-soldout">Sold Out</span>
+                    <span class="badge-soldout">@Localizer["SoldOut"]</span>
                 }
             </div>
         </div>
@@ -73,7 +73,7 @@
                     <span class="current">@Model.Price.ToString("N0")</span>
                 }
             </div>
-            <button class="card-add" data-product-id="@Model.Id" @(isSoldOut ? "disabled" : "") title="@(isSoldOut ? "Sold Out" : "Add to Cart")">
+            <button class="card-add" data-product-id="@Model.Id" @(isSoldOut ? "disabled" : "") title="@(isSoldOut ? Localizer["SoldOut"] : Localizer["AddToCart"])">
                 <i class="fa fa-shopping-cart"></i>
             </button>
         </div>

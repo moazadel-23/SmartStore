@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using SmartStore.Repositories;
 
 namespace SmartStore.Areas.Admin.Controllers
@@ -7,9 +8,11 @@ namespace SmartStore.Areas.Admin.Controllers
     public class CategoryController : Controller
     {
         private readonly IRepository<Category> _categoryRepository;
-        public CategoryController(IRepository<Category> categoryRepository)
+        private readonly IStringLocalizer<LocalizationController> _localizer;
+        public CategoryController(IRepository<Category> categoryRepository, IStringLocalizer<LocalizationController> localizer)
         {
             _categoryRepository = categoryRepository;
+            _localizer = localizer;
         }
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -25,10 +28,21 @@ namespace SmartStore.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Category category, CancellationToken cancellationToken)
+        public async Task<IActionResult> Create(Category category, IFormFile? ImageFile, CancellationToken cancellationToken)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
+                if (ImageFile != null && ImageFile.Length > 0)
+                {
+                    var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img");
+                    Directory.CreateDirectory(folder);
+                    var fileName = Guid.NewGuid() + Path.GetExtension(ImageFile.FileName);
+                    var filePath = Path.Combine(folder, fileName);
+                    using var stream = System.IO.File.Create(filePath);
+                    await ImageFile.CopyToAsync(stream);
+                    category.ImageUrl = "/img/" + fileName;
+                }
+
                 await _categoryRepository.AddAsync(category, cancellationToken);
                 await _categoryRepository.Commit(cancellationToken);
                 return RedirectToAction(nameof(Index));
@@ -51,11 +65,30 @@ namespace SmartStore.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(Category category)
+        public async Task<IActionResult> Update(Category category, IFormFile? ImageFile)
         {
             if (ModelState.IsValid)
             {
-                _categoryRepository.Update(category);
+                var existingCategory = await _categoryRepository.GetOneAsync(e => e.Id == category.Id, tracked: true);
+                if (existingCategory == null)
+                    return NotFound();
+
+                existingCategory.Name = category.Name;
+                existingCategory.Description = category.Description;
+                existingCategory.Status = category.Status;
+
+                if (ImageFile != null && ImageFile.Length > 0)
+                {
+                    var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img");
+                    Directory.CreateDirectory(folder);
+                    var fileName = Guid.NewGuid() + Path.GetExtension(ImageFile.FileName);
+                    var filePath = Path.Combine(folder, fileName);
+                    using var stream = System.IO.File.Create(filePath);
+                    await ImageFile.CopyToAsync(stream);
+                    existingCategory.ImageUrl = "/img/" + fileName;
+                }
+
+                _categoryRepository.Update(existingCategory);
                 await _categoryRepository.Commit();
                 return RedirectToAction(nameof(Index));
             }
@@ -67,8 +100,16 @@ namespace SmartStore.Areas.Admin.Controllers
             var category = await _categoryRepository.GetOneAsync(e => e.Id == id);
             if (category is null) return NotFound();
             
-            _categoryRepository.Delete(category);
-            await _categoryRepository.Commit();
+            try
+            {
+                _categoryRepository.Delete(category);
+                await _categoryRepository.Commit();
+                TempData["SuccessMessage"] = _localizer["CategoryDeletedSuccessfully"].Value;
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = _localizer["CategoryDeleteFailed"].Value;
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -76,11 +117,19 @@ namespace SmartStore.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id, CancellationToken cancellationToken)
         {
-            var category = await _categoryRepository.GetOneAsync(e => e.Id == id);
+            var category = await _categoryRepository.GetOneAsync(e => e.Id == id, cancellationToken: cancellationToken);
             if (category is null) return NotFound(); 
             
-            _categoryRepository.Delete(category);
-            await _categoryRepository.Commit(cancellationToken);
+            try
+            {
+                _categoryRepository.Delete(category);
+                await _categoryRepository.Commit(cancellationToken);
+                TempData["SuccessMessage"] = _localizer["CategoryDeletedSuccessfully"].Value;
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = _localizer["CategoryDeleteFailed"].Value;
+            }
             return RedirectToAction(nameof(Index));
         }    
     }

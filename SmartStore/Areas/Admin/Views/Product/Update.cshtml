@@ -1,8 +1,8 @@
 @model SmartStore.Models.Product
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Update Product";
-    ViewData["PageTitle"] = "Product Management";
+    ViewData["Title"] = Localizer["UpdateProduct"];
+    ViewData["PageTitle"] = Localizer["ProductManagement"];
     var categories = ViewBag.category as IEnumerable<SmartStore.Models.Category>;
     var brands = ViewBag.brand as IEnumerable<SmartStore.Models.Brand>;
 }
@@ -56,11 +56,11 @@
 <div class="home-content">
     <!-- Breadcrumb -->
     <div class="breadcrumb-bar">
-        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> Home</span>
+        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> @Localizer["Home"]</span>
         <i class='bx bx-chevron-right bc-sep'></i>
-        <a asp-action="Index" class="bc-link">Products</a>
+        <a asp-action="Index" class="bc-link">@Localizer["Products"]</a>
         <i class='bx bx-chevron-right bc-sep'></i>
-        <span class="bc-current">Update Product</span>
+        <span class="bc-current">@Localizer["UpdateProduct"]</span>
         <span class="bc-date">
             <i class='bx bx-calendar'></i>
             @DateTime.Now.ToString("dddd, MMMM dd yyyy")
@@ -74,8 +74,8 @@
                 <i class='bx bx-box'></i>
             </div>
             <div>
-                <h2>Update Product</h2>
-                <p>Update the product details below</p>
+                <h2>@Localizer["UpdateProduct"]</h2>
+                <p>@Localizer["UpdateProductDetailsBelow"]</p>
             </div>
         </div>
     </div>
@@ -95,18 +95,18 @@
                 <div class="create-card">
                     <div class="create-card-header">
                         <i class='bx bx-info-circle'></i>
-                        <span>Basic Information</span>
+                        <span>@Localizer["BasicInformation"]</span>
                     </div>
                     <div class="create-card-body">
 
                         <!-- Name -->
                         <div class="form-field" id="field-name">
                             <label asp-for="Name" class="field-label">
-                                Product Name <span class="field-required">*</span>
+                                @Localizer["ProductName"] <span class="field-required">*</span>
                             </label>
                             <div class="field-input-wrap">
                                 <i class='bx bx-box field-icon'></i>
-                                <input asp-for="Name" class="field-input" placeholder="e.g. Samsung Galaxy S23" autocomplete="off" id="nameInput">
+                                <input asp-for="Name" class="field-input" placeholder="@Localizer["ProductNamePlaceholder"]" autocomplete="off" id="nameInput">
                             </div>
                             <span asp-validation-for="Name" class="field-error"></span>
                         </div>
@@ -114,10 +114,10 @@
                         <!-- Description -->
                         <div class="form-field" id="field-desc">
                             <label asp-for="description" class="field-label">
-                                Description
+                                @Localizer["Description"]
                             </label>
                             <div class="field-textarea-wrap">
-                                <textarea asp-for="description" class="field-textarea" placeholder="Detailed product description..." rows="5" id="descInput"></textarea>
+                                <textarea asp-for="description" class="field-textarea" placeholder="@Localizer["DetailedProductDescription"]..." rows="5" id="descInput"></textarea>
                             </div>
                             <span asp-validation-for="description" class="field-error"></span>
                         </div>
@@ -129,13 +129,13 @@
                 <div class="create-card">
                     <div class="create-card-header">
                         <i class='bx bx-dollar-circle'></i>
-                        <span>Pricing & Inventory</span>
+                        <span>@Localizer["PricingInventory"]</span>
                     </div>
                     <div class="create-card-body">
                         <div class="grid-2">
                             <!-- Price -->
                             <div class="form-field">
-                                <label asp-for="Price" class="field-label">Price <span class="field-required">*</span></label>
+                                <label asp-for="Price" class="field-label">@Localizer["Price"] <span class="field-required">*</span></label>
                                 <div class="field-input-wrap">
                                     <i class='bx bx-dollar field-icon'></i>
                                     <input asp-for="Price" type="number" step="0.01" class="field-input" placeholder="0.00">
@@ -145,7 +145,7 @@
 
                             <!-- Quantity -->
                             <div class="form-field">
-                                <label asp-for="Quantity" class="field-label">Quantity <span class="field-required">*</span></label>
+                                <label asp-for="Quantity" class="field-label">@Localizer["Quantity"] <span class="field-required">*</span></label>
                                 <div class="field-input-wrap">
                                     <i class='bx bx-layer field-icon'></i>
                                     <input asp-for="Quantity" type="number" step="1" class="field-input" placeholder="0">
@@ -155,9 +155,9 @@
 
                             <!-- Discount -->
                             <div class="form-field">
-                                <label asp-for="Discount" class="field-label">Discount (%)</label>
+                                <label asp-for="Discount" class="field-label">@Localizer["Discount"] (%)</label>
                                 <div class="field-input-wrap">
-                                    <i class='bx bxs-discount field-icon'></i>
+                                    <i class='bx bx-purchase-tag field-icon'></i>
                                     <input asp-for="Discount" type="number" step="0.01" class="field-input" placeholder="0%">
                                 </div>
                                 <span asp-validation-for="Discount" class="field-error"></span>
@@ -165,7 +165,7 @@
 
                             <!-- Rate -->
                             <div class="form-field">
-                                <label asp-for="Rate" class="field-label">Initial Rate (0-5)</label>
+                                <label asp-for="Rate" class="field-label">@Localizer["InitialRate"] (0-5)</label>
                                 <div class="field-input-wrap">
                                     <i class='bx bxs-star field-icon'></i>
                                     <input asp-for="Rate" type="number" step="0.1" min="0" max="5" class="field-input" placeholder="e.g. 4.5">
@@ -176,37 +176,210 @@
                     </div>
                 </div>
 
+                <!-- Extended Details Card -->
+                <div class="create-card">
+                    <div class="create-card-header">
+                        <i class='bx bx-detail'></i>
+                        <span>@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "تفاصيل المنتج الإضافية" : "Additional Product Details")</span>
+                    </div>
+                    <div class="create-card-body">
+                        <div class="grid-2">
+                            <!-- SKU -->
+                            <div class="form-field">
+                                <label asp-for="SKU" class="field-label">@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "رمز المنتج / SKU" : "Product SKU")</label>
+                                <div class="field-input-wrap">
+                                    <i class='bx bx-barcode field-icon'></i>
+                                    <input asp-for="SKU" class="field-input" placeholder="e.g. PR973">
+                                </div>
+                                <span asp-validation-for="SKU" class="field-error"></span>
+                            </div>
+
+                            <!-- Warranty -->
+                            <div class="form-field">
+                                <label asp-for="Warranty" class="field-label">@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "الضمان" : "Warranty")</label>
+                                <div class="field-input-wrap">
+                                    <i class='bx bx-shield-quarter field-icon'></i>
+                                    <input asp-for="Warranty" class="field-input" placeholder="e.g. 1 Year / ضمان سنة">
+                                </div>
+                                <span asp-validation-for="Warranty" class="field-error"></span>
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
+                            <!-- Delivery Time Cairo & Giza -->
+                            <div class="form-field">
+                                <label asp-for="DeliveryTimeCairoGiza" class="field-label">@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "التوصيل للقاهرة والجيزة" : "Delivery (Cairo & Giza)")</label>
+                                <div class="field-input-wrap">
+                                    <i class='bx bx-time field-icon'></i>
+                                    <input asp-for="DeliveryTimeCairoGiza" class="field-input" placeholder="e.g. 1-7 أيام عمل">
+                                </div>
+                                <span asp-validation-for="DeliveryTimeCairoGiza" class="field-error"></span>
+                            </div>
+
+                            <!-- Delivery Time Outside -->
+                            <div class="form-field">
+                                <label asp-for="DeliveryTimeOutside" class="field-label">@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "التوصيل خارج القاهرة والجيزة" : "Delivery (Outside)")</label>
+                                <div class="field-input-wrap">
+                                    <i class='bx bx-truck field-icon'></i>
+                                    <input asp-for="DeliveryTimeOutside" class="field-input" placeholder="e.g. 2-14 أيام عمل">
+                                </div>
+                                <span asp-validation-for="DeliveryTimeOutside" class="field-error"></span>
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
+                            <!-- Return Policy -->
+                            <div class="form-field">
+                                <label asp-for="ReturnPolicy" class="field-label">@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "سياسة الاسترجاع" : "Return Policy")</label>
+                                <div class="field-input-wrap">
+                                    <i class='bx bx-refresh field-icon'></i>
+                                    <input asp-for="ReturnPolicy" class="field-input" placeholder="e.g. إرجاع مجاني خلال 14 يوم">
+                                </div>
+                                <span asp-validation-for="ReturnPolicy" class="field-error"></span>
+                            </div>
+
+                            <!-- Package Contents -->
+                            <div class="form-field">
+                                <label asp-for="PackageContents" class="field-label">@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "محتويات العبوة" : "Package Contents")</label>
+                                <div class="field-input-wrap">
+                                    <i class='bx bx-package field-icon'></i>
+                                    <input asp-for="PackageContents" class="field-input" placeholder="e.g. الطابعة، كابل الطاقة، زجاجات الحبر">
+                                </div>
+                                <span asp-validation-for="PackageContents" class="field-error"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Overview Card -->
+                <div class="create-card">
+                    <div class="create-card-header">
+                        <i class='bx bx-file-find'></i>
+                        <span>@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "نظرة عامة على المنتج" : "Product Overview Section")</span>
+                    </div>
+                    <div class="create-card-body">
+                        <!-- Overview Title -->
+                        <div class="form-field">
+                            <label asp-for="OverviewTitle" class="field-label">@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "العنوان الرئيسي للنظرة العامة" : "Overview Section Title")</label>
+                            <div class="field-input-wrap">
+                                <i class='bx bx-text field-icon'></i>
+                                <input asp-for="OverviewTitle" class="field-input" placeholder="e.g. قيمة عالية من خلال الخزان الذكي">
+                            </div>
+                            <span asp-validation-for="OverviewTitle" class="field-error"></span>
+                        </div>
+
+                        <!-- Overview Description -->
+                        <div class="form-field">
+                            <label asp-for="OverviewDescription" class="field-label">@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "وصف النظرة العامة" : "Overview Section Description")</label>
+                            <div class="field-textarea-wrap">
+                                <textarea asp-for="OverviewDescription" class="field-textarea" placeholder="Detailed overview section text..." rows="4"></textarea>
+                            </div>
+                            <span asp-validation-for="OverviewDescription" class="field-error"></span>
+                        </div>
+
+                        <!-- Overview Image Upload -->
+                        <div class="form-field">
+                            <label class="field-label">@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "صورة النظرة العامة" : "Overview Section Image")</label>
+                            @if (!string.IsNullOrEmpty(Model.OverviewImageUrl))
+                            {
+                                <div style="margin-bottom: 10px;">
+                                    <img src="@Model.OverviewImageUrl" style="max-height: 120px; border-radius: 8px; border: 1px solid var(--border-color); object-fit: contain; padding: 4px;" alt="Current Overview Image" />
+                                </div>
+                            }
+                            <div class="file-input-wrapper">
+                                <input type="file" name="OverviewImgFile" accept="image/*">
+                            </div>
+                            <div class="field-hint">@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "قم برفع صورة جديدة لتغيير الصورة الحالية" : "Upload a new image to replace the current one")</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Specifications Card -->
+                <div class="create-card">
+                    <div class="create-card-header" style="justify-content: space-between; display: flex; align-items: center; width: 100%;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <i class='bx bx-list-check'></i>
+                            <span>@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "المواصفات الفنية والمميزات" : "Specifications & Key Features")</span>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-primary" onclick="addSpecRow()" style="background: var(--primary-color); color: #fff; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 0.8rem;">
+                            <i class='bx bx-plus'></i> @(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "إضافة مواصفة" : "Add Spec")
+                        </button>
+                    </div>
+                    <div class="create-card-body">
+                        <table class="cat-table" style="width:100%; border-collapse: collapse;" id="specsTable">
+                            <thead>
+                                <tr style="border-bottom: 2px solid var(--border-color); text-align: left;">
+                                    <th style="padding: 8px;">@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "المواصفة (المفتاح)" : "Specification (Key)")</th>
+                                    <th style="padding: 8px;">@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "القيمة" : "Value")</th>
+                                    <th style="padding: 8px; text-align: center;">@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "تمييز مميز؟" : "Highlight?")</th>
+                                    <th style="padding: 8px; text-align: center; width: 50px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="specsTableBody">
+                                @if (Model.Specifications != null && Model.Specifications.Any())
+                                {
+                                    int idx = 0;
+                                    foreach (var spec in Model.Specifications)
+                                    {
+                                        <tr id="spec-row-@idx" style="border-bottom: 1px solid var(--border-color);">
+                                            <td style="padding: 8px;">
+                                                <input type="text" name="Specifications[@idx].Key" value="@spec.Key" class="field-input" style="padding: 6px 10px;" required />
+                                            </td>
+                                            <td style="padding: 8px;">
+                                                <input type="text" name="Specifications[@idx].Value" value="@spec.Value" class="field-input" style="padding: 6px 10px;" required />
+                                            </td>
+                                            <td style="padding: 8px; text-align: center; vertical-align: middle;">
+                                                <input type="checkbox" name="Specifications[@idx].IsHighlight" value="true" @(spec.IsHighlight ? "checked" : "") style="width: 18px; height: 18px; cursor: pointer; vertical-align: middle;" />
+                                                <input type="hidden" name="Specifications[@idx].IsHighlight" value="false" />
+                                            </td>
+                                            <td style="padding: 8px; text-align: center;">
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="removeSpecRow(@idx)" style="background: #EF4444; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin: 0 auto;">
+                                                    <i class='bx bx-trash' style="font-size: 1.1rem;"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        idx++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                        <div id="noSpecsHint" style="padding: 12px; text-align: center; color: #6b7280; font-size: 0.85rem; display: @(Model.Specifications != null && Model.Specifications.Any() ? "none" : "block");">
+                            @(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "لا توجد مواصفات مضافة حالياً. اضغط على زر إضافة مواصفة للبدء." : "No specifications added yet. Click Add Spec to start.")
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Media Card -->
                 <div class="create-card">
                     <div class="create-card-header">
                         <i class='bx bx-image-add'></i>
-                        <span>Product Media</span>
+                        <span>@Localizer["ProductMedia"]</span>
                     </div>
                     <div class="create-card-body">
 
                         <!-- Main Image -->
-                        <label class="field-label">Main Image</label>
+                        <label class="field-label">@Localizer["MainImage"]</label>
                         <div class="upload-area" id="imageUpload" style="position: relative; cursor: pointer; padding: 15px; border: 1px dashed var(--border-color); border-radius: 8px; text-align: center; background: rgba(0,0,0,0.02); margin-bottom: 20px;">
                             <input type="file" hidden id="mainImgInput" name="Img" accept="image/*" />
                             @if (!string.IsNullOrEmpty(Model.MainImg))
                             {
                                 <img id="previewImg" src="~/img/@Model.MainImg"
                                      style="max-width:150px; border-radius:8px; display:block; margin: 0 auto;" />
-                                <p style="color:#999; margin-top:6px; font-size:0.85em;">Click to change main image</p>
+                                <p style="color:#999; margin-top:6px; font-size:0.85em;">@Localizer["ClickToChangeMainImage"]</p>
                             }
                             else
                             {
                                 <i class='bx bx-image' style="font-size:28px; color:var(--primary-color);"></i>
-                                <p style="color:#999; margin: 5px 0 0; font-size:0.9em;">Click to select main image</p>
+                                <p style="color:#999; margin: 5px 0 0; font-size:0.9em;">@Localizer["ClickToSelectMainImage"]</p>
                             }
                         </div>
 
                         <!-- Sub Images -->
-                        <label class="field-label">Gallery Images</label>
+                        <label class="field-label">@Localizer["GalleryImages"]</label>
                         <div class="upload-area" id="subImgsUpload" style="position: relative; cursor: pointer; padding: 15px; border: 1px dashed var(--border-color); border-radius: 8px; text-align: center; background: rgba(0,0,0,0.02);">
                             <input type="file" hidden id="subImgsInput" name="SubImgFiles" accept="image/*" multiple />
                             <i class='bx bx-images' style="font-size: 24px; color: var(--primary-color);"></i>
-                            <p style="margin: 5px 0 0; font-size: 0.9em; color: var(--text-color);">Click here to add sub-images</p>
+                            <p style="margin: 5px 0 0; font-size: 0.9em; color: var(--text-color);">@Localizer["ClickToAddSubImages"]</p>
                         </div>
 
                         <div id="subImgsPreviewContainer" style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;"></div>
@@ -239,16 +412,16 @@
                 <div class="create-card">
                     <div class="create-card-header">
                         <i class='bx bx-sitemap'></i>
-                        <span>Organization</span>
+                        <span>@Localizer["Organization"]</span>
                     </div>
                     <div class="create-card-body">
 
                         <!-- Category -->
                         <div class="form-field">
-                            <label class="field-label">Category <span class="field-required">*</span></label>
+                            <label class="field-label">@Localizer["Category"] <span class="field-required">*</span></label>
                             <div class="field-input-wrap" style="padding-left: 0;">
                                 <select name="CategoryId" class="field-input" style="padding-left: 14px;" required>
-                                    <option value="" disabled selected>Select Category...</option>
+                                    <option value="" disabled selected>@Localizer["SelectCategory"]</option>
                                     @if(categories != null)
                                     {
                                         foreach(var cat in categories)
@@ -269,10 +442,10 @@
 
                         <!-- Brand -->
                         <div class="form-field">
-                            <label class="field-label">Brand <span class="field-required">*</span></label>
+                            <label class="field-label">@Localizer["Brand"] <span class="field-required">*</span></label>
                             <div class="field-input-wrap" style="padding-left: 0;">
                                 <select name="BrandId" class="field-input" style="padding-left: 14px;" required>
-                                    <option value="" disabled selected>Select Brand...</option>
+                                    <option value="" disabled selected>@Localizer["SelectBrand"]</option>
                                     @if(brands != null)
                                     {
                                         foreach(var brand in brands)
@@ -298,28 +471,28 @@
                 <div class="create-card">
                     <div class="create-card-header">
                         <i class='bx bx-send'></i>
-                        <span>Publish</span>
+                        <span>@Localizer["Publish"]</span>
                     </div>
                     <div class="create-card-body">
 
                         <!-- Status Toggle -->
                         <div class="form-field">
-                            <label class="field-label">Status</label>
+                            <label class="field-label">@Localizer["Status"]</label>
                             <div class="status-toggle-group" id="statusToggle">
                                 <label class="status-option status-active-opt @(Model.Status == true ? "selected" : "")" id="statusActiveLabel">
                                     <input type="radio" name="Status" value="true" id="statusActive" @(Model.Status == true ? "checked" : "")>
                                     <i class='bx bx-check-circle'></i>
                                     <div>
-                                        <span class="st-title">Active</span>
-                                        <span class="st-desc">Visible to customers</span>
+                                        <span class="st-title">@Localizer["Active"]</span>
+                                        <span class="st-desc">@Localizer["VisibleToCustomers"]</span>
                                     </div>
                                 </label>
                                 <label class="status-option status-inactive-opt @(Model.Status == false ? "selected" : "")" id="statusInactiveLabel">
                                     <input type="radio" name="Status" value="false" id="statusInactive" @(Model.Status == false ? "checked" : "")>
                                     <i class='bx bx-x-circle'></i>
                                     <div>
-                                        <span class="st-title">Inactive</span>
-                                        <span class="st-desc">Hidden from store</span>
+                                        <span class="st-title">@Localizer["Inactive"]</span>
+                                        <span class="st-desc">@Localizer["HiddenFromStore"]</span>
                                     </div>
                                 </label>
                             </div>
@@ -330,11 +503,11 @@
                         <!-- Actions -->
                         <div class="publish-actions">
                             <a asp-area="Admin" asp-controller="Product" asp-action="Index" class="pub-cancel-btn">
-                                <i class='bx bx-x'></i> Cancel
+                                <i class='bx bx-x'></i> @Localizer["Cancel"]
                             </a>
                             <button type="submit" class="pub-submit-btn" id="submitBtn">
                                 <i class='bx bx-check'></i>
-                                <span>Update Product</span>
+                                <span>@Localizer["UpdateProduct"]</span>
                                 <div class="btn-loader" id="btnLoader"></div>
                             </button>
                         </div>
@@ -372,7 +545,7 @@
     form?.addEventListener('submit', function (e) {
         if (submitBtn) {
             submitBtn.disabled = true;
-            submitBtn.querySelector('span').textContent = 'Updating...';
+            submitBtn.querySelector('span').textContent = '@Localizer["Updating"]...';
             if (btnLoader) btnLoader.style.display = 'block';
         }
     });
@@ -521,5 +694,71 @@
         }
     };
 })();
+
+let specIndex = @(Model.Specifications?.Count ?? 0);
+function addSpecRow(key = '', val = '', isHighlight = false) {
+    document.getElementById('noSpecsHint').style.display = 'none';
+    const tbody = document.getElementById('specsTableBody');
+    
+    const tr = document.createElement('tr');
+    tr.id = `spec-row-${specIndex}`;
+    tr.style.borderBottom = '1px solid var(--border-color)';
+    
+    tr.innerHTML = `
+        <td style="padding: 8px;">
+            <input type="text" name="Specifications[${specIndex}].Key" value="${key}" class="field-input" style="padding: 6px 10px;" placeholder="e.g. Speed / السرعة" required />
+        </td>
+        <td style="padding: 8px;">
+            <input type="text" name="Specifications[${specIndex}].Value" value="${val}" class="field-input" style="padding: 6px 10px;" placeholder="e.g. 12 ppm" required />
+        </td>
+        <td style="padding: 8px; text-align: center; vertical-align: middle;">
+            <input type="checkbox" name="Specifications[${specIndex}].IsHighlight" value="true" ${isHighlight ? 'checked' : ''} style="width: 18px; height: 18px; cursor: pointer; vertical-align: middle;" />
+            <input type="hidden" name="Specifications[${specIndex}].IsHighlight" value="false" />
+        </td>
+        <td style="padding: 8px; text-align: center;">
+            <button type="button" class="btn btn-sm btn-danger" onclick="removeSpecRow(${specIndex})" style="background: #EF4444; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin: 0 auto;">
+                <i class='bx bx-trash' style="font-size: 1.1rem;"></i>
+            </button>
+        </td>
+    `;
+    tbody.appendChild(tr);
+    specIndex++;
+}
+
+function removeSpecRow(idx) {
+    const row = document.getElementById(`spec-row-${idx}`);
+    if (row) {
+        row.remove();
+    }
+    const tbody = document.getElementById('specsTableBody');
+    if (tbody.children.length === 0) {
+        document.getElementById('noSpecsHint').style.display = 'block';
+    }
+    reindexSpecRows();
+}
+
+function reindexSpecRows() {
+    const tbody = document.getElementById('specsTableBody');
+    const rows = tbody.children;
+    specIndex = 0;
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        row.id = `spec-row-${specIndex}`;
+        
+        const keyInput = row.querySelector(`input[name^="Specifications"][name$=".Key"]`);
+        const valInput = row.querySelector(`input[name^="Specifications"][name$=".Value"]`);
+        const hlCheckbox = row.querySelector(`input[type="checkbox"][name^="Specifications"]`);
+        const hlHidden = row.querySelector(`input[type="hidden"][name^="Specifications"]`);
+        const deleteBtn = row.querySelector(`button[onclick^="removeSpecRow"]`);
+        
+        keyInput.name = `Specifications[${specIndex}].Key`;
+        valInput.name = `Specifications[${specIndex}].Value`;
+        hlCheckbox.name = `Specifications[${specIndex}].IsHighlight`;
+        hlHidden.name = `Specifications[${specIndex}].IsHighlight`;
+        deleteBtn.setAttribute('onclick', `removeSpecRow(${specIndex})`);
+        
+        specIndex++;
+    }
+}
 </script>
 }

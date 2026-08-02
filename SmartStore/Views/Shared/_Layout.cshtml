@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name" dir="@(System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? "rtl" : "ltr")">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -35,7 +35,12 @@
                     <span>نشط الآن</span>
                 </div>
             </div>
-            <button class="chatbot-close"><i class='bx bx-x'></i></button>
+            <div class="chatbot-header-actions">
+                <a href="https://wa.me/201019519390" target="_blank" rel="noopener" class="chatbot-whatsapp-btn" title="تواصل عبر واتساب">
+                    <i class="fa fa-whatsapp"></i>
+                </a>
+                <button class="chatbot-close" style="background: none; border: none; padding: 0; color: white; cursor: pointer;"><i class='bx bx-x'></i></button>
+            </div>
         </div>
         <div class="chatbot-messages">
             <!-- Messages will be rendered dynamically -->

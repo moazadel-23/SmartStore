@@ -1,8 +1,8 @@
 @model SmartStore.Models.BannerModel
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "تعديل البانرات";
-    ViewData["PageTitle"] = "إدارة البانرات";
+    ViewData["Title"] = Localizer["EditBanners"];
+    ViewData["PageTitle"] = Localizer["BannersManagement"];
 }
 <!-- Custom Styles for Form Fields and Tabs -->
 <style>
@@ -16,12 +16,12 @@
     
     .create-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 24px; }
     .create-card-header { padding: 14px 20px; border-bottom: 1px solid #e5e7eb; background: #f9fafb; display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; color: var(--text-dark, #111827); }
-    .create-card-header i { font-size: 18px; color: #ff6a00; }
+    .create-card-header i { font-size: 18px; color: #2563eb; }
     .create-card-body { padding: 20px; }
     
     .publish-actions { display: flex; flex-direction: column; gap: 10px; }
-    .pub-submit-btn { width: 100%; height: 42px; background: #ff6a00; color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: background 0.2s; }
-    .pub-submit-btn:hover { background: #e05d00; }
+    .pub-submit-btn { width: 100%; height: 42px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: background 0.2s; }
+    .pub-submit-btn:hover { background: #1d4ed8; }
     .pub-cancel-btn { width: 100%; height: 42px; background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; border-radius: 8px; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; transition: background 0.2s; }
     .pub-cancel-btn:hover { background: #e5e7eb; }
     
@@ -37,8 +37,8 @@
         text-align: left;
     }
     .form-input-custom:focus {
-        border-color: #ff6a00;
-        box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.1);
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
     
     /* Toast / Success Message styling */
@@ -46,15 +46,16 @@
     .success-alert i { font-size: 18px; }
 
     /* RTL Layout Helpers */
-    .home-content { direction: rtl; text-align: right; padding: 20px; }
+    .home-content { padding: 20px; }
     .breadcrumb-bar { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #6b7280; margin-bottom: 20px; }
-    .bc-sep { transform: rotate(180deg); }
+    [dir="rtl"] .bc-sep { transform: rotate(180deg); }
     .bc-current { font-weight: 700; color: var(--text-dark, #111827); }
-    .bc-date { margin-right: auto; display: flex; align-items: center; gap: 4px; }
+    [dir="rtl"] .bc-date { margin-right: auto; margin-left: 0; display: flex; align-items: center; gap: 4px; }
+    [dir="ltr"] .bc-date { margin-left: auto; margin-right: 0; display: flex; align-items: center; gap: 4px; }
     
     .create-page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
     .create-page-title { display: flex; align-items: center; gap: 12px; }
-    .create-icon-wrap { width: 48px; height: 48px; border-radius: 12px; background: #fff0e6; color: #ff6a00; display: flex; align-items: center; justify-content: center; font-size: 24px; border: 1px solid #ffe0cc; }
+    .create-icon-wrap { width: 48px; height: 48px; border-radius: 12px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 24px; border: 1px solid #dbeafe; }
     .create-page-title h2 { font-size: 20px; font-weight: 800; color: var(--text-dark, #111827); margin: 0; }
     .create-page-title p { font-size: 13px; color: #6b7280; margin: 2px 0 0 0; }
 
@@ -74,8 +75,8 @@
         gap: 12px;
     }
     .uploader-card:hover {
-        border-color: #ff6a00;
-        background-color: #fffaf5;
+        border-color: #2563eb;
+        background-color: #f0f7ff;
         transform: translateY(-2px);
     }
     .uploader-file-input {
@@ -102,7 +103,7 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: #ff6a00;
+        background: #2563eb;
         color: #fff;
         padding: 10px 20px;
         border-radius: 8px;
@@ -111,10 +112,10 @@
         border: none;
         cursor: pointer;
         transition: background-color 0.2s, transform 0.1s;
-        box-shadow: 0 4px 6px -1px rgba(255, 106, 0, 0.2), 0 2px 4px -1px rgba(255, 106, 0, 0.1);
+        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2), 0 2px 4px -1px rgba(37, 99, 235, 0.1);
     }
     .uploader-btn:hover {
-        background: #e05d00;
+        background: #1d4ed8;
         transform: translateY(-1px);
     }
     .uploader-btn:active {
@@ -129,8 +130,8 @@
     /* Tabs Navigation */
     .tabs-nav { display: flex; gap: 10px; border-bottom: 2px solid #e5e7eb; margin-bottom: 24px; padding-bottom: 2px; }
     .tab-btn { background: none; border: none; padding: 12px 20px; font-weight: 700; font-size: 14px; color: #6b7280; cursor: pointer; position: relative; transition: color 0.2s; outline: none; }
-    .tab-btn.active { color: #ff6a00; }
-    .tab-btn.active::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 3px; background: #ff6a00; border-radius: 3px; }
+    .tab-btn.active { color: #2563eb; }
+    .tab-btn.active::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 3px; background: #2563eb; border-radius: 3px; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 </style>
@@ -139,9 +140,9 @@
 
     <!-- ── Breadcrumb ─────────────────────────── -->
     <div class="breadcrumb-bar">
-        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> الرئيسية</span>
+        <span class="bc-home"><i class='bx bxs-home-alt-2'></i> @Localizer["Home"]</span>
         <i class='bx bx-chevron-right bc-sep'></i>
-        <span class="bc-current">إدارة البوسترات والبنرات</span>
+        <span class="bc-current">@Localizer["BannersManagement"]</span>
         <span class="bc-date"><i class='bx bx-calendar'></i> @DateTime.Now.ToString("dddd, MMMM dd yyyy")</span>
     </div>
 
@@ -152,8 +153,8 @@
                 <i class='bx bx-image'></i>
             </div>
             <div>
-                <h2>إدارة البوسترات والإعلانات</h2>
-                <p>قم بتحديث وتغيير محتوى وتصميم كافة الإعلانات والبنرات المعروضة في الصفحة الرئيسية</p>
+                <h2>@Localizer["BannersAndAdsManagement"]</h2>
+                <p>@Localizer["BannersAndAdsSubtitle"]</p>
             </div>
         </div>
     </div>
@@ -168,9 +169,10 @@
 
     <!-- Tabs Nav -->
     <div class="tabs-nav">
-        <button type="button" class="tab-btn active" onclick="switchTab('slider-tab', this)">البانرات الدوارة الرئيسية (السلايدر)</button>
-        <button type="button" class="tab-btn" onclick="switchTab('offers-tab', this)">عروض مهرجان هواوي وأنكر</button>
-        <button type="button" class="tab-btn" onclick="switchTab('installments-tab', this)">بنرات تقسيط الكاش</button>
+        <button type="button" class="tab-btn active" onclick="switchTab('slider-tab', this)">@Localizer["MainSliderBanners"]</button>
+        <button type="button" class="tab-btn" onclick="switchTab('offers-tab', this)">@Localizer["HuaweiAnkerOffers"]</button>
+        <button type="button" class="tab-btn" onclick="switchTab('installments-tab', this)">@Localizer["CashInstallmentBanners"]</button>
+        <button type="button" class="tab-btn" onclick="switchTab('grid-tab', this)">@Localizer["HomepageGridBanners"]</button>
     </div>
 
     <!-- ── Form ───────────────────────────────── -->
@@ -189,7 +191,7 @@
                     <div class="create-card">
                         <div class="create-card-header">
                             <i class='bx bx-image'></i>
-                            <span>البانر الأول (Slide 1)</span>
+                            <span>@Localizer["FirstBannerSlide1"]</span>
                         </div>
                         <div class="create-card-body">
                             <input type="hidden" asp-for="Slide1ImageUrl" id="slide1ImgInp" />
@@ -201,13 +203,13 @@
                                 <input type="file" name="Slide1ImgFile" accept="image/*" class="uploader-file-input" id="slide1FileInp" />
                                 <button type="button" class="uploader-btn">
                                     <i class='bx bx-cloud-upload'></i>
-                                    <span>رفع صورة جديدة</span>
+                                    <span>@Localizer["UploadNewImage"]</span>
                                 </button>
-                                <p class="uploader-hint">صيغ الصور المدعومة: PNG, JPG, JPEG, WebP. الحجم الأقصى: 5 ميجابايت.</p>
+                                <p class="uploader-hint">@Localizer["SupportedImageFormatsHint"]</p>
                             </div>
                             <div class="form-field" style="margin-top: 16px; margin-bottom: 0;">
-                                <label class="field-label" asp-for="Slide1LinkUrl">رابط التوجيه لزر "تسوق الآن"</label>
-                                <input type="text" asp-for="Slide1LinkUrl" class="form-input-custom" placeholder="مثال: /Customer/Home/Store" />
+                                <label class="field-label" asp-for="Slide1LinkUrl">@Localizer["RedirectLinkShopNow"]</label>
+                                <input type="text" asp-for="Slide1LinkUrl" class="form-input-custom" placeholder="@Localizer["RedirectLinkExample"]" />
                                 <span asp-validation-for="Slide1LinkUrl" class="text-danger" style="font-size: 11px; margin-top: 4px; display: block;"></span>
                             </div>
                         </div>
@@ -217,7 +219,7 @@
                     <div class="create-card">
                         <div class="create-card-header">
                             <i class='bx bx-image'></i>
-                            <span>البانر الثاني (Slide 2)</span>
+                            <span>@Localizer["SecondBannerSlide2"]</span>
                         </div>
                         <div class="create-card-body">
                             <input type="hidden" asp-for="Slide2ImageUrl" id="slide2ImgInp" />
@@ -229,13 +231,13 @@
                                 <input type="file" name="Slide2ImgFile" accept="image/*" class="uploader-file-input" id="slide2FileInp" />
                                 <button type="button" class="uploader-btn">
                                     <i class='bx bx-cloud-upload'></i>
-                                    <span>رفع صورة جديدة</span>
+                                    <span>@Localizer["UploadNewImage"]</span>
                                 </button>
-                                <p class="uploader-hint">صيغ الصور المدعومة: PNG, JPG, JPEG, WebP. الحجم الأقصى: 5 ميجابايت.</p>
+                                <p class="uploader-hint">@Localizer["SupportedImageFormatsHint"]</p>
                             </div>
                             <div class="form-field" style="margin-top: 16px; margin-bottom: 0;">
-                                <label class="field-label" asp-for="Slide2LinkUrl">رابط التوجيه لزر "تسوق الآن"</label>
-                                <input type="text" asp-for="Slide2LinkUrl" class="form-input-custom" placeholder="مثال: /Customer/Home/Store" />
+                                <label class="field-label" asp-for="Slide2LinkUrl">@Localizer["RedirectLinkShopNow"]</label>
+                                <input type="text" asp-for="Slide2LinkUrl" class="form-input-custom" placeholder="@Localizer["RedirectLinkExample"]" />
                                 <span asp-validation-for="Slide2LinkUrl" class="text-danger" style="font-size: 11px; margin-top: 4px; display: block;"></span>
                             </div>
                         </div>
@@ -245,7 +247,7 @@
                     <div class="create-card">
                         <div class="create-card-header">
                             <i class='bx bx-image'></i>
-                            <span>البانر الثالث (Slide 3)</span>
+                            <span>@Localizer["ThirdBannerSlide3"]</span>
                         </div>
                         <div class="create-card-body">
                             <input type="hidden" asp-for="Slide3ImageUrl" id="slide3ImgInp" />
@@ -257,14 +259,70 @@
                                 <input type="file" name="Slide3ImgFile" accept="image/*" class="uploader-file-input" id="slide3FileInp" />
                                 <button type="button" class="uploader-btn">
                                     <i class='bx bx-cloud-upload'></i>
-                                    <span>رفع صورة جديدة</span>
+                                    <span>@Localizer["UploadNewImage"]</span>
                                 </button>
-                                <p class="uploader-hint">صيغ الصور المدعومة: PNG, JPG, JPEG, WebP. الحجم الأقصى: 5 ميجابايت.</p>
+                                <p class="uploader-hint">@Localizer["SupportedImageFormatsHint"]</p>
                             </div>
                             <div class="form-field" style="margin-top: 16px; margin-bottom: 0;">
-                                <label class="field-label" asp-for="Slide3LinkUrl">رابط التوجيه لزر "تسوق الآن"</label>
-                                <input type="text" asp-for="Slide3LinkUrl" class="form-input-custom" placeholder="مثال: /Customer/Home/Store" />
+                                <label class="field-label" asp-for="Slide3LinkUrl">@Localizer["RedirectLinkShopNow"]</label>
+                                <input type="text" asp-for="Slide3LinkUrl" class="form-input-custom" placeholder="@Localizer["RedirectLinkExample"]" />
                                 <span asp-validation-for="Slide3LinkUrl" class="text-danger" style="font-size: 11px; margin-top: 4px; display: block;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. SLIDE 4 -->
+                    <div class="create-card">
+                        <div class="create-card-header">
+                            <i class='bx bx-image'></i>
+                            <span>البنر الرابع - Slide 4</span>
+                        </div>
+                        <div class="create-card-body">
+                            <input type="hidden" asp-for="Slide4ImageUrl" id="slide4ImgInp" />
+                            
+                            <div class="uploader-card" onclick="document.getElementById('slide4FileInp').click()">
+                                <div class="uploader-preview-wrap">
+                                    <img src="@Model.Slide4ImageUrl" id="prevSlide4Img" alt="Slide 4 Preview" class="uploader-preview-img" />
+                                </div>
+                                <input type="file" name="Slide4ImgFile" accept="image/*" class="uploader-file-input" id="slide4FileInp" />
+                                <button type="button" class="uploader-btn">
+                                    <i class='bx bx-cloud-upload'></i>
+                                    <span>@Localizer["UploadNewImage"]</span>
+                                </button>
+                                <p class="uploader-hint">@Localizer["SupportedImageFormatsHint"]</p>
+                            </div>
+                            <div class="form-field" style="margin-top: 16px; margin-bottom: 0;">
+                                <label class="field-label" asp-for="Slide4LinkUrl">@Localizer["RedirectLinkShopNow"]</label>
+                                <input type="text" asp-for="Slide4LinkUrl" class="form-input-custom" placeholder="@Localizer["RedirectLinkExample"]" />
+                                <span asp-validation-for="Slide4LinkUrl" class="text-danger" style="font-size: 11px; margin-top: 4px; display: block;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. SLIDE 5 -->
+                    <div class="create-card">
+                        <div class="create-card-header">
+                            <i class='bx bx-image'></i>
+                            <span>البنر الخامس - Slide 5</span>
+                        </div>
+                        <div class="create-card-body">
+                            <input type="hidden" asp-for="Slide5ImageUrl" id="slide5ImgInp" />
+                            
+                            <div class="uploader-card" onclick="document.getElementById('slide5FileInp').click()">
+                                <div class="uploader-preview-wrap">
+                                    <img src="@Model.Slide5ImageUrl" id="prevSlide5Img" alt="Slide 5 Preview" class="uploader-preview-img" />
+                                </div>
+                                <input type="file" name="Slide5ImgFile" accept="image/*" class="uploader-file-input" id="slide5FileInp" />
+                                <button type="button" class="uploader-btn">
+                                    <i class='bx bx-cloud-upload'></i>
+                                    <span>@Localizer["UploadNewImage"]</span>
+                                </button>
+                                <p class="uploader-hint">@Localizer["SupportedImageFormatsHint"]</p>
+                            </div>
+                            <div class="form-field" style="margin-top: 16px; margin-bottom: 0;">
+                                <label class="field-label" asp-for="Slide5LinkUrl">@Localizer["RedirectLinkShopNow"]</label>
+                                <input type="text" asp-for="Slide5LinkUrl" class="form-input-custom" placeholder="@Localizer["RedirectLinkExample"]" />
+                                <span asp-validation-for="Slide5LinkUrl" class="text-danger" style="font-size: 11px; margin-top: 4px; display: block;"></span>
                             </div>
                         </div>
                     </div>
@@ -276,7 +334,7 @@
                     <div class="create-card">
                         <div class="create-card-header">
                             <i class='bx bx-gift'></i>
-                            <span>بانر مهرجان هواوي (Huawei Banner)</span>
+                            <span>@Localizer["HuaweiFestivalBanner"]</span>
                         </div>
                         <div class="create-card-body">
                             <input type="hidden" asp-for="HuaweiImageUrl" id="huaweiImgInp" />
@@ -288,22 +346,22 @@
                                 <input type="file" name="HuaweiImgFile" accept="image/*" class="uploader-file-input" id="huaweiFileInp" />
                                 <button type="button" class="uploader-btn">
                                     <i class='bx bx-cloud-upload'></i>
-                                    <span>رفع صورة جديدة</span>
+                                    <span>@Localizer["UploadNewImage"]</span>
                                 </button>
-                                <p class="uploader-hint">صيغ الصور المدعومة: PNG, JPG, JPEG, WebP. الحجم الأقصى: 5 ميجابايت.</p>
+                                <p class="uploader-hint">@Localizer["SupportedImageFormatsHint"]</p>
                             </div>
                             
                             <div class="form-field" style="margin-top: 16px;">
-                                <label class="field-label" asp-for="HuaweiTitle">العنوان الرئيسي للبنر</label>
-                                <input type="text" asp-for="HuaweiTitle" class="form-input-custom" style="direction: rtl; text-align: right;" placeholder="مثال: مهرجان هواوي HUAWEI" />
+                                <label class="field-label" asp-for="HuaweiTitle">@Localizer["BannerMainTitle"]</label>
+                                <input type="text" asp-for="HuaweiTitle" class="form-input-custom" style="direction: inherit; text-align: inherit;" placeholder="@Localizer["HuaweiTitleExample"]" />
                             </div>
                             <div class="form-field">
-                                <label class="field-label" asp-for="HuaweiSubtitle">الوصف / العنوان الفرعي للبنر</label>
-                                <textarea asp-for="HuaweiSubtitle" class="form-input-custom" style="direction: rtl; text-align: right; height: 80px; resize: none;" placeholder="مثال: احصل على كوبونات خصم فورية وهدايا مجانية..."></textarea>
+                                <label class="field-label" asp-for="HuaweiSubtitle">@Localizer["BannerSubtitle"]</label>
+                                <textarea asp-for="HuaweiSubtitle" class="form-input-custom" style="direction: inherit; text-align: inherit; height: 80px; resize: none;" placeholder="@Localizer["HuaweiSubtitleExample"]"></textarea>
                             </div>
                             <div class="form-field" style="margin-bottom: 0;">
-                                <label class="field-label" asp-for="HuaweiLinkUrl">رابط التوجيه عند الضغط على البنر</label>
-                                <input type="text" asp-for="HuaweiLinkUrl" class="form-input-custom" placeholder="مثال: /Customer/Home/Store?SearchQuery=Huawei" />
+                                <label class="field-label" asp-for="HuaweiLinkUrl">@Localizer["BannerClickRedirectLink"]</label>
+                                <input type="text" asp-for="HuaweiLinkUrl" class="form-input-custom" placeholder="@Localizer["HuaweiLinkExample"]" />
                             </div>
                         </div>
                     </div>
@@ -312,7 +370,7 @@
                     <div class="create-card">
                         <div class="create-card-header">
                             <i class='bx bx-bolt'></i>
-                            <span>بانر عروض أنكر (Anker Banner)</span>
+                            <span>@Localizer["AnkerOffersBanner"]</span>
                         </div>
                         <div class="create-card-body">
                             <input type="hidden" asp-for="AnkerImageUrl" id="ankerImgInp" />
@@ -324,22 +382,22 @@
                                 <input type="file" name="AnkerImgFile" accept="image/*" class="uploader-file-input" id="ankerFileInp" />
                                 <button type="button" class="uploader-btn">
                                     <i class='bx bx-cloud-upload'></i>
-                                    <span>رفع صورة جديدة</span>
+                                    <span>@Localizer["UploadNewImage"]</span>
                                 </button>
-                                <p class="uploader-hint">صيغ الصور المدعومة: PNG, JPG, JPEG, WebP. الحجم الأقصى: 5 ميجابايت.</p>
+                                <p class="uploader-hint">@Localizer["SupportedImageFormatsHint"]</p>
                             </div>
                             
                             <div class="form-field" style="margin-top: 16px;">
-                                <label class="field-label" asp-for="AnkerTitle">العنوان الرئيسي للبنر</label>
-                                <input type="text" asp-for="AnkerTitle" class="form-input-custom" style="direction: rtl; text-align: right;" placeholder="مثال: أنكر ANKER لشواحن الهواتف وملحقاتها" />
+                                <label class="field-label" asp-for="AnkerTitle">@Localizer["BannerMainTitle"]</label>
+                                <input type="text" asp-for="AnkerTitle" class="form-input-custom" style="direction: inherit; text-align: inherit;" placeholder="@Localizer["AnkerTitleExample"]" />
                             </div>
                             <div class="form-field">
-                                <label class="field-label" asp-for="AnkerSubtitle">الوصف / العنوان الفرعي للبنر</label>
-                                <textarea asp-for="AnkerSubtitle" class="form-input-custom" style="direction: rtl; text-align: right; height: 80px; resize: none;" placeholder="مثال: أقوى حماية وأسرع شحن لهواتفك الذكية..."></textarea>
+                                <label class="field-label" asp-for="AnkerSubtitle">@Localizer["BannerSubtitle"]</label>
+                                <textarea asp-for="AnkerSubtitle" class="form-input-custom" style="direction: inherit; text-align: inherit; height: 80px; resize: none;" placeholder="@Localizer["AnkerSubtitleExample"]"></textarea>
                             </div>
                             <div class="form-field" style="margin-bottom: 0;">
-                                <label class="field-label" asp-for="AnkerLinkUrl">رابط التوجيه عند الضغط على البنر</label>
-                                <input type="text" asp-for="AnkerLinkUrl" class="form-input-custom" placeholder="مثال: /Customer/Home/Store?SearchQuery=Anker" />
+                                <label class="field-label" asp-for="AnkerLinkUrl">@Localizer["BannerClickRedirectLink"]</label>
+                                <input type="text" asp-for="AnkerLinkUrl" class="form-input-custom" placeholder="@Localizer["AnkerLinkExample"]" />
                             </div>
                         </div>
                     </div>
@@ -351,24 +409,24 @@
                     <div class="create-card">
                         <div class="create-card-header">
                             <i class='bx bx-calendar-star'></i>
-                            <span>بنر التقسيط الأول (البرتقالي - 12 شهر كاش)</span>
+                            <span>@Localizer["FirstInstallmentBannerOrange"]</span>
                         </div>
                         <div class="create-card-body">
                             <div class="form-field">
-                                <label class="field-label" asp-for="Installment1Title">عنوان البنر</label>
-                                <input type="text" asp-for="Installment1Title" class="form-input-custom" style="direction: rtl; text-align: right;" placeholder="مثال: قسط على سعر الكاش" />
+                                <label class="field-label" asp-for="Installment1Title">@Localizer["BannerTitle"]</label>
+                                <input type="text" asp-for="Installment1Title" class="form-input-custom" style="direction: inherit; text-align: inherit;" placeholder="@Localizer["InstallmentTitleDefault"]" />
                             </div>
                             <div class="form-field">
-                                <label class="field-label" asp-for="Installment1Subtitle">تفاصيل العرض (الفرعي)</label>
-                                <input type="text" asp-for="Installment1Subtitle" class="form-input-custom" style="direction: rtl; text-align: right;" placeholder="مثال: 0% فوائد | 0% مقدم | 0% مصاريف إدارية" />
+                                <label class="field-label" asp-for="Installment1Subtitle">@Localizer["OfferDetailsSubtitle"]</label>
+                                <input type="text" asp-for="Installment1Subtitle" class="form-input-custom" style="direction: inherit; text-align: inherit;" placeholder="@Localizer["InstallmentSubtitleDefault1"]" />
                             </div>
                             <div class="form-field">
-                                <label class="field-label" asp-for="Installment1Duration">مدة التقسيط (شريط التاج)</label>
-                                <input type="text" asp-for="Installment1Duration" class="form-input-custom" style="direction: rtl; text-align: right;" placeholder="مثال: 12 شهر" />
+                                <label class="field-label" asp-for="Installment1Duration">@Localizer["InstallmentDurationBadge"]</label>
+                                <input type="text" asp-for="Installment1Duration" class="form-input-custom" style="direction: inherit; text-align: inherit;" placeholder="@Localizer["Installment12MonthsExample"]" />
                             </div>
                             <div class="form-field" style="margin-bottom: 0;">
-                                <label class="field-label" asp-for="Installment1LinkUrl">رابط التوجيه عند الضغط على البنر</label>
-                                <input type="text" asp-for="Installment1LinkUrl" class="form-input-custom" placeholder="مثال: /Customer/Home/Store" />
+                                <label class="field-label" asp-for="Installment1LinkUrl">@Localizer["BannerClickRedirectLink"]</label>
+                                <input type="text" asp-for="Installment1LinkUrl" class="form-input-custom" placeholder="@Localizer["RedirectLinkExample"]" />
                             </div>
                         </div>
                     </div>
@@ -377,27 +435,75 @@
                     <div class="create-card">
                         <div class="create-card-header">
                             <i class='bx bx-calendar-event'></i>
-                            <span>بنر التقسيط الثاني (الأسود - 3 شهور كاش)</span>
+                            <span>@Localizer["SecondInstallmentBannerBlack"]</span>
                         </div>
                         <div class="create-card-body">
                             <div class="form-field">
-                                <label class="field-label" asp-for="Installment2Title">عنوان البنر</label>
-                                <input type="text" asp-for="Installment2Title" class="form-input-custom" style="direction: rtl; text-align: right;" placeholder="مثال: قسط على سعر الكاش" />
+                                <label class="field-label" asp-for="Installment2Title">@Localizer["BannerTitle"]</label>
+                                <input type="text" asp-for="Installment2Title" class="form-input-custom" style="direction: inherit; text-align: inherit;" placeholder="@Localizer["InstallmentTitleDefault"]" />
                             </div>
                             <div class="form-field">
-                                <label class="field-label" asp-for="Installment2Subtitle">تفاصيل العرض (الفرعي)</label>
-                                <input type="text" asp-for="Installment2Subtitle" class="form-input-custom" style="direction: rtl; text-align: right;" placeholder="مثال: 0% فوائد | 0% مقدم | 0% مصاريف إدارية" />
+                                <label class="field-label" asp-for="Installment2Subtitle">@Localizer["OfferDetailsSubtitle"]</label>
+                                <input type="text" asp-for="Installment2Subtitle" class="form-input-custom" style="direction: inherit; text-align: inherit;" placeholder="@Localizer["InstallmentSubtitleDefault2"]" />
                             </div>
                             <div class="form-field">
-                                <label class="field-label" asp-for="Installment2Duration">مدة التقسيط (شريط التاج)</label>
-                                <input type="text" asp-for="Installment2Duration" class="form-input-custom" style="direction: rtl; text-align: right;" placeholder="مثال: 3 شهور" />
+                                <label class="field-label" asp-for="Installment2Duration">@Localizer["InstallmentDurationBadge"]</label>
+                                <input type="text" asp-for="Installment2Duration" class="form-input-custom" style="direction: inherit; text-align: inherit;" placeholder="@Localizer["Installment3MonthsExample"]" />
                             </div>
                             <div class="form-field" style="margin-bottom: 0;">
-                                <label class="field-label" asp-for="Installment2LinkUrl">رابط التوجيه عند الضغط على البنر</label>
-                                <input type="text" asp-for="Installment2LinkUrl" class="form-input-custom" placeholder="مثال: /Customer/Home/Store" />
+                                <label class="field-label" asp-for="Installment2LinkUrl">@Localizer["BannerClickRedirectLink"]</label>
+                                <input type="text" asp-for="Installment2LinkUrl" class="form-input-custom" placeholder="@Localizer["RedirectLinkExample"]" />
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- TAB 4: HOMEPAGE GRID BANNERS -->
+                <div id="grid-tab" class="tab-content">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        var prevImgId = $"prevGrid{i}Img";
+                        var fileInpId = $"grid{i}FileInp";
+                        var imgFile = $"Grid{i}ImgFile";
+
+                        <div class="create-card">
+                            <div class="create-card-header">
+                                <i class='bx bx-grid-alt'></i>
+                                <span>@Localizer[$"GridBanner{i}"] (@(i == 5 ? Localizer["LargeRightBanner"] : Localizer["SmallLeftBanner"]))</span>
+                            </div>
+                            <div class="create-card-body">
+                                <div class="uploader-card" onclick="document.getElementById('@fileInpId').click()">
+                                    <div class="uploader-preview-wrap">
+                                        <img src="@(i == 1 ? Model.Grid1ImageUrl : (i == 2 ? Model.Grid2ImageUrl : (i == 3 ? Model.Grid3ImageUrl : (i == 4 ? Model.Grid4ImageUrl : Model.Grid5ImageUrl))))" id="@prevImgId" alt="Grid @i Preview" class="uploader-preview-img" />
+                                    </div>
+                                    <input type="file" name="@imgFile" accept="image/*" class="uploader-file-input" id="@fileInpId" />
+                                    <button type="button" class="uploader-btn">
+                                        <i class='bx bx-cloud-upload'></i>
+                                        <span>@Localizer["UploadNewImage"]</span>
+                                    </button>
+                                    <p class="uploader-hint">@Localizer["SupportedImageFormatsHint"]</p>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 16px;">
+                                    <div class="form-field">
+                                        <label class="field-label">@Localizer["Title"]</label>
+                                        <input type="text" name="Grid@(i)Title" value="@(i == 1 ? Model.Grid1Title : (i == 2 ? Model.Grid2Title : (i == 3 ? Model.Grid3Title : (i == 4 ? Model.Grid4Title : Model.Grid5Title))))" class="form-input-custom" />
+                                    </div>
+                                    <div class="form-field">
+                                        <label class="field-label">@Localizer["Subtitle"]</label>
+                                        <input type="text" name="Grid@(i)Subtitle" value="@(i == 1 ? Model.Grid1Subtitle : (i == 2 ? Model.Grid2Subtitle : (i == 3 ? Model.Grid3Subtitle : (i == 4 ? Model.Grid4Subtitle : Model.Grid5Subtitle))))" class="form-input-custom" />
+                                    </div>
+                                </div>
+                                <div class="form-field" style="margin-top: 12px;">
+                                    <label class="field-label">@Localizer["RedirectLinkShopNow"]</label>
+                                    <input type="text" name="Grid@(i)LinkUrl" value="@(i == 1 ? Model.Grid1LinkUrl : (i == 2 ? Model.Grid2LinkUrl : (i == 3 ? Model.Grid3LinkUrl : (i == 4 ? Model.Grid4LinkUrl : Model.Grid5LinkUrl))))" class="form-input-custom" placeholder="@Localizer["RedirectLinkExample"]" />
+                                </div>
+                                <div class="form-field" style="margin-top: 12px; margin-bottom: 0;">
+                                    <label class="field-label">@Localizer["CategoryNameLink"]</label>
+                                    <input type="text" name="Grid@(i)CategoryName" value="@(i == 1 ? Model.Grid1CategoryName : (i == 2 ? Model.Grid2CategoryName : (i == 3 ? Model.Grid3CategoryName : (i == 4 ? Model.Grid4CategoryName : Model.Grid5CategoryName))))" class="form-input-custom" placeholder="@Localizer["CategoryNameExample"]" />
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
 
             </div>
@@ -408,16 +514,16 @@
                 <div class="create-card">
                     <div class="create-card-header">
                         <i class='bx bx-send'></i>
-                        <span>حفظ التعديلات</span>
+                        <span>@Localizer["SaveSettings"]</span>
                     </div>
                     <div class="create-card-body">
                         <div class="publish-actions">
                             <button type="submit" class="pub-submit-btn">
                                 <i class='bx bx-save'></i>
-                                <span>حفظ الآن</span>
+                                <span>@Localizer["SaveNow"]</span>
                             </button>
                             <a href="@Url.Action("Index", "DashBoard", new { area = "Admin" })" class="pub-cancel-btn">
-                                <i class='bx bx-x'></i> إلغاء
+                                <i class='bx bx-x'></i> @Localizer["Cancel"]
                             </a>
                         </div>
                     </div>
@@ -426,13 +532,13 @@
                 <div class="create-card">
                     <div class="create-card-header">
                         <i class='bx bx-bulb'></i>
-                        <span>نصائح هامة</span>
+                        <span>@Localizer["ImportantTips"]</span>
                     </div>
                     <div class="create-card-body">
                         <ul style="list-style: none; padding: 0; margin: 0; font-size: 12px; color: #4b5563; line-height: 1.8;">
-                            <li style="margin-bottom: 8px;"><i class='bx bx-check-circle' style="color: #ff6a00; margin-left: 6px;"></i> يفضل استخدام صور عالية الجودة لتظهر البانرات بشكل جذاب وتجذب انتباه العملاء.</li>
-                            <li style="margin-bottom: 8px;"><i class='bx bx-check-circle' style="color: #ff6a00; margin-left: 6px;"></i> البانرات تظهر في الصفحة الرئيسية بالتناوب التلقائي كل 5 ثوانٍ.</li>
-                            <li style="margin-bottom: 8px;"><i class='bx bx-check-circle' style="color: #ff6a00; margin-left: 6px;"></i> تظهر التحديثات فوراً في الصفحة الرئيسية فور الضغط على حفظ.</li>
+                            <li style="margin-bottom: 8px;"><i class='bx bx-check-circle' style="color: #2563eb; margin-inline-end: 6px;"></i> @Localizer["TipHighQualityImages"]</li>
+                            <li style="margin-bottom: 8px;"><i class='bx bx-check-circle' style="color: #2563eb; margin-inline-end: 6px;"></i> @Localizer["TipBannersRotation"]</li>
+                            <li style="margin-bottom: 8px;"><i class='bx bx-check-circle' style="color: #2563eb; margin-inline-end: 6px;"></i> @Localizer["TipUpdatesInstant"]</li>
                         </ul>
                     </div>
                 </div>
@@ -464,8 +570,15 @@
         setupPreview('slide1FileInp', 'prevSlide1Img');
         setupPreview('slide2FileInp', 'prevSlide2Img');
         setupPreview('slide3FileInp', 'prevSlide3Img');
+        setupPreview('slide4FileInp', 'prevSlide4Img');
+        setupPreview('slide5FileInp', 'prevSlide5Img');
         setupPreview('huaweiFileInp', 'prevHuaweiImg');
         setupPreview('ankerFileInp', 'prevAnkerImg');
+        setupPreview('grid1FileInp', 'prevGrid1Img');
+        setupPreview('grid2FileInp', 'prevGrid2Img');
+        setupPreview('grid3FileInp', 'prevGrid3Img');
+        setupPreview('grid4FileInp', 'prevGrid4Img');
+        setupPreview('grid5FileInp', 'prevGrid5Img');
 
         function switchTab(tabId, btn) {
             // Hide all tab contents

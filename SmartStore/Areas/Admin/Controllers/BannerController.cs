@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using SmartStore.DataAccess;
 using SmartStore.Models;
 using System;
@@ -12,22 +13,28 @@ namespace SmartStore.Areas.Admin.Controllers
     public class BannerController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IStringLocalizer<LocalizationController> _localizer;
 
-        public BannerController(ApplicationDbContext context)
+        public BannerController(ApplicationDbContext context, IStringLocalizer<LocalizationController> localizer)
         {
             _context = context;
+            _localizer = localizer;
         }
 
         private BannerModel GetDefaultBanners()
         {
             return new BannerModel
             {
-                Slide1ImageUrl = "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1600&fit=crop&q=80",
+                Slide1ImageUrl = "/Banners/banner_slide1.png",
                 Slide1LinkUrl = "/Customer/Home/Store",
-                Slide2ImageUrl = "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=1600&fit=crop&q=80",
+                Slide2ImageUrl = "/Banners/banner_slide2.png",
                 Slide2LinkUrl = "/Customer/Home/Store",
-                Slide3ImageUrl = "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1600&fit=crop&q=80",
+                Slide3ImageUrl = "/Banners/banner_slide3.png",
                 Slide3LinkUrl = "/Customer/Home/Store",
+                Slide4ImageUrl = "/Banners/banner_slide4.png",
+                Slide4LinkUrl = "/Customer/Home/Store",
+                Slide5ImageUrl = "/Banners/banner_slide5.png",
+                Slide5LinkUrl = "/Customer/Home/Store",
 
                 HuaweiTitle = "مهرجان هواوي HUAWEI",
                 HuaweiSubtitle = "احصل على كوبونات خصم فورية وهدايا مجانية عند شراء أي من أجهزة هواوي لابتوب أو ساعة ذكية.",
@@ -47,7 +54,38 @@ namespace SmartStore.Areas.Admin.Controllers
                 Installment2Title = "قسط على سعر الكاش",
                 Installment2Subtitle = "0% فوائد | 0% مقدم | 0% مصاريف إدارية",
                 Installment2Duration = "3 شهور",
-                Installment2LinkUrl = "/Customer/Home/Store"
+                Installment2LinkUrl = "/Customer/Home/Store",
+
+                // Default Grid Banners
+                Grid1Title = "أحدث الموديلات",
+                Grid1Subtitle = "بأفضل الأسعار",
+                Grid1ImageUrl = "/Banners/promo_laptops.png",
+                Grid1LinkUrl = "/Customer/Home/Store?Filter.CategoryIds=2",
+                Grid1CategoryName = "Electronics",
+
+                Grid2Title = "كل الأجهزة اللي",
+                Grid2Subtitle = "بيتك محتاجها في مكان واحد",
+                Grid2ImageUrl = "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=60",
+                Grid2LinkUrl = "/Customer/Home/Store?Filter.CategoryIds=4",
+                Grid2CategoryName = "Home Appliances",
+
+                Grid3Title = "تصميم أنيق",
+                Grid3Subtitle = "وأداء يفوق التوقعات",
+                Grid3ImageUrl = "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=60",
+                Grid3LinkUrl = "/Customer/Home/Store?Filter.CategoryIds=1",
+                Grid3CategoryName = "Electronics",
+
+                Grid4Title = "إكسسوارات",
+                Grid4Subtitle = "تليق بك",
+                Grid4ImageUrl = "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=600&auto=format&fit=crop&q=60",
+                Grid4LinkUrl = "/Customer/Home/Store?Filter.CategoryIds=6",
+                Grid4CategoryName = "Electronics",
+
+                Grid5Title = "نظافة مثالية",
+                Grid5Subtitle = "من غير مجهود",
+                Grid5ImageUrl = "https://images.unsplash.com/photo-1584622781564-1d987f7333c1?w=600&auto=format&fit=crop&q=60",
+                Grid5LinkUrl = "/Customer/Home/Store?Filter.CategoryIds=4",
+                Grid5CategoryName = "Home Appliances"
             };
         }
 
@@ -70,7 +108,9 @@ namespace SmartStore.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(BannerModel model,
             IFormFile? Slide1ImgFile, IFormFile? Slide2ImgFile, IFormFile? Slide3ImgFile,
-            IFormFile? HuaweiImgFile, IFormFile? AnkerImgFile)
+            IFormFile? Slide4ImgFile, IFormFile? Slide5ImgFile,
+            IFormFile? HuaweiImgFile, IFormFile? AnkerImgFile,
+            IFormFile? Grid1ImgFile, IFormFile? Grid2ImgFile, IFormFile? Grid3ImgFile, IFormFile? Grid4ImgFile, IFormFile? Grid5ImgFile)
         {
             if (ModelState.IsValid)
             {
@@ -129,6 +169,32 @@ namespace SmartStore.Areas.Admin.Controllers
                     }
                     existingModel.Slide3LinkUrl = model.Slide3LinkUrl;
 
+                    // Handle Slide 4
+                    if (Slide4ImgFile != null && Slide4ImgFile.Length > 0)
+                    {
+                        var fileName = Guid.NewGuid() + Path.GetExtension(Slide4ImgFile.FileName);
+                        var filePath = Path.Combine(folder, fileName);
+                        using (var stream = System.IO.File.Create(filePath))
+                        {
+                            await Slide4ImgFile.CopyToAsync(stream);
+                        }
+                        existingModel.Slide4ImageUrl = "/Banners/" + fileName;
+                    }
+                    existingModel.Slide4LinkUrl = model.Slide4LinkUrl;
+
+                    // Handle Slide 5
+                    if (Slide5ImgFile != null && Slide5ImgFile.Length > 0)
+                    {
+                        var fileName = Guid.NewGuid() + Path.GetExtension(Slide5ImgFile.FileName);
+                        var filePath = Path.Combine(folder, fileName);
+                        using (var stream = System.IO.File.Create(filePath))
+                        {
+                            await Slide5ImgFile.CopyToAsync(stream);
+                        }
+                        existingModel.Slide5ImageUrl = "/Banners/" + fileName;
+                    }
+                    existingModel.Slide5LinkUrl = model.Slide5LinkUrl;
+
                     // Handle Huawei Banner
                     existingModel.HuaweiTitle = model.HuaweiTitle;
                     existingModel.HuaweiSubtitle = model.HuaweiSubtitle;
@@ -171,15 +237,91 @@ namespace SmartStore.Areas.Admin.Controllers
                     existingModel.Installment2Duration = model.Installment2Duration;
                     existingModel.Installment2LinkUrl = model.Installment2LinkUrl;
 
+                    // Handle Grid Banners
+                    existingModel.Grid1Title = model.Grid1Title;
+                    existingModel.Grid1Subtitle = model.Grid1Subtitle;
+                    existingModel.Grid1LinkUrl = model.Grid1LinkUrl;
+                    existingModel.Grid1CategoryName = model.Grid1CategoryName;
+                    if (Grid1ImgFile != null && Grid1ImgFile.Length > 0)
+                    {
+                        var fileName = Guid.NewGuid() + Path.GetExtension(Grid1ImgFile.FileName);
+                        var filePath = Path.Combine(folder, fileName);
+                        using (var stream = System.IO.File.Create(filePath))
+                        {
+                            await Grid1ImgFile.CopyToAsync(stream);
+                        }
+                        existingModel.Grid1ImageUrl = "/Banners/" + fileName;
+                    }
+
+                    existingModel.Grid2Title = model.Grid2Title;
+                    existingModel.Grid2Subtitle = model.Grid2Subtitle;
+                    existingModel.Grid2LinkUrl = model.Grid2LinkUrl;
+                    existingModel.Grid2CategoryName = model.Grid2CategoryName;
+                    if (Grid2ImgFile != null && Grid2ImgFile.Length > 0)
+                    {
+                        var fileName = Guid.NewGuid() + Path.GetExtension(Grid2ImgFile.FileName);
+                        var filePath = Path.Combine(folder, fileName);
+                        using (var stream = System.IO.File.Create(filePath))
+                        {
+                            await Grid2ImgFile.CopyToAsync(stream);
+                        }
+                        existingModel.Grid2ImageUrl = "/Banners/" + fileName;
+                    }
+
+                    existingModel.Grid3Title = model.Grid3Title;
+                    existingModel.Grid3Subtitle = model.Grid3Subtitle;
+                    existingModel.Grid3LinkUrl = model.Grid3LinkUrl;
+                    existingModel.Grid3CategoryName = model.Grid3CategoryName;
+                    if (Grid3ImgFile != null && Grid3ImgFile.Length > 0)
+                    {
+                        var fileName = Guid.NewGuid() + Path.GetExtension(Grid3ImgFile.FileName);
+                        var filePath = Path.Combine(folder, fileName);
+                        using (var stream = System.IO.File.Create(filePath))
+                        {
+                            await Grid3ImgFile.CopyToAsync(stream);
+                        }
+                        existingModel.Grid3ImageUrl = "/Banners/" + fileName;
+                    }
+
+                    existingModel.Grid4Title = model.Grid4Title;
+                    existingModel.Grid4Subtitle = model.Grid4Subtitle;
+                    existingModel.Grid4LinkUrl = model.Grid4LinkUrl;
+                    existingModel.Grid4CategoryName = model.Grid4CategoryName;
+                    if (Grid4ImgFile != null && Grid4ImgFile.Length > 0)
+                    {
+                        var fileName = Guid.NewGuid() + Path.GetExtension(Grid4ImgFile.FileName);
+                        var filePath = Path.Combine(folder, fileName);
+                        using (var stream = System.IO.File.Create(filePath))
+                        {
+                            await Grid4ImgFile.CopyToAsync(stream);
+                        }
+                        existingModel.Grid4ImageUrl = "/Banners/" + fileName;
+                    }
+
+                    existingModel.Grid5Title = model.Grid5Title;
+                    existingModel.Grid5Subtitle = model.Grid5Subtitle;
+                    existingModel.Grid5LinkUrl = model.Grid5LinkUrl;
+                    existingModel.Grid5CategoryName = model.Grid5CategoryName;
+                    if (Grid5ImgFile != null && Grid5ImgFile.Length > 0)
+                    {
+                        var fileName = Guid.NewGuid() + Path.GetExtension(Grid5ImgFile.FileName);
+                        var filePath = Path.Combine(folder, fileName);
+                        using (var stream = System.IO.File.Create(filePath))
+                        {
+                            await Grid5ImgFile.CopyToAsync(stream);
+                        }
+                        existingModel.Grid5ImageUrl = "/Banners/" + fileName;
+                    }
+
                     _context.Banners.Update(existingModel);
                     await _context.SaveChangesAsync();
 
-                    TempData["SuccessMessage"] = "تم حفظ تعديلات البانرات بنجاح!";
+                    TempData["SuccessMessage"] = _localizer["BannersSavedSuccessfully"].Value;
                     return View(existingModel);
                 }
                 catch (System.Exception ex)
                 {
-                    ModelState.AddModelError(string.Empty, "حدث خطأ أثناء حفظ التعديلات: " + ex.Message);
+                    ModelState.AddModelError(string.Empty, _localizer["ErrorSavingChanges"].Value + ": " + ex.Message);
                 }
             }
 

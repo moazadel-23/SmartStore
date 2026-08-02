@@ -1,7 +1,8 @@
 @model List<Product>
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "My Wishlist";
+    ViewData["Title"] = Localizer["MyWishlistTitle"];
+    bool isArabic = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar", StringComparison.OrdinalIgnoreCase);
 }
 <link rel="stylesheet" href="~/css/store.css" asp-append-version="true" />
 
@@ -11,86 +12,115 @@
 }
 @await Html.PartialAsync("_BTechHeader")
 
-<div class="container" style="margin-top:32px;">
-    @if (TempData["Message"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show text-right" role="alert" dir="rtl">
-            <span>@TempData["Message"]</span>
-            <button type="button" class="btn-close float-start" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
+<div class="bg-gray-50/50 min-h-screen pb-16 font-cairo @(isArabic ? "text-right" : "text-left")" dir="@(isArabic ? "rtl" : "ltr")">
+    
+    <div class="max-w-[1250px] mx-auto px-4 pt-8">
+        @if (TempData["Message"] != null)
+        {
+            <div class="mb-6 p-4 bg-green-50 border border-green-100 text-green-700 text-sm font-bold rounded-xl flex items-center justify-between shadow-sm">
+                <span>@TempData["Message"]</span>
+                <button type="button" class="text-green-700 hover:text-green-900 bg-transparent border-0 cursor-pointer text-sm" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        }
 
-    <div class="section-header">
-        <h2>My Wishlist</h2>
-        <span class="text-muted">@Model.Count item(s)</span>
-    </div>
-
-    @if (Model.Any())
-    {
-        <div class="row">
-            @foreach (var product in Model)
-            {
-                <div class="col-lg-3 col-md-4 col-sm-6 col-6 mb-4">
-                    @{
-                        ViewBag.Wishlisted = true;
-                    }
-                    @await Html.PartialAsync("../Home/_ProductCard", product)
+        <!-- Header Section matching Cart page style -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 pb-6 border-b border-gray-100">
+            <div>
+                <a href="/Customer/Home/Store" class="flex items-center gap-2 text-gray-500 hover:text-[#002d72] transition-colors decoration-none mb-2 text-xs font-bold">
+                    <i class="fas @(isArabic ? "fa-arrow-right" : "fa-arrow-left")"></i>
+                    <span>@(isArabic ? "العودة للمتجر" : "Back to Store")</span>
+                </a>
+                <h1 class="text-2xl sm:text-3xl font-black text-gray-900 m-0">@Localizer["MyWishlistTitle"]</h1>
+                <!-- Breadcrumbs -->
+                <div class="flex items-center gap-2 text-xs text-gray-400 mt-2">
+                    <a href="/" class="hover:text-[#002d72] transition-colors decoration-none">@Localizer["Home"]</a>
+                    <i class="fas @(isArabic ? "fa-chevron-left" : "fa-chevron-right") text-[8px] text-gray-300"></i>
+                    <span class="font-semibold text-gray-500">@Localizer["MyWishlistTitle"]</span>
                 </div>
-            }
+            </div>
+            <div class="mt-4 sm:mt-0">
+                <span id="wishlist-badge-count" class="text-xs font-extrabold text-[#002d72] bg-[#002d72]/5 px-4 py-2.5 rounded-xl border border-blue-100/30">@Model.Count @Localizer["ItemsCountLabel"]</span>
+            </div>
         </div>
-    }
-    else
-    {
-        <div class="text-center py-5">
-            @if (!string.IsNullOrEmpty(Context.Request.Query["SearchQuery"]))
-            {
-                <i class="fa fa-search" style="font-size:64px;color:#ccc;"></i>
-                <h3 class="mt-3">No products found matching "@Context.Request.Query["SearchQuery"]"</h3>
-                <p class="text-muted">Try checking your spelling or search for another item.</p>
-                <a href="/Customer/Wishlist/Index" class="btn btn-primary mt-2">Clear Search</a>
-            }
-            else
-            {
-                <i class="fa fa-heart-o" style="font-size:64px;color:#ccc;"></i>
-                <h3 class="mt-3">Your wishlist is empty</h3>
-                <p class="text-muted">Start adding products you love!</p>
-                <a href="/Customer/Home/Store" class="btn btn-primary mt-2">Browse Products</a>
-            }
-        </div>
-    }
+
+        @if (Model.Any())
+        {
+            <!-- Product Grid with modern Tailwind spacing -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                @foreach (var product in Model)
+                {
+                    ViewBag.Wishlisted = true;
+                    <div class="bg-white rounded-2xl border border-gray-100/80 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300">
+                        @await Html.PartialAsync("../Home/_ProductCard", product)
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- Empty Wishlist View matching Cart page style -->
+            <div class="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm max-w-2xl mx-auto px-6">
+                @if (!string.IsNullOrEmpty(Context.Request.Query["SearchQuery"]))
+                {
+                    <div class="w-24 h-24 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-search text-4xl"></i>
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-black text-gray-900 mb-2">@Localizer["NoProductsFoundMatching"] "@Context.Request.Query["SearchQuery"]"</h2>
+                    <p class="text-gray-500 text-sm max-w-sm mx-auto mb-8">@Localizer["TryCheckingSpelling"]</p>
+                    <a href="/Customer/Wishlist/Index" class="bg-[#002d72] hover:bg-[#001f4f] text-white px-8 py-3 rounded-xl font-bold text-sm transition-all border-0 inline-flex items-center gap-2 decoration-none shadow-md">
+                        <span>@Localizer["ClearSearch"]</span>
+                    </a>
+                }
+                else
+                {
+                    <div class="w-24 h-24 bg-blue-50/50 text-[#002d72] rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-heart text-4xl"></i>
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-black text-gray-900 mb-2">@Localizer["WishlistEmptyTitle"]</h2>
+                    <p class="text-gray-500 text-sm max-w-sm mx-auto mb-8">@Localizer["WishlistEmptySubtitle"]</p>
+                    <a href="/Customer/Home/Store" class="bg-[#002d72] hover:bg-[#001f4f] text-white px-8 py-3 rounded-xl font-bold text-sm transition-all border-0 inline-flex items-center gap-2 decoration-none shadow-md">
+                        <span>@Localizer["BrowseProductsNow"]</span>
+                        <i class="fas @(isArabic ? "fa-arrow-left" : "fa-arrow-right")"></i>
+                    </a>
+                }
+            </div>
+        }
+    </div>
 </div>
 
-<footer class="store-footer">
+<footer class="store-footer" dir="@(isArabic ? "rtl" : "ltr")">
     <div class="container">
         <div class="row">
-            <div class="col-md-3 col-6">
-                <h5>About Us</h5>
-                <p style="font-size:13px;line-height:1.7;">Your destination for premium electronics at unbeatable prices. Fast shipping, easy returns.</p>
+            <div class="col-md-3 col-6 text-right">
+                <h5>@Localizer["AboutUs"]</h5>
+                <p style="font-size:13px;line-height:1.7;">@Localizer["AboutUsText"]</p>
             </div>
-            <div class="col-md-3 col-6">
-                <h5>Categories</h5>
-                <a href="#">Laptops</a>
-                <a href="#">Smartphones</a>
-                <a href="#">Cameras</a>
-                <a href="#">Accessories</a>
+            <div class="col-md-3 col-6 text-right">
+                <h5>@Localizer["MainCategories"]</h5>
+                <a href="/Customer/Home/Store?Filter.CategoryIds=2">@Localizer["Laptops"]</a>
+                <a href="/Customer/Home/Store?Filter.CategoryIds=1">@Localizer["Mobiles"]</a>
+                <a href="/Customer/Home/Store?Filter.CategoryIds=3">@Localizer["ScreensTVs"]</a>
+                <a href="/Customer/Home/Store?Filter.CategoryIds=4">@Localizer["HomeAppliances"]</a>
             </div>
-            <div class="col-md-3 col-6">
-                <h5>Customer Service</h5>
-                <a href="#">Contact Us</a>
-                <a href="#">Shipping & Returns</a>
-                <a href="#">FAQ</a>
-                <a href="#">Warranty</a>
+            <div class="col-md-3 col-6 text-right">
+                <h5>@Localizer["CustomerService"]</h5>
+                <a href="#">@Localizer["ContactUs"]</a>
+                <a href="#">@Localizer["ReturnsPolicy"]</a>
+                <a href="#">@Localizer["FAQ"]</a>
+                <a href="#">@Localizer["WarrantyTerms"]</a>
             </div>
-            <div class="col-md-3 col-6">
-                <h5>My Account</h5>
-                <a href="#">My Orders</a>
-                <a href="/Customer/Wishlist/Index">My Wishlist</a>
-                <a href="#">My Cart</a>
-                <a href="#">Account Settings</a>
+            <div class="col-md-3 col-6 text-right">
+                <h5>@Localizer["MyAccount"]</h5>
+                <a href="#">@Localizer["MyOrders"]</a>
+                <a href="/Customer/Wishlist/Index">@Localizer["Wishlist"]</a>
+                <a href="/Cart">@Localizer["Cart"]</a>
+                <a href="#">@Localizer["AccountSettings"]</a>
             </div>
         </div>
         <div class="footer-bottom">
-            <span>&copy; @DateTime.Now.Year SmartStore. All rights reserved.</span>
+            <span>&copy; @DateTime.Now.Year @Localizer["FooterRightsText"]</span>
             <span>
                 <i class="fa fa-cc-visa" style="font-size:24px;margin-left:8px;"></i>
                 <i class="fa fa-cc-mastercard" style="font-size:24px;margin-left:8px;"></i>

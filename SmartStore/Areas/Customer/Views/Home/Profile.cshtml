@@ -1,0 +1,317 @@
+@model SmartStore.ViewModel.ProfileVM
+@inject Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> UserManager
+@inject Microsoft.Extensions.Localization.IStringLocalizer<SmartStore.LocalizationController> Localizer
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = Localizer["Profile"];
+
+    var userDisplayName = Model != null ? $"{Model.FirstName} {Model.LastName}".Trim() : "Customer";
+    if (string.IsNullOrEmpty(userDisplayName)) {
+        userDisplayName = "Customer";
+    }
+    var userEmail = Model?.Email ?? "customer@smartstore.com";
+    var userPhone = Model?.Phone ?? "+20 123 456 7890";
+    var userFirstName = Model?.FirstName ?? "Smart";
+    var userLastName = Model?.LastName ?? "Customer";
+    var userCity = Model?.City ?? "";
+    var userStreet = Model?.Street ?? "";
+    var username = "customer";
+
+    if (User.Identity?.IsAuthenticated == true)
+    {
+        var currentUser = await UserManager.GetUserAsync(User);
+        if (currentUser != null)
+        {
+            if (userDisplayName == "Customer") {
+                userDisplayName = currentUser.FullName;
+                if (string.IsNullOrEmpty(userDisplayName.Trim()))
+                {
+                    userDisplayName = currentUser.FirstName;
+                }
+                if (string.IsNullOrEmpty(userDisplayName))
+                {
+                    userDisplayName = currentUser.UserName ?? "Customer";
+                }
+            }
+            username = currentUser.UserName ?? "";
+        }
+    }
+    bool isArabic = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar", StringComparison.OrdinalIgnoreCase);
+    var wishlist = ViewBag.WishlistProducts as List<Product> ?? new List<Product>();
+}
+
+@await Html.PartialAsync("_BTechHeader")
+
+<!-- FontAwesome 6 for modern store icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<div class="max-w-[1200px] mx-auto px-4 py-8 font-cairo" dir="@(isArabic ? "rtl" : "ltr")">
+    <!-- Breadcrumbs -->
+    <div class="flex items-center gap-2 text-sm text-gray-500 mb-6">
+        <a href="/" class="hover:text-[#002d72] transition-colors decoration-none font-bold text-gray-600">@Localizer["Home"]</a>
+        <i class="fas @(isArabic ? "fa-chevron-left" : "fa-chevron-right") text-[10px] text-gray-400"></i>
+        <span class="text-gray-800 font-semibold">@Localizer["MyAccount"]</span>
+    </div>
+
+    <!-- Page Title and Subtitle -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-black text-gray-900 mb-1.5">@Localizer["MyAccount"]</h1>
+        <p class="text-sm text-gray-500 font-medium">@(isArabic ? "إدارة معلوماتك الشخصية وعناوين الشحن" : "Manage your personal information and shipping details")</p>
+    </div>
+
+    <!-- Layout Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- Left Sidebar Panel -->
+        <div class="lg:col-span-1 space-y-4">
+            <!-- Customer Avatar / Info Card -->
+            <div class="bg-white border border-gray-100 rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-shadow duration-300">
+                <div class="relative w-24 h-24 mx-auto mb-4 group">
+                    <img id="custAvatar" src="@(string.IsNullOrEmpty(Model?.ProfileImg) ? $"https://ui-avatars.com/api/?name={userDisplayName}&background=002d72&color=fff&bold=true&size=120" : $"/ProfileImg/{Model.ProfileImg}")" class="w-full h-full rounded-full object-cover border-4 border-blue-50/50 shadow-inner" alt="Avatar">
+                    <label for="custAvatarInput" class="absolute bottom-0 right-0 bg-[#002d72] hover:bg-[#001f4f] text-white w-8 h-8 rounded-full flex items-center justify-center cursor-pointer border-2 border-white transition-all shadow-md hover:scale-110 active:scale-95">
+                        <i class="fas fa-camera text-xs"></i>
+                    </label>
+                    <input type="file" id="custAvatarInput" name="Img" form="customerProfileForm" accept="image/*" class="hidden">
+                </div>
+                <h3 class="text-base font-bold text-gray-800 leading-tight">@userDisplayName</h3>
+                <p class="text-xs text-gray-400 mt-1 font-semibold">@@@username</p>
+                <div class="mt-4 inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50/50 text-[#002d72] rounded-full text-[11px] font-bold border border-blue-100/30">
+                    <i class="far fa-calendar-alt text-[10px]"></i>
+                    <span>@Localizer["MemberSince"] 2026</span>
+                </div>
+            </div>
+
+            <!-- Navigation Menu Card -->
+            <div class="bg-white border border-gray-100 rounded-2xl p-3 shadow-sm">
+                <nav class="space-y-1">
+                    <a href="/Customer/Home/Profile" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold bg-[#002d72]/5 text-[#002d72] decoration-none transition-all">
+                        <i class="fas fa-user-circle text-base"></i>
+                        <span>@Localizer["PersonalInfo"]</span>
+                    </a>
+                    <a href="/Cart" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-900 decoration-none transition-all">
+                        <i class="fas fa-shopping-cart text-base"></i>
+                        <span>@Localizer["MyCart"]</span>
+                    </a>
+                    <a href="/Customer/Wishlist/Index" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-900 decoration-none transition-all">
+                        <i class="fas fa-heart text-base"></i>
+                        <span>@Localizer["Wishlist"]</span>
+                    </a>
+                    <a href="/Customer/Home/Store" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-900 decoration-none transition-all">
+                        <i class="fas fa-store text-base"></i>
+                        <span>@Localizer["Store"]</span>
+                    </a>
+                    <div class="h-px bg-gray-100 my-2 mx-2"></div>
+                    <a href="/Identity/Account/Logout" class="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-red-500 hover:bg-red-50 hover:text-red-700 decoration-none transition-all">
+                        <i class="fas fa-sign-out-alt text-base"></i>
+                        <span>@Localizer["Logout"]</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Right Content Panel -->
+        <div class="lg:col-span-3">
+            <div class="bg-white border border-gray-100 rounded-2xl p-6 md:p-8 shadow-sm">
+                <form id="customerProfileForm" method="post" asp-area="Customer" asp-controller="Home" asp-action="Profile" onsubmit="saveCustomerProfile(event)">
+                    
+                    <!-- Section: Personal Info -->
+                    <div class="bg-gray-50/40 border border-gray-100 rounded-2xl p-5 mb-5 hover:border-gray-200/60 transition-colors duration-200">
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="w-8 h-8 rounded-lg bg-[#002d72]/10 flex items-center justify-center text-[#002d72] shadow-sm">
+                                <i class="fas fa-user-shield text-xs"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-extrabold text-gray-800 m-0 leading-tight">@Localizer["PersonalInfo"]</h3>
+                                <p class="text-[11px] text-gray-500 mt-0.5 mb-0">@Localizer["PersonalSettingsSubtitle"]</p>
+                            </div>
+                        </div>
+
+                        <!-- Data Boxes with minimal, professional spacing -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1.5">@Localizer["FirstName"]</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none text-gray-400">
+                                        <i class="fas fa-user text-xs"></i>
+                                    </div>
+                                    <input type="text" name="FirstName" class="w-full ps-10 pe-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#002d72] focus:ring-4 focus:ring-blue-50 focus:outline-none text-sm font-semibold text-gray-800 transition-all bg-white" value="@userFirstName" required>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1.5">@Localizer["LastName"]</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none text-gray-400">
+                                        <i class="fas fa-user text-xs"></i>
+                                    </div>
+                                    <input type="text" name="LastName" class="w-full ps-10 pe-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#002d72] focus:ring-4 focus:ring-blue-50 focus:outline-none text-sm font-semibold text-gray-800 transition-all bg-white" value="@userLastName" required>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1.5">@Localizer["Email"]</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none text-gray-400">
+                                        <i class="fas fa-envelope text-xs"></i>
+                                    </div>
+                                    <input type="email" name="Email" class="w-full ps-10 pe-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#002d72] focus:ring-4 focus:ring-blue-50 focus:outline-none text-sm font-semibold text-gray-800 transition-all bg-white" value="@userEmail" required>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1.5">@Localizer["Phone"]</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none text-gray-400">
+                                        <i class="fas fa-phone text-xs"></i>
+                                    </div>
+                                    <input type="text" name="Phone" class="w-full ps-10 pe-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#002d72] focus:ring-4 focus:ring-blue-50 focus:outline-none text-sm font-semibold text-gray-800 transition-all bg-white" value="@userPhone">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Shipping Details -->
+                    <div class="bg-gray-50/40 border border-gray-100 rounded-2xl p-5 mb-5 hover:border-gray-200/60 transition-colors duration-200">
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="w-8 h-8 rounded-lg bg-[#002d72]/10 flex items-center justify-center text-[#002d72] shadow-sm">
+                                <i class="fas fa-map-marked-alt text-xs"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-extrabold text-gray-800 m-0 leading-tight">@Localizer["ShippingAddress"]</h3>
+                                <p class="text-[11px] text-gray-500 mt-0.5 mb-0">@(isArabic ? "عنوان وتفاصيل الشحن الافتراضية" : "Default shipping address details")</p>
+                            </div>
+                        </div>
+
+                        <!-- Data Boxes with minimal, professional spacing -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1.5">@Localizer["City"]</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none text-gray-400">
+                                        <i class="fas fa-city text-xs"></i>
+                                    </div>
+                                    <input type="text" name="City" class="w-full ps-10 pe-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#002d72] focus:ring-4 focus:ring-blue-50 focus:outline-none text-sm font-semibold text-gray-800 transition-all bg-white" value="@userCity" placeholder="e.g. Cairo">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1.5">@Localizer["StreetAddress"]</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none text-gray-400">
+                                        <i class="fas fa-map-pin text-xs"></i>
+                                    </div>
+                                    <input type="text" name="Street" class="w-full ps-10 pe-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#002d72] focus:ring-4 focus:ring-blue-50 focus:outline-none text-sm font-semibold text-gray-800 transition-all bg-white" value="@userStreet" placeholder="e.g. 12 El Nasr Street, Maadi">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons - Perfectly aligned and professional -->
+                    <div class="mt-6 flex justify-end gap-3">
+                        <a href="/" class="bg-white hover:bg-gray-50 text-gray-700 font-bold text-xs px-6 py-3 rounded-xl decoration-none transition-all border border-gray-200 flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0 shadow-sm">
+                            <i class="fas fa-times text-xs opacity-75"></i>
+                            <span>@(isArabic ? "إلغاء" : "Cancel")</span>
+                        </a>
+                        <button type="submit" class="bg-[#002d72] hover:bg-[#001f4f] text-white font-bold text-xs px-6 py-3 rounded-xl border-0 cursor-pointer transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0 shadow-md hover:shadow-lg hover:shadow-blue-900/10">
+                            <i class="fas fa-check text-xs"></i>
+                            <span>@Localizer["SaveChange"]</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Simple Toast style overrides for customer page -->
+<div id="custToast" class="fixed bottom-5 @(isArabic ? "left-5" : "right-5") bg-gray-900 text-white px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 transform translate-y-10 opacity-0 pointer-events-none transition-all duration-300 z-50 text-xs font-bold border border-gray-800">
+    <div class="w-5 h-5 rounded-full bg-[#002d72]/20 flex items-center justify-center text-blue-400">
+        <i class="fas fa-info-circle text-[10px]"></i>
+    </div>
+    <span id="custToastText"></span>
+</div>
+
+<script>
+(function () {
+    /* Avatar Upload */
+    const fileInput = document.getElementById('custAvatarInput');
+    const avatarImg = document.getElementById('custAvatar');
+
+    fileInput?.addEventListener('change', function () {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                if (avatarImg) avatarImg.src = e.target.result;
+                showToast('@Localizer["AvatarUpdatedSuccess"]');
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+
+    /* Toast Notification Helper */
+    function showToast(message) {
+        const toast = document.getElementById('custToast');
+        const text  = document.getElementById('custToastText');
+        if (!toast || !text) return;
+
+        text.textContent = message;
+        toast.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none');
+        toast.classList.add('translate-y-0', 'opacity-100');
+
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none');
+        }, 3500);
+    }
+
+    /* Submit Loader Helper */
+    window.saveCustomerProfile = function (event) {
+        event.preventDefault();
+        const form = event.target;
+        const btn = event.submitter;
+        const span = btn.querySelector('span');
+        const icon = btn.querySelector('i');
+        const originalText = span.textContent;
+        let originalIconClass = '';
+
+        if (icon) {
+            originalIconClass = icon.className;
+            icon.className = 'fas fa-spinner fa-spin text-xs';
+        }
+
+        btn.disabled = true;
+        span.textContent = '@Localizer["Saving"]...';
+
+        const formData = new FormData(form);
+        const fileInput = document.getElementById('custAvatarInput');
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+            formData.append('Img', fileInput.files[0]);
+        }
+        fetch('/Customer/Home/Profile', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            btn.disabled = false;
+            span.textContent = originalText;
+            if (icon) icon.className = originalIconClass;
+
+            if (data.success) {
+                showToast('@Localizer["ProfileSettingsSaved"]');
+            } else {
+                showToast(data.message || 'Error saving settings');
+            }
+        })
+        .catch(err => {
+            btn.disabled = false;
+            span.textContent = originalText;
+            if (icon) icon.className = originalIconClass;
+            showToast('Error saving settings');
+        });
+    };
+})();
+</script>
+
+<style>
+    /* Styling overrides for form controls and compatibility checks */
+    input:focus {
+        border-color: #002d72 !important;
+        box-shadow: 0 0 0 4px rgba(0, 45, 114, 0.08) !important;
+    }
+</style>
